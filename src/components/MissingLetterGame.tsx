@@ -201,39 +201,39 @@ export function MissingLetterGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full max-w-4xl mx-auto h-[calc(100vh-80px)] p-2 select-none overflow-hidden">
+    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
       {/* Topo com Placar e Botão de Reset */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-3xl border-4 border-kids-coral shadow-kid z-20">
-        <div className="flex items-center gap-2 bg-rose-100 border-2 border-rose-400 px-4 py-1.5 rounded-2xl shadow-inner">
-          <span className="text-3xl animate-bounce">🔤</span>
-          <span className="text-xl sm:text-2xl font-black text-rose-900">
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-coral shadow-kid z-20 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-rose-100 border-2 border-rose-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
+          <span className="text-2xl sm:text-3xl animate-bounce">🔤</span>
+          <span className="text-base sm:text-2xl font-black text-rose-900">
             Letra Mágica
           </span>
         </div>
 
         <button
           onClick={handleReset}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 sm:p-3 rounded-2xl border-4 border-slate-300 shadow-kid"
+          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
           title="Recomeçar"
         >
-          <RotateCcw size={24} className="stroke-[2.5]" />
+          <RotateCcw size={20} className="stroke-[2.5]" />
         </button>
       </div>
 
       {/* Cenário: DESENHO QUE GANHA COR AO COLOCAR A LETRA CERTA */}
-      <div className="relative flex-1 w-full my-2 bg-gradient-to-b from-sky-200 via-sky-100 to-amber-100 rounded-4xl border-8 border-kids-coral shadow-2xl p-4 flex flex-col items-center justify-between overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-200 via-sky-100 to-amber-100 rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-coral shadow-2xl p-2 sm:p-4 flex flex-col items-center justify-between overflow-hidden">
         {/* A Ilustração (Começa em traço preto/branco e explode em cor com a resposta certa!) */}
-        <div className={`relative flex-1 w-full flex items-center justify-center p-2 transition-transform duration-500 ${isCompleted ? "scale-110" : ""}`}>
+        <div className={`relative flex-1 min-h-0 w-full flex items-center justify-center p-1 sm:p-2 transition-transform duration-500 ${isCompleted ? "scale-105" : ""}`}>
           {current.svgIllustration(isCompleted)}
         </div>
 
         {/* Palavra com o Espaço da Letra que Falta */}
-        <div className="bg-white/95 px-6 py-3 rounded-3xl border-4 border-kids-yellow shadow-kid flex items-center gap-3 z-10">
+        <div className="bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid flex items-center gap-2 sm:gap-3 z-10 flex-shrink-0">
           {/* Caixa da Letra que Falta */}
           <div
-            className={`w-14 h-16 sm:w-16 sm:h-20 rounded-2xl border-4 flex items-center justify-center font-black text-4xl sm:text-5xl transition-all ${
+            className={`w-12 h-14 sm:w-16 sm:h-18 rounded-xl sm:rounded-2xl border-3 sm:border-4 flex items-center justify-center font-black text-3xl sm:text-5xl transition-all ${
               isCompleted
-                ? "bg-kids-green text-white border-emerald-700 scale-110 shadow-kid animate-wiggle"
+                ? "bg-kids-green text-white border-emerald-700 scale-105 shadow-kid animate-wiggle"
                 : "bg-amber-100 text-amber-950 border-dashed border-amber-500 animate-pulse-gentle"
             }`}
           >
@@ -241,24 +241,24 @@ export function MissingLetterGame() {
           </div>
 
           {/* Resto da Palavra */}
-          <span className="font-black text-3xl sm:text-5xl text-slate-800 tracking-wider">
+          <span className="font-black text-2xl sm:text-4xl text-slate-800 tracking-wider">
             {current.restOfWord}
           </span>
         </div>
 
         {/* Botão de Próxima Palavra ao Completar */}
         {isCompleted && (
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-sm z-30 flex flex-col items-center justify-center animate-bounce">
-            <span className="text-8xl mb-2">{current.emoji}</span>
-            <div className="text-4xl font-black text-kids-coral mb-4">
+          <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center animate-bounce p-4 text-center">
+            <span className="text-7xl sm:text-8xl mb-2">{current.emoji}</span>
+            <div className="text-3xl sm:text-4xl font-black text-kids-coral mb-3">
               PARABÉNS, ISRAEL! ⭐
             </div>
             <button
               onClick={handleNext}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-2xl sm:text-3xl px-8 py-4 rounded-4xl border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 animate-pulse-gentle"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-2xl px-8 py-3.5 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 animate-pulse-gentle"
             >
               <span>MAIS PALAVRAS!</span>
-              <ArrowRight size={32} className="stroke-[3]" />
+              <ArrowRight size={28} className="stroke-[3]" />
             </button>
           </div>
         )}
@@ -266,12 +266,12 @@ export function MissingLetterGame() {
 
       {/* Caixa de Letras Gigantes para o Israel Escolher */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md p-3 sm:p-4 rounded-3xl border-4 border-kids-blue shadow-kid flex items-center justify-around gap-3 z-20">
+        <div className="w-full bg-white/95 backdrop-blur-md p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-blue shadow-kid flex items-center justify-around gap-2 sm:gap-3 z-20 flex-shrink-0">
           {current.options.map((letter) => (
             <button
               key={letter}
               onClick={() => handlePickLetter(letter)}
-              className="kid-btn flex-1 py-4 sm:py-5 rounded-3xl border-4 bg-kids-yellow border-amber-600 hover:bg-amber-300 active:scale-95 shadow-kid text-4xl sm:text-5xl font-black text-amber-950 transition-transform"
+              className="kid-btn flex-1 py-3 sm:py-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 bg-kids-yellow border-amber-600 hover:bg-amber-300 active:scale-95 shadow-kid text-3xl sm:text-5xl font-black text-amber-950 transition-transform"
             >
               {letter}
             </button>

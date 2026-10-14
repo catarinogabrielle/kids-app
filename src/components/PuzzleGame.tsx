@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { RotateCcw, ArrowRight, Check, Sparkles } from "lucide-react";
@@ -194,85 +194,103 @@ export function PuzzleGame() {
     sounds.playPop();
   };
 
-  // QUANDO A CRIANÇA DESLIZA O DEDO PELA TELA
-  const handlePointerMove = (e: React.PointerEvent) => {
-    if (draggingPieceId === null) return;
-    setDragPos({ x: e.clientX, y: e.clientY });
-
-    // Checa se o dedo está sobre ou perto de algum quadrante do tabuleiro
-    let foundSlot: number | null = null;
-    slotRefs.current.forEach((slotEl, idx) => {
-      if (!slotEl) return;
-      const rect = slotEl.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-
-      // Distância de atração magnética de 60px
-      if (dist < Math.max(rect.width * 0.65, 60)) {
-        foundSlot = idx;
-      }
-    });
-
-    setHoveredSlotId(foundSlot);
-  };
-
   // QUANDO A CRIANÇA SOLTA O DEDO: ENCAIXA OU VOLTA PARA A BANDEJA!
-  const handlePointerUp = (e: React.PointerEvent) => {
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent | PointerEvent) => {
+      if (draggingPieceId === null) return;
+
+      const pieceId = draggingPieceId;
+      let targetMatched = false;
+
+      // Checa se soltou no quadrante correspondente
+      if (hoveredSlotId === pieceId) {
+        targetMatched = true;
+      } else {
+        // Checa proximidade direta ao slot correto
+        const correctSlotEl = slotRefs.current[pieceId];
+        if (correctSlotEl) {
+          const rect = correctSlotEl.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          const centerY = rect.top + rect.height / 2;
+          const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+          if (dist < Math.max(rect.width * 0.75, 75)) {
+            targetMatched = true;
+          }
+        }
+      }
+
+      if (targetMatched) {
+        // ENCAIXOU PERFEITAMENTE NO LUGAR CERTO!
+        sounds.playSnap();
+        const nextPlaced = [...placedPieces, pieceId];
+        setPlacedPieces(nextPlaced);
+
+        confetti({
+          particleCount: 40,
+          spread: 65,
+          origin: {
+            x: Math.max(0.1, Math.min(0.9, e.clientX / window.innerWidth)),
+            y: Math.max(0.1, Math.min(0.9, e.clientY / window.innerHeight)),
+          },
+        });
+
+        if (nextPlaced.length === 4) {
+          sounds.playSuccess();
+          confetti({
+            particleCount: 110,
+            spread: 90,
+            origin: { y: 0.5 },
+          });
+        }
+      } else {
+        // Soltou no lugar errado ou fora: som de mola e volta suave para a bandeja
+        sounds.playBoing();
+      }
+
+      setDraggingPieceId(null);
+      setDragPos(null);
+      setHoveredSlotId(null);
+    },
+    [draggingPieceId, hoveredSlotId, placedPieces]
+  );
+
+  // Listeners globais em window durante o arraste para garantir que o dedo nunca se perca
+  useEffect(() => {
     if (draggingPieceId === null) return;
 
-    const pieceId = draggingPieceId;
-    let targetMatched = false;
+    const onGlobalMove = (e: PointerEvent) => {
+      setDragPos({ x: e.clientX, y: e.clientY });
 
-    // Checa se soltou no quadrante correspondente
-    if (hoveredSlotId === pieceId) {
-      targetMatched = true;
-    } else {
-      // Checa proximidade direta ao slot correto
-      const correctSlotEl = slotRefs.current[pieceId];
-      if (correctSlotEl) {
-        const rect = correctSlotEl.getBoundingClientRect();
+      let foundSlot: number | null = null;
+      slotRefs.current.forEach((slotEl, idx) => {
+        if (!slotEl) return;
+        const rect = slotEl.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         const dist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-        if (dist < Math.max(rect.width * 0.75, 75)) {
-          targetMatched = true;
+
+        if (dist < Math.max(rect.width * 0.7, 70)) {
+          foundSlot = idx;
         }
-      }
-    }
-
-    if (targetMatched) {
-      // ENCAIXOU PERFEITAMENTE NO LUGAR CERTO!
-      sounds.playSnap();
-      const nextPlaced = [...placedPieces, pieceId];
-      setPlacedPieces(nextPlaced);
-
-      confetti({
-        particleCount: 40,
-        spread: 65,
-        origin: {
-          x: Math.max(0.1, Math.min(0.9, e.clientX / window.innerWidth)),
-          y: Math.max(0.1, Math.min(0.9, e.clientY / window.innerHeight)),
-        },
       });
 
-      if (nextPlaced.length === 4) {
-        sounds.playSuccess();
-        confetti({
-          particleCount: 110,
-          spread: 90,
-          origin: { y: 0.5 },
-        });
-      }
-    } else {
-      // Soltou no lugar errado ou fora: som de mola e volta suave para a bandeja
-      sounds.playBoing();
-    }
+      setHoveredSlotId(foundSlot);
+    };
 
-    setDraggingPieceId(null);
-    setDragPos(null);
-    setHoveredSlotId(null);
-  };
+    const onGlobalUp = (e: PointerEvent) => {
+      handlePointerUp(e);
+    };
+
+    window.addEventListener("pointermove", onGlobalMove);
+    window.addEventListener("pointerup", onGlobalUp);
+    window.addEventListener("pointercancel", onGlobalUp);
+
+    return () => {
+      window.removeEventListener("pointermove", onGlobalMove);
+      window.removeEventListener("pointerup", onGlobalUp);
+      window.removeEventListener("pointercancel", onGlobalUp);
+    };
+  }, [draggingPieceId, handlePointerUp]);
 
   // Suporte adicional a toque simples (caso uma criança de 4 anos apenas clique)
   const handleDirectClickPiece = (pieceId: number) => {
@@ -307,12 +325,7 @@ export function PuzzleGame() {
   };
 
   return (
-    <div
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerUp}
-      className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1 sm:p-2 select-none overflow-hidden touch-none"
-    >
+    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1 sm:p-2 select-none overflow-hidden touch-none">
       {/* Topo com Seletor por Ícones e Botão de Reiniciar */}
       <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-purple shadow-kid z-20 flex-shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-3">

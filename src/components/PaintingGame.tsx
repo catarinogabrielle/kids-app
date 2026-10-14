@@ -169,9 +169,9 @@ export function PaintingGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full max-w-5xl mx-auto h-[calc(100vh-80px)] p-1.5 sm:p-2 select-none overflow-hidden">
+    <div className="flex flex-col items-center justify-between w-full h-full max-w-5xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
       {/* Barra Superior Compacta (SEM SCROLL) */}
-      <div className="w-full flex items-center justify-between gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-3xl border-4 border-kids-blue shadow-kid overflow-hidden">
+      <div className="w-full flex items-center justify-between gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-3xl border-4 border-kids-blue shadow-kid overflow-hidden flex-shrink-0">
         {/* 5 Miniaturas de Desenho */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {[
@@ -321,7 +321,7 @@ export function PaintingGame() {
       {/* Prancha de Pintura (100% Branco com Traços Fortes) */}
       <div
         ref={containerRef}
-        className="relative flex-1 w-full max-w-3xl my-1 bg-white rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-yellow shadow-2xl overflow-hidden touch-none flex items-center justify-center"
+        className="relative flex-1 min-h-0 w-full max-w-3xl my-1 bg-white rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-yellow shadow-2xl overflow-hidden touch-none flex items-center justify-center"
       >
         {/* TEMPLATE 1: A ARCA DE NOÉ */}
         {template === "ark" && (
@@ -607,7 +607,7 @@ export function PaintingGame() {
       </div>
 
       {/* Paleta de Cores em 1 Linha Perfeita (SEM SCROLLBARS) */}
-      <div className="w-full flex items-center justify-around gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-2 rounded-3xl border-4 border-kids-coral shadow-kid overflow-hidden">
+      <div className="w-full flex items-center justify-around gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-2 rounded-3xl border-4 border-kids-coral shadow-kid overflow-hidden flex-shrink-0">
         {colors.map((c) => (
           <button
             key={c.hex}
