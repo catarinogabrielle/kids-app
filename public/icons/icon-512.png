@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#4ADE80"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+    <linearGradient id="car" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#DC2626"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Fundo Arredondado -->
+  <rect width="512" height="512" rx="120" fill="url(#bg)"/>
+
+  <!-- Solzinho Amigável -->
+  <g transform="translate(360, 140)">
+    <circle r="70" fill="url(#sun)"/>
+    <!-- Raios de Sol -->
+    <path d="M 0 -95 L 0 -80 M 67 -67 L 56 -56 M 95 0 L 80 0 M 67 67 L 56 56 M 0 95 L 0 80 M -67 67 L -56 56 M -95 0 L -80 0 M -67 -67 L -56 -56" stroke="#F59E0B" stroke-width="12" stroke-linecap="round"/>
+    <!-- Óculos de Sol do Solzinho -->
+    <path d="M -45 -10 Q -25 -25 0 -10 Q 25 -25 45 -10" fill="none" stroke="#1E293B" stroke-width="6"/>
+    <rect x="-42" y="-12" width="36" height="24" rx="8" fill="#1E293B"/>
+    <rect x="6" y="-12" width="36" height="24" rx="8" fill="#1E293B"/>
+    <path d="M -20 22 Q 0 35 20 22" fill="none" stroke="#92400E" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Carrinho Vermelho Lúdico do Israel -->
+  <g transform="translate(100, 260)">
+    <!-- Chassi do Carro -->
+    <path d="M 40 80 L 70 20 Q 80 5 100 5 L 210 5 Q 230 5 240 20 L 270 80 L 300 80 Q 320 80 320 100 L 320 140 Q 320 150 310 150 L 0 150 Q -10 150 -10 140 L -10 100 Q -10 80 10 80 Z" fill="url(#car)"/>
+    <!-- Janelas -->
+    <path d="M 80 30 L 140 30 L 140 75 L 55 75 Z" fill="#E0F2FE" rx="6"/>
+    <path d="M 155 30 L 225 30 L 250 75 L 155 75 Z" fill="#E0F2FE" rx="6"/>
+    <!-- Farol Dianteiro -->
+    <circle cx="310" cy="105" r="16" fill="#FDE047"/>
+    <!-- Sorriso do Carrinho -->
+    <path d="M 270 125 Q 290 140 310 125" stroke="#7F1D1D" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <!-- Olhinho no Para-brisa -->
+    <circle cx="105" cy="52" r="8" fill="#1E293B"/>
+    <circle cx="107" cy="50" r="3" fill="#FFFFFF"/>
+    <!-- Rodas -->
+    <g transform="translate(60, 150)">
+      <circle r="42" fill="#1E293B"/>
+      <circle r="22" fill="#94A3B8"/>
+      <circle r="10" fill="#E2E8F0"/>
+    </g>
+    <g transform="translate(250, 150)">
+      <circle r="42" fill="#1E293B"/>
+      <circle r="22" fill="#94A3B8"/>
+      <circle r="10" fill="#E2E8F0"/>
+    </g>
+  </g>
+
+  <!-- Letra I Colorida ou Estrela -->
+  <g transform="translate(90, 110)">
+    <polygon points="40,5 52,30 80,34 59,54 64,82 40,68 16,82 21,54 0,34 28,30" fill="#FBBF24" stroke="#D97706" stroke-width="4"/>
+  </g>
+</svg>
