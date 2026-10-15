@@ -54,7 +54,7 @@ export default function Home() {
   return (
     <main
       suppressHydrationWarning
-      className="h-screen h-[100dvh] max-h-[100dvh] w-full flex flex-col justify-between bg-gradient-to-b from-sky-400 via-sky-300 to-green-400 overflow-hidden select-none"
+      className="h-screen h-[100dvh] max-h-[100dvh] w-full flex flex-col justify-between bg-gradient-to-b from-sky-400 via-sky-300 to-green-400 overflow-hidden select-none pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]"
     >
       <PWARegistration />
 

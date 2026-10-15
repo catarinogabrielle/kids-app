@@ -313,10 +313,10 @@ export function BlocksGame() {
   return (
     <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
       {/* Placar e Botões */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-orange shadow-kid z-20 flex-shrink-0">
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-orange shadow-kid z-20 flex-shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-100 border-2 border-amber-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-2xl sm:text-3xl animate-bounce">🧱</span>
-          <span className="text-base sm:text-2xl font-black text-amber-900">
+          <span className="text-xl sm:text-3xl">🧱</span>
+          <span className="text-sm sm:text-2xl font-black text-amber-900">
             Torre: {stackedBlocks.length} {stackedBlocks.length === 1 ? "Bloco" : "Blocos"}
           </span>
         </div>

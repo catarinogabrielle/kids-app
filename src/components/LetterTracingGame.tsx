@@ -29,7 +29,7 @@ const LETTER_LIST: LetterData[] = [
     emoji: "👑",
     colorName: "text-amber-500",
     themeColor: "#F59E0B",
-    paths: ["M 200 70 L 200 330"],
+    paths: ["M 200 75 L 200 325"],
     checkpoints: [
       { id: 1, label: "1", x: 200, y: 75 },
       { id: 2, label: "2", x: 200, y: 200 },
@@ -43,15 +43,15 @@ const LETTER_LIST: LetterData[] = [
     colorName: "text-blue-500",
     themeColor: "#3B82F6",
     paths: [
-      "M 110 330 L 200 70 L 290 330",
-      "M 145 235 L 255 235",
+      "M 100 325 L 200 75 L 300 325",
+      "M 145 225 L 255 225",
     ],
     checkpoints: [
-      { id: 1, label: "1", x: 110, y: 325 },
+      { id: 1, label: "1", x: 100, y: 325 },
       { id: 2, label: "2", x: 200, y: 75 },
-      { id: 3, label: "3", x: 290, y: 325 },
-      { id: 4, label: "4", x: 145, y: 235 },
-      { id: 5, label: "5", x: 255, y: 235 },
+      { id: 3, label: "3", x: 300, y: 325 },
+      { id: 4, label: "4", x: 145, y: 225 },
+      { id: 5, label: "5", x: 255, y: 225 },
     ],
   },
   {
@@ -60,12 +60,12 @@ const LETTER_LIST: LetterData[] = [
     emoji: "🦁",
     colorName: "text-yellow-600",
     themeColor: "#D97706",
-    paths: ["M 140 70 L 140 330 L 290 330"],
+    paths: ["M 130 75 L 130 325 L 275 325"],
     checkpoints: [
-      { id: 1, label: "1", x: 140, y: 75 },
-      { id: 2, label: "2", x: 140, y: 200 },
-      { id: 3, label: "3", x: 140, y: 325 },
-      { id: 4, label: "4", x: 290, y: 325 },
+      { id: 1, label: "1", x: 130, y: 75 },
+      { id: 2, label: "2", x: 130, y: 200 },
+      { id: 3, label: "3", x: 130, y: 325 },
+      { id: 4, label: "4", x: 275, y: 325 },
     ],
   },
   {
@@ -75,15 +75,15 @@ const LETTER_LIST: LetterData[] = [
     colorName: "text-emerald-600",
     themeColor: "#059669",
     paths: [
-      "M 140 70 L 140 330",
-      "M 140 70 C 290 70, 290 330, 140 330",
+      "M 130 75 L 130 325",
+      "M 130 75 L 190 75 A 125 125 0 0 1 190 325 L 130 325",
     ],
     checkpoints: [
-      { id: 1, label: "1", x: 140, y: 75 },
-      { id: 2, label: "2", x: 140, y: 325 },
-      { id: 3, label: "3", x: 230, y: 80 },
-      { id: 4, label: "4", x: 275, y: 200 },
-      { id: 5, label: "5", x: 220, y: 325 },
+      { id: 1, label: "1", x: 130, y: 75 },
+      { id: 2, label: "2", x: 130, y: 325 },
+      { id: 3, label: "3", x: 190, y: 75 },
+      { id: 4, label: "4", x: 315, y: 200 },
+      { id: 5, label: "5", x: 190, y: 325 },
     ],
   },
   {
@@ -92,13 +92,13 @@ const LETTER_LIST: LetterData[] = [
     emoji: "🚗",
     colorName: "text-red-500",
     themeColor: "#EF4444",
-    paths: ["M 285 110 C 240 65, 115 95, 115 200 C 115 305, 240 335, 285 290"],
+    paths: ["M 296 120 A 125 125 0 0 0 75 200 A 125 125 0 0 0 296 280"],
     checkpoints: [
-      { id: 1, label: "1", x: 285, y: 110 },
+      { id: 1, label: "1", x: 296, y: 120 },
       { id: 2, label: "2", x: 200, y: 75 },
-      { id: 3, label: "3", x: 115, y: 200 },
+      { id: 3, label: "3", x: 75, y: 200 },
       { id: 4, label: "4", x: 200, y: 325 },
-      { id: 5, label: "5", x: 285, y: 290 },
+      { id: 5, label: "5", x: 296, y: 280 },
     ],
   },
   {
@@ -108,16 +108,18 @@ const LETTER_LIST: LetterData[] = [
     colorName: "text-purple-600",
     themeColor: "#9333EA",
     paths: [
-      "M 140 70 L 140 330",
-      "M 140 70 C 265 70, 265 195, 140 195",
-      "M 140 195 C 275 195, 275 330, 140 330",
+      "M 130 75 L 130 325",
+      "M 130 75 L 190 75 A 62.5 62.5 0 0 1 190 200 L 130 200",
+      "M 130 200 L 200 200 A 62.5 62.5 0 0 1 200 325 L 130 325",
     ],
     checkpoints: [
-      { id: 1, label: "1", x: 140, y: 75 },
-      { id: 2, label: "2", x: 140, y: 325 },
-      { id: 3, label: "3", x: 250, y: 135 },
-      { id: 4, label: "4", x: 140, y: 195 },
-      { id: 5, label: "5", x: 260, y: 260 },
+      { id: 1, label: "1", x: 130, y: 75 },
+      { id: 2, label: "2", x: 130, y: 325 },
+      { id: 3, label: "3", x: 190, y: 75 },
+      { id: 4, label: "4", x: 252, y: 138 },
+      { id: 5, label: "5", x: 130, y: 200 },
+      { id: 6, label: "6", x: 262, y: 262 },
+      { id: 7, label: "7", x: 130, y: 325 },
     ],
   },
   {
@@ -126,12 +128,12 @@ const LETTER_LIST: LetterData[] = [
     emoji: "🐑",
     colorName: "text-teal-600",
     themeColor: "#0D9488",
-    paths: ["M 200 70 C 105 70, 105 330, 200 330 C 295 330, 295 70, 200 70"],
+    paths: ["M 200 75 A 125 125 0 1 0 200 325 A 125 125 0 1 0 200 75"],
     checkpoints: [
       { id: 1, label: "1", x: 200, y: 75 },
-      { id: 2, label: "2", x: 115, y: 200 },
+      { id: 2, label: "2", x: 75, y: 200 },
       { id: 3, label: "3", x: 200, y: 325 },
-      { id: 4, label: "4", x: 285, y: 200 },
+      { id: 4, label: "4", x: 325, y: 200 },
     ],
   },
 ];
@@ -343,10 +345,10 @@ export function LetterTracingGame() {
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative aspect-square w-full max-w-[360px] sm:max-w-[420px] max-h-full rounded-3xl sm:rounded-4xl bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 border-6 sm:border-8 border-kids-purple shadow-2xl overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
+          className="relative aspect-square w-full max-w-[330px] sm:max-w-[420px] max-h-[48vh] sm:max-h-[55vh] rounded-3xl sm:rounded-4xl bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 border-4 sm:border-8 border-kids-purple shadow-2xl overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
-          {/* Letra em Traçado Vetorial SVG Perfeito */}
-          <div className="absolute inset-0 pointer-events-none p-4">
+          {/* Letra em Traçado Vetorial SVG Perfeito com Checkpoints Integrados */}
+          <div className="absolute inset-0 pointer-events-none">
             <svg viewBox="0 0 400 400" className="w-full h-full">
               {/* Pista guia de fundo larga e acolchoada */}
               {current.paths.map((d, i) => (
@@ -374,39 +376,55 @@ export function LetterTracingGame() {
                   strokeLinejoin="round"
                 />
               ))}
+
+              {/* Checkpoints desenhados diretamente no SVG para alinhamento 1:1 perfeito */}
+              {current.checkpoints.map((cp) => {
+                const isPassed = passedCheckpoints.includes(cp.id);
+                const isNext = !isPassed && cp.id === (passedCheckpoints.length + 1);
+
+                return (
+                  <g key={cp.id} className="transition-all duration-300">
+                    {/* Halo de destaque suave sobre o próximo ponto a ser seguido */}
+                    {isNext && (
+                      <circle
+                        cx={cp.x}
+                        cy={cp.y}
+                        r="30"
+                        fill="#FDE047"
+                        opacity="0.5"
+                      />
+                    )}
+
+                    {/* Círculo do Checkpoint */}
+                    <circle
+                      cx={cp.x}
+                      cy={cp.y}
+                      r={isPassed ? "22" : "20"}
+                      fill={isPassed ? "#FBBF24" : "#FFFFFF"}
+                      stroke={isPassed ? "#D97706" : isNext ? "#9333EA" : "#CBD5E1"}
+                      strokeWidth={isPassed || isNext ? "4" : "3"}
+                    />
+
+                    {/* Número ou Estrela do Checkpoint */}
+                    <text
+                      x={cp.x}
+                      y={cp.y + (isPassed ? 7 : 6.5)}
+                      textAnchor="middle"
+                      fontSize={isPassed ? "20" : "18"}
+                      fontWeight="900"
+                      fill={isPassed ? "#78350F" : isNext ? "#6B21A8" : "#94A3B8"}
+                      className="select-none"
+                    >
+                      {isPassed ? "⭐" : cp.label}
+                    </text>
+                  </g>
+                );
+              })}
             </svg>
           </div>
 
-          {/* Estrelas Guia Numeradas sobre as Coordenadas Exatas */}
-          <div className="absolute inset-0 pointer-events-none">
-            {current.checkpoints.map((cp) => {
-              const isPassed = passedCheckpoints.includes(cp.id);
-
-              return (
-                <div
-                  key={cp.id}
-                  className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-300 pointer-events-none"
-                  style={{
-                    left: `${(cp.x / 400) * 100}%`,
-                    top: `${(cp.y / 400) * 100}%`,
-                  }}
-                >
-                  <div
-                    className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full border-4 flex items-center justify-center font-black text-base sm:text-xl shadow-lg transition-transform ${
-                      isPassed
-                        ? "bg-kids-yellow border-amber-500 text-amber-950 scale-125 ring-4 ring-yellow-400 animate-wiggle"
-                        : "bg-white border-kids-purple text-purple-700 animate-pulse-gentle"
-                    }`}
-                  >
-                    {isPassed ? "⭐" : cp.label}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
           {/* Mascote no canto do palco */}
-          <div className="absolute bottom-3 right-3 text-4xl sm:text-5xl animate-bounce pointer-events-none opacity-85">
+          <div className="absolute bottom-2.5 right-2.5 text-3xl sm:text-5xl pointer-events-none opacity-85">
             {current.emoji}
           </div>
 
@@ -418,20 +436,20 @@ export function LetterTracingGame() {
 
           {/* Tela de Vitória Quando Israel Termina o Contorno */}
           {isCompleted && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center animate-bounce p-4 text-center">
-              <span className="text-7xl sm:text-8xl mb-2">{current.emoji}</span>
-              <div className="text-3xl sm:text-5xl font-black text-kids-purple mb-1">
+            <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
+              <span className="text-6xl sm:text-8xl mb-2">{current.emoji}</span>
+              <div className="text-2xl sm:text-5xl font-black text-kids-purple mb-1">
                 LETRA {current.letter}!
               </div>
-              <div className="text-xl sm:text-2xl font-extrabold text-amber-600 mb-5">
+              <div className="text-lg sm:text-2xl font-extrabold text-amber-600 mb-4 sm:mb-5">
                 {current.letter} de {current.word}! ⭐
               </div>
               <button
                 onClick={nextLetter}
-                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2 animate-pulse-gentle"
+                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
               >
                 <span>PRÓXIMA LETRA!</span>
-                <ArrowRight size={28} className="stroke-[3]" />
+                <ArrowRight size={26} className="stroke-[3]" />
               </button>
             </div>
           )}
@@ -441,7 +459,7 @@ export function LetterTracingGame() {
       {/* Dica no Rodapé com Progresso das Estrelas */}
       <div className="w-full bg-white/95 backdrop-blur-md p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid flex items-center justify-between gap-2 z-20 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <Sparkles className="text-amber-500 animate-spin" size={20} />
+          <Sparkles className="text-amber-500" size={20} />
           <span className="text-xs sm:text-base font-black text-slate-800">
             Siga as estrelinhas da letra {current.letter}!
           </span>

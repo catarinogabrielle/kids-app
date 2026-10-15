@@ -196,7 +196,7 @@ export function BalloonPopGame() {
         <div
           className={`flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
         >
-          <span className="text-2xl sm:text-3xl animate-bounce">
+          <span className="text-xl sm:text-3xl">
             {currentMission.emoji}
           </span>
           <div className="flex flex-col">
@@ -334,21 +334,21 @@ export function BalloonPopGame() {
 
         {/* Tela de Vitória da Missão Concluída */}
         {isVictory && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-30 flex flex-col items-center justify-center animate-bounce p-4 text-center">
-            <span className="text-8xl mb-2">🎉🎈🏆</span>
-            <div className="text-3xl sm:text-5xl font-black text-kids-purple mb-2">
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
+            <span className="text-7xl sm:text-8xl mb-1">🎉🎈🏆</span>
+            <div className="text-2xl sm:text-4xl font-black text-kids-purple mb-1">
               MISSÃO CUMPRIDA!
             </div>
-            <div className="text-lg sm:text-2xl font-bold text-slate-700 mb-6">
+            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-5">
               Muito bem, Israel! Você juntou todos os 10 balões{" "}
               {currentMission.name.toLowerCase()}! ⭐
             </div>
             <button
               onClick={handleNextMission}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-3.5 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 animate-pulse-gentle"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
             >
               <span>PRÓXIMA COR!</span>
-              <ArrowRight size={32} className="stroke-[3]" />
+              <ArrowRight size={26} className="stroke-[3]" />
             </button>
           </div>
         )}
@@ -356,7 +356,7 @@ export function BalloonPopGame() {
 
       {/* Dica no rodapé */}
       <div className="w-full bg-white/90 backdrop-blur-md py-1.5 px-3 rounded-2xl border-2 border-kids-pink flex items-center justify-center gap-2 z-20 flex-shrink-0">
-        <Sparkles className="text-amber-500 animate-spin" size={18} />
+        <Sparkles className="text-amber-500" size={18} />
         <span className="text-xs sm:text-sm font-black text-slate-700">
           Dica: Toque nos balões {currentMission.name.toLowerCase()} {currentMission.emoji} para
           vencer o desafio!

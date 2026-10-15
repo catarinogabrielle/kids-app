@@ -168,10 +168,10 @@ export function ArkAnimalsGame() {
   return (
     <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
       {/* Placar e Botões */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-teal shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-2 bg-teal-100 border-2 border-teal-400 px-4 py-1.5 rounded-2xl shadow-inner">
-          <span className="text-3xl animate-bounce">🛳️</span>
-          <span className="text-xl sm:text-2xl font-black text-teal-900">
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-teal shadow-kid z-20 flex-shrink-0">
+        <div className="flex items-center gap-2 bg-teal-100 border-2 border-teal-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
+          <span className="text-2xl sm:text-3xl">🛳️</span>
+          <span className="text-sm sm:text-2xl font-black text-teal-900">
             Pares na Arca: {matchedSpecies.length} / {PAIRS_CONFIG.length}
           </span>
         </div>
@@ -181,10 +181,10 @@ export function ArkAnimalsGame() {
           <button
             onClick={handlePeek}
             disabled={isPeekingAll || isAllBoarded}
-            className="kid-btn bg-yellow-300 hover:bg-yellow-400 text-amber-950 px-3 py-2 rounded-2xl border-4 border-amber-500 shadow-kid font-black text-sm flex items-center gap-1.5"
+            className="kid-btn bg-yellow-300 hover:bg-yellow-400 text-amber-950 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-amber-500 shadow-kid font-black text-xs sm:text-sm flex items-center gap-1"
             title="Espiar cartas"
           >
-            <Eye size={20} className="stroke-[2.5]" />
+            <Eye size={18} className="stroke-[2.5]" />
             <span className="hidden sm:inline">ESPIAR</span>
           </button>
 
@@ -193,21 +193,21 @@ export function ArkAnimalsGame() {
               sounds.playBoing();
               startNewGame();
             }}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2.5 sm:p-3 rounded-2xl border-4 border-slate-300 shadow-kid"
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid"
             title="Recomeçar"
           >
-            <RotateCcw size={24} className="stroke-[2.5]" />
+            <RotateCcw size={20} className="stroke-[2.5]" />
           </button>
         </div>
       </div>
 
       {/* CENÁRIO: A GRANDE ARCA DE NOÉ COM RAMPA DE EMBARQUE */}
-      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-300 rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-green shadow-2xl p-1.5 sm:p-4 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-300 rounded-3xl sm:rounded-4xl border-4 sm:border-8 border-kids-green shadow-2xl p-1.5 sm:p-4 flex flex-col items-center justify-center overflow-hidden">
         {/* Arco-íris de Deus e Pombinha */}
-        <div className="absolute top-2 text-5xl sm:text-7xl opacity-85 animate-float pointer-events-none">
+        <div className="absolute top-2 text-4xl sm:text-7xl opacity-85 pointer-events-none">
           🌈
         </div>
-        <div className="absolute top-6 right-6 text-3xl sm:text-4xl animate-bounce pointer-events-none">
+        <div className="absolute top-5 right-5 text-2xl sm:text-4xl pointer-events-none">
           🕊️
         </div>
 
@@ -317,7 +317,7 @@ export function ArkAnimalsGame() {
           {boardedSpecies.length > 2 && (
             <div className="absolute top-[48%] left-1/2 -translate-x-1/2 flex items-center justify-center gap-14 pointer-events-none">
               {boardedSpecies.slice(2, 4).map((em, idx) => (
-                <span key={idx} className="text-2xl sm:text-3xl animate-bounce">
+                <span key={idx} className="text-2xl sm:text-3xl">
                   {em}
                 </span>
               ))}
@@ -327,12 +327,12 @@ export function ArkAnimalsGame() {
 
         {/* TELA DE VITÓRIA: TODOS OS PARES NA ARCA */}
         {isAllBoarded && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-40 flex flex-col items-center justify-center animate-bounce p-4 text-center">
-            <span className="text-8xl mb-2">🛳️🌈✨</span>
-            <div className="text-3xl sm:text-5xl font-black text-kids-teal mb-2">
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
+            <span className="text-7xl sm:text-8xl mb-1">🛳️🌈✨</span>
+            <div className="text-2xl sm:text-4xl font-black text-kids-teal mb-1">
               TODOS OS PARES NA ARCA!
             </div>
-            <div className="text-xl sm:text-2xl font-bold text-slate-700 mb-6">
+            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-5">
               Parabéns, Israel! Você encontrou todos os pares de bichinhos! ⭐
             </div>
             <button
@@ -340,10 +340,10 @@ export function ArkAnimalsGame() {
                 sounds.playStar();
                 startNewGame();
               }}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-2xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-4xl border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 animate-pulse-gentle"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
             >
               <span>JOGAR DE NOVO!</span>
-              <ArrowRight size={36} className="stroke-[3]" />
+              <ArrowRight size={28} className="stroke-[3]" />
             </button>
           </div>
         )}

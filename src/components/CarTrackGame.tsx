@@ -185,8 +185,8 @@ export function CarTrackGame() {
 
         {/* Placar de Estrelas */}
         <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-100 border-2 border-amber-400 px-3 py-1 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-2xl sm:text-3xl animate-bounce">⭐</span>
-          <span className="text-xl sm:text-3xl font-black text-amber-900">
+          <span className="text-xl sm:text-3xl">⭐</span>
+          <span className="text-lg sm:text-3xl font-black text-amber-900">
             {starsCollected}
           </span>
         </div>

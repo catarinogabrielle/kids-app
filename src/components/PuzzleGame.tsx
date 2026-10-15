@@ -413,20 +413,20 @@ export function PuzzleGame() {
 
         {/* VITÓRIA: O QUEBRA-CABEÇA ESTÁ COMPLETO! */}
         {isCompleted && (
-          <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center animate-bounce p-4 text-center">
-            <span className="text-7xl sm:text-9xl mb-2">{currentPuzzle.icon}</span>
-            <div className="text-2xl sm:text-5xl font-black text-kids-orange mb-1">
+          <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
+            <span className="text-6xl sm:text-9xl mb-1">{currentPuzzle.icon}</span>
+            <div className="text-2xl sm:text-4xl font-black text-kids-orange mb-1">
               QUEBRA-CABEÇA COMPLETO!
             </div>
-            <div className="text-base sm:text-2xl font-bold text-slate-700 mb-4 sm:mb-6">
+            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-4 sm:mb-5">
               Parabéns, Israel! Você montou a imagem inteirinha! ⭐
             </div>
             <button
               onClick={handleNext}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-6 sm:px-10 py-3 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2 sm:gap-3 animate-pulse-gentle"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
             >
               <span>PRÓXIMO QUEBRA-CABEÇA!</span>
-              <ArrowRight size={30} className="stroke-[3]" />
+              <ArrowRight size={26} className="stroke-[3]" />
             </button>
           </div>
         )}

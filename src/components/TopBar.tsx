@@ -46,26 +46,26 @@ export function TopBar({
   };
 
   return (
-    <header className="w-full px-2 sm:px-4 py-1.5 sm:py-2.5 flex items-center justify-between z-30 select-none flex-shrink-0">
+    <header className="w-full px-1.5 sm:px-4 py-1 sm:py-2 flex items-center justify-between z-30 select-none flex-shrink-0">
       {/* Botão de Voltar para Casa (Compacto no Mobile, Gigante no Tablet) */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-1.5 sm:gap-3">
         {showHome && onHome && (
           <button
             onClick={() => {
               sounds.playPop();
               onHome();
             }}
-            className="kid-btn bg-kids-yellow hover:bg-amber-300 text-amber-950 p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-amber-500 shadow-kid active:scale-95 transition-transform"
+            className="kid-btn bg-kids-yellow hover:bg-amber-300 text-amber-950 p-1.5 sm:p-3 rounded-xl sm:rounded-3xl border-2 sm:border-4 border-amber-500 shadow-kid active:scale-95 transition-transform"
             aria-label="Voltar para a tela inicial"
           >
-            <Home size={26} className="sm:w-8 sm:h-8 stroke-[2.5]" />
+            <Home size={22} className="sm:w-8 sm:h-8 stroke-[2.5]" />
           </button>
         )}
 
         {title && (
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/85 backdrop-blur-md px-2.5 sm:px-4 py-1 sm:py-1.5 rounded-2xl border-2 border-white shadow-sm">
-            {icon && <span className="text-xl sm:text-3xl">{icon}</span>}
-            <span className="font-extrabold text-sm sm:text-2xl text-slate-800 tracking-wide truncate max-w-[170px] sm:max-w-none">
+          <div className="flex items-center gap-1 sm:gap-2 bg-white/85 backdrop-blur-md px-2 sm:px-4 py-0.5 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-white shadow-sm">
+            {icon && <span className="text-lg sm:text-3xl">{icon}</span>}
+            <span className="font-extrabold text-xs sm:text-2xl text-slate-800 tracking-wide truncate max-w-[150px] sm:max-w-none">
               {title}
             </span>
           </div>
@@ -73,18 +73,18 @@ export function TopBar({
       </div>
 
       {/* Botões de Ação da Direita (Som, Tela Cheia, Cantinho dos Pais) */}
-      <div className="flex items-center gap-1.5 sm:gap-3">
+      <div className="flex items-center gap-1 sm:gap-3">
         {/* Alternar Som */}
         <button
           onClick={handleToggleMute}
-          className={`kid-btn p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 shadow-kid ${
+          className={`kid-btn p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 shadow-kid ${
             isMuted
               ? "bg-gray-200 text-gray-500 border-gray-400"
               : "bg-kids-teal text-white border-teal-600"
           }`}
           title={isMuted ? "Ligar som" : "Desligar som"}
         >
-          {isMuted ? <VolumeX size={22} className="sm:w-6 sm:h-6" /> : <Volume2 size={22} className="sm:w-6 sm:h-6 animate-pulse" />}
+          {isMuted ? <VolumeX size={20} className="sm:w-6 sm:h-6" /> : <Volume2 size={20} className="sm:w-6 sm:h-6" />}
         </button>
 
         {/* Tela Cheia (Ideal para Tablet) */}
