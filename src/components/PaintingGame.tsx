@@ -170,8 +170,8 @@ export function PaintingGame() {
 
   return (
     <div className="flex flex-col items-center justify-between w-full h-full max-w-5xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Barra Superior Compacta (SEM SCROLL) */}
-      <div className="w-full flex items-center justify-between gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-3xl border-4 border-kids-blue shadow-kid overflow-hidden flex-shrink-0">
+      {/* Barra Superior Compacta: Modelos e Ações Rápidas (Zero corte no mobile) */}
+      <div className="w-full flex items-center justify-between gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-blue shadow-kid overflow-hidden flex-shrink-0">
         {/* 5 Miniaturas de Desenho */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           {[
@@ -187,136 +187,40 @@ export function PaintingGame() {
                 sounds.playPop();
                 setTemplate(t.id as ColorTemplate);
               }}
-              className={`kid-btn p-1.5 sm:p-2 rounded-2xl border-3 sm:border-4 transition-all ${
+              className={`kid-btn p-1 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 transition-all ${
                 template === t.id
-                  ? "bg-kids-yellow border-amber-500 scale-110 shadow-kid ring-3 ring-yellow-300"
+                  ? "bg-kids-yellow border-amber-500 scale-105 sm:scale-110 shadow-kid ring-2 sm:ring-3 ring-yellow-300"
                   : "bg-slate-50 border-slate-200"
               }`}
             >
-              <span className="text-2xl sm:text-3xl">{t.emoji}</span>
+              <span className="text-xl sm:text-3xl">{t.emoji}</span>
             </button>
           ))}
         </div>
 
-        {/* Ferramentas */}
+        {/* Ações Rápidas: Foto e Limpar */}
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-          {/* Balde */}
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setToolMode("bucket");
-            }}
-            className={`kid-btn p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 transition-all ${
-              toolMode === "bucket"
-                ? "bg-kids-teal text-white border-teal-700 scale-110 shadow-kid ring-3 ring-teal-200"
-                : "bg-white text-slate-700 border-slate-300"
-            }`}
-            title="Balde"
-          >
-            <PaintBucket size={24} className="stroke-[2.5]" />
-          </button>
-
-          {/* Pincel */}
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setToolMode("brush");
-            }}
-            className={`kid-btn p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 transition-all ${
-              toolMode === "brush"
-                ? "bg-kids-purple text-white border-purple-700 scale-110 shadow-kid ring-3 ring-purple-200"
-                : "bg-white text-slate-700 border-slate-300"
-            }`}
-            title="Pincel"
-          >
-            <Paintbrush size={24} className="stroke-[2.5]" />
-          </button>
-
-          {/* Carimbos */}
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setToolMode("stamp");
-            }}
-            className={`kid-btn p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 transition-all ${
-              toolMode === "stamp"
-                ? "bg-kids-pink text-white border-pink-700 scale-110 shadow-kid ring-3 ring-pink-200"
-                : "bg-white text-slate-700 border-slate-300"
-            }`}
-            title="Carimbos"
-          >
-            <Sparkles size={24} className="stroke-[2.5]" />
-          </button>
-
           {/* Câmera */}
           <button
             onClick={handleSaveArtwork}
-            className="kid-btn bg-kids-coral hover:bg-rose-500 text-white p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-rose-700 shadow-kid animate-pulse-gentle"
-            title="Foto!"
+            className="kid-btn bg-kids-coral hover:bg-rose-500 text-white p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-rose-700 shadow-kid flex items-center gap-1"
+            title="Salvar Foto!"
           >
-            <Camera size={24} className="stroke-[2.5]" />
+            <Camera size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <span className="hidden sm:inline font-black text-xs">Foto</span>
           </button>
 
           {/* Limpar */}
           <button
             onClick={handleClearAll}
-            className="kid-btn bg-slate-200 hover:bg-slate-300 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-400 shadow-kid"
+            className="kid-btn bg-slate-200 hover:bg-slate-300 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-400 shadow-kid flex items-center gap-1"
             title="Limpar"
           >
-            <RotateCcw size={20} className="stroke-[2.5]" />
+            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <span className="hidden sm:inline font-black text-xs">Limpar</span>
           </button>
         </div>
       </div>
-
-      {/* Sub-barra: Carimbos Visuais ou Tamanho de Traço */}
-      {toolMode === "stamp" && (
-        <div className="w-full flex items-center justify-around bg-pink-100/90 py-1 px-2 rounded-2xl border-2 border-pink-300 my-1 overflow-hidden">
-          {stampsList.map((st) => (
-            <button
-              key={st}
-              onClick={() => {
-                sounds.playPop();
-                setSelectedStamp(st);
-              }}
-              className={`kid-btn text-2xl sm:text-3xl p-1 rounded-xl border-2 transition-transform ${
-                selectedStamp === st
-                  ? "bg-white border-pink-500 scale-120 shadow-md ring-2 ring-pink-300"
-                  : "border-transparent"
-              }`}
-            >
-              {st}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {toolMode === "brush" && (
-        <div className="w-full flex items-center justify-center gap-6 bg-purple-100/90 py-1 px-2 rounded-2xl border-2 border-purple-300 my-1 overflow-hidden">
-          {[
-            { size: 10, dot: "w-3 h-3" },
-            { size: 20, dot: "w-6 h-6" },
-            { size: 36, dot: "w-9 h-9" },
-          ].map((b) => (
-            <button
-              key={b.size}
-              onClick={() => {
-                sounds.playPop();
-                setBrushSize(b.size);
-              }}
-              className={`kid-btn p-1.5 rounded-xl border-2 flex items-center justify-center transition-transform ${
-                brushSize === b.size
-                  ? "bg-purple-600 border-purple-900 scale-120 shadow-md ring-2 ring-purple-300"
-                  : "bg-white border-purple-200"
-              }`}
-            >
-              <div
-                className={`${b.dot} rounded-full`}
-                style={{ backgroundColor: brushSize === b.size ? "#FFFFFF" : selectedColor }}
-              />
-            </button>
-          ))}
-        </div>
-      )}
 
       {/* Prancha de Pintura (100% Branco com Traços Fortes) */}
       <div
@@ -606,24 +510,129 @@ export function PaintingGame() {
         ))}
       </div>
 
-      {/* Paleta de Cores em 1 Linha Perfeita (SEM SCROLLBARS) */}
-      <div className="w-full flex items-center justify-around gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-2 rounded-3xl border-4 border-kids-coral shadow-kid overflow-hidden flex-shrink-0">
-        {colors.map((c) => (
+      {/* BARRA INFERIOR DE FERRAMENTAS & CORES (Ergonômica e 100% Acessível no Celular) */}
+      <div className="w-full flex flex-col gap-1 sm:gap-1.5 flex-shrink-0 mt-1">
+        {/* Sub-barra Dinâmica: Carimbos Emojis */}
+        {toolMode === "stamp" && (
+          <div className="w-full flex items-center justify-around bg-pink-100/95 py-1 px-2 rounded-xl sm:rounded-2xl border-2 border-pink-300 shadow-sm animate-wiggle">
+            {stampsList.map((st) => (
+              <button
+                key={st}
+                onClick={() => {
+                  sounds.playPop();
+                  setSelectedStamp(st);
+                }}
+                className={`kid-btn text-xl sm:text-3xl p-1 rounded-xl border-2 transition-transform ${
+                  selectedStamp === st
+                    ? "bg-white border-pink-500 scale-120 shadow-md ring-2 ring-pink-300"
+                    : "border-transparent"
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Sub-barra Dinâmica: Espessura do Pincel */}
+        {toolMode === "brush" && (
+          <div className="w-full flex items-center justify-center gap-6 sm:gap-8 bg-purple-100/95 py-1 px-2 rounded-xl sm:rounded-2xl border-2 border-purple-300 shadow-sm">
+            {[
+              { size: 10, dot: "w-2.5 h-2.5 sm:w-3 sm:h-3" },
+              { size: 20, dot: "w-5 h-5 sm:w-6 sm:h-6" },
+              { size: 36, dot: "w-7 h-7 sm:w-9 sm:h-9" },
+            ].map((b) => (
+              <button
+                key={b.size}
+                onClick={() => {
+                  sounds.playPop();
+                  setBrushSize(b.size);
+                }}
+                className={`kid-btn p-1.5 rounded-xl border-2 flex items-center justify-center transition-transform ${
+                  brushSize === b.size
+                    ? "bg-purple-600 border-purple-900 scale-120 shadow-md ring-2 ring-purple-300"
+                    : "bg-white border-purple-200"
+                }`}
+              >
+                <div
+                  className={`${b.dot} rounded-full`}
+                  style={{ backgroundColor: brushSize === b.size ? "#FFFFFF" : selectedColor }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Linha das 3 Ferramentas Principais: Balde, Pincel, Carimbos */}
+        <div className="w-full flex items-center justify-center gap-2 sm:gap-4 bg-white/95 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-blue shadow-kid">
+          {/* Balde */}
           <button
-            key={c.hex}
             onClick={() => {
               sounds.playPop();
-              setSelectedColor(c.hex);
+              setToolMode("bucket");
             }}
-            className={`kid-btn w-8 h-8 sm:w-12 sm:h-12 rounded-full border-3 sm:border-4 transition-all duration-150 flex-shrink-0 ${
-              selectedColor === c.hex
-                ? "scale-120 border-slate-900 shadow-kid-lg z-10 ring-3 ring-yellow-400 animate-wiggle"
-                : "border-white shadow-sm hover:scale-105"
+            className={`kid-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              toolMode === "bucket"
+                ? "bg-kids-teal text-white border-teal-700 shadow-kid scale-105"
+                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
             }`}
-            style={{ backgroundColor: c.hex }}
-            title={c.name}
-          />
-        ))}
+          >
+            <PaintBucket size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <span className="font-extrabold text-xs sm:text-base">Balde</span>
+          </button>
+
+          {/* Pincel */}
+          <button
+            onClick={() => {
+              sounds.playPop();
+              setToolMode("brush");
+            }}
+            className={`kid-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              toolMode === "brush"
+                ? "bg-kids-purple text-white border-purple-700 shadow-kid scale-105"
+                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+            }`}
+          >
+            <Paintbrush size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <span className="font-extrabold text-xs sm:text-base">Pincel</span>
+          </button>
+
+          {/* Carimbos */}
+          <button
+            onClick={() => {
+              sounds.playPop();
+              setToolMode("stamp");
+            }}
+            className={`kid-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-5 py-1 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              toolMode === "stamp"
+                ? "bg-kids-pink text-white border-pink-700 shadow-kid scale-105"
+                : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+            }`}
+          >
+            <Sparkles size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <span className="font-extrabold text-xs sm:text-base">Carimbos</span>
+          </button>
+        </div>
+
+        {/* Paleta de Cores em 1 Linha Perfeita (Sem cortes, com scroll suave se necessário) */}
+        <div className="w-full flex items-center justify-around gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-coral shadow-kid overflow-x-auto no-scrollbar">
+          {colors.map((c) => (
+            <button
+              key={c.hex}
+              onClick={() => {
+                sounds.playPop();
+                setSelectedColor(c.hex);
+              }}
+              className={`kid-btn w-7 h-7 sm:w-11 sm:h-11 rounded-full border-2 sm:border-3 transition-all duration-150 flex-shrink-0 ${
+                selectedColor === c.hex
+                  ? "scale-115 border-slate-900 shadow-kid-lg z-10 ring-2 sm:ring-3 ring-yellow-400 animate-wiggle"
+                  : "border-white shadow-sm hover:scale-105"
+              }`}
+              style={{ backgroundColor: c.hex }}
+              title={c.name}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

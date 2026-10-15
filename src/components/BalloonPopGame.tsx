@@ -110,7 +110,7 @@ export function BalloonPopGame() {
         leftPercent: 10 + Math.random() * 72,
         durationSec: 5.5 + Math.random() * 2.2,
         delaySec,
-        sizePx: 78 + Math.random() * 16,
+        sizePx: 66 + Math.random() * 14,
       };
     },
     [currentMission]
@@ -191,50 +191,59 @@ export function BalloonPopGame() {
 
   return (
     <div className="relative flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Placar de Missão de Cores */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-pink shadow-kid z-20 flex-shrink-0">
+      {/* Placar de Missão de Cores (Totalmente Responsivo para Mobile) */}
+      <div className="w-full flex items-center justify-between gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-pink shadow-kid z-20 flex-shrink-0">
         <div
-          className={`flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
+          className={`flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
         >
           <span className="text-xl sm:text-3xl">
             {currentMission.emoji}
           </span>
           <div className="flex flex-col">
-            <span className="text-[10px] sm:text-xs font-black uppercase text-slate-500 tracking-wider">
+            <span className="text-[9px] sm:text-xs font-black uppercase text-slate-500 tracking-wider hidden sm:block">
               Missão de Cores
             </span>
-            <span className={`text-sm sm:text-xl font-black ${currentMission.textColor}`}>
-              Pegue 10 {currentMission.name}!
+            <span className={`text-xs sm:text-xl font-black ${currentMission.textColor} whitespace-nowrap`}>
+              <span className="hidden sm:inline">Pegue 10 </span>{currentMission.name}!
             </span>
           </div>
         </div>
 
-        {/* Marcadores de Progresso (10 Balões Miniatura) */}
-        <div className="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-xl border border-slate-300">
-          {[...Array(GOAL)].map((_, idx) => (
-            <span
-              key={idx}
-              className={`text-xs sm:text-base transition-all duration-200 ${
-                idx < targetCount
-                  ? "scale-110 opacity-100"
-                  : "scale-90 opacity-20 grayscale"
-              }`}
-            >
-              🎈
+        {/* Bloco da Direita: Contador e Botão de Reset (Sem estourar a tela) */}
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {/* Marcadores de Progresso (10 Balões Miniatura - Tablets e Telas Maiores) */}
+          <div className="hidden sm:flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-xl border border-slate-300">
+            {[...Array(GOAL)].map((_, idx) => (
+              <span
+                key={idx}
+                className={`text-xs sm:text-base transition-all duration-200 ${
+                  idx < targetCount
+                    ? "scale-110 opacity-100"
+                    : "scale-90 opacity-20 grayscale"
+                }`}
+              >
+                🎈
+              </span>
+            ))}
+            <span className="text-xs sm:text-sm font-black text-slate-700 ml-1.5">
+              {targetCount}/{GOAL}
             </span>
-          ))}
-          <span className="text-xs sm:text-sm font-black text-slate-700 ml-1.5">
-            {targetCount}/{GOAL}
-          </span>
-        </div>
+          </div>
 
-        <button
-          onClick={handleReset}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
-          title="Recomeçar"
-        >
-          <RotateCcw size={20} className="stroke-[2.5]" />
-        </button>
+          {/* Versão Compacta Mobile do Contador (Zero corte horizontal) */}
+          <div className="flex sm:hidden items-center gap-1 bg-amber-100 border-2 border-amber-400 px-2.5 py-1 rounded-xl font-black text-xs text-amber-950 shadow-sm">
+            <span>⭐</span>
+            <span>{targetCount}/{GOAL}</span>
+          </div>
+
+          <button
+            onClick={handleReset}
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
+            title="Recomeçar"
+          >
+            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+          </button>
+        </div>
       </div>
 
       {/* Cenário do Céu com Subida Suave dos Balões a partir do Fundo */}
@@ -355,11 +364,10 @@ export function BalloonPopGame() {
       </div>
 
       {/* Dica no rodapé */}
-      <div className="w-full bg-white/90 backdrop-blur-md py-1.5 px-3 rounded-2xl border-2 border-kids-pink flex items-center justify-center gap-2 z-20 flex-shrink-0">
-        <Sparkles className="text-amber-500" size={18} />
-        <span className="text-xs sm:text-sm font-black text-slate-700">
-          Dica: Toque nos balões {currentMission.name.toLowerCase()} {currentMission.emoji} para
-          vencer o desafio!
+      <div className="w-full bg-white/90 backdrop-blur-md py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xl sm:rounded-2xl border-2 border-kids-pink flex items-center justify-center gap-1.5 z-20 flex-shrink-0 text-center">
+        <Sparkles className="text-amber-500 flex-shrink-0" size={16} />
+        <span className="text-[11px] sm:text-sm font-black text-slate-700 truncate">
+          Toque nos balões {currentMission.name.toLowerCase()} {currentMission.emoji} para vencer!
         </span>
       </div>
     </div>

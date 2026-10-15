@@ -169,10 +169,12 @@ export function ArkAnimalsGame() {
     <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
       {/* Placar e Botões */}
       <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-teal shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-2 bg-teal-100 border-2 border-teal-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-2xl sm:text-3xl">🛳️</span>
-          <span className="text-sm sm:text-2xl font-black text-teal-900">
-            Pares na Arca: {matchedSpecies.length} / {PAIRS_CONFIG.length}
+        <div className="flex items-center gap-1.5 sm:gap-2 bg-teal-100 border-2 border-teal-400 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner whitespace-nowrap">
+          <span className="text-xl sm:text-3xl">🛳️</span>
+          <span className="text-xs sm:text-2xl font-black text-teal-900">
+            <span className="hidden sm:inline">Pares na Arca: </span>
+            <span className="sm:hidden">Pares: </span>
+            {matchedSpecies.length} / {PAIRS_CONFIG.length}
           </span>
         </div>
 
@@ -212,7 +214,7 @@ export function ArkAnimalsGame() {
         </div>
 
         {/* ESTRUTURA VISUAL DA ARCA DE NOÉ */}
-        <div className="relative w-full max-w-sm sm:max-w-lg aspect-[16/11] flex items-center justify-center">
+        <div className="relative w-full max-w-[270px] sm:max-w-lg aspect-[16/11] flex items-center justify-center">
           {/* Ilustração SVG de alta fidelidade da Arca */}
           <svg viewBox="0 0 500 360" className="w-full h-full drop-shadow-2xl">
             {/* Ondas do mar azul sob a arca */}
@@ -350,14 +352,14 @@ export function ArkAnimalsGame() {
       </div>
 
       {/* JOGO DA MEMÓRIA: CARTAS ESPALHADAS NO GRAMADO */}
-      <div className="w-full bg-white/95 backdrop-blur-md p-1.5 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid z-20 flex-shrink-0">
-        <p className="text-center font-black text-[11px] sm:text-sm text-amber-900 mb-1 flex items-center justify-center gap-1">
+      <div className="w-full bg-white/95 backdrop-blur-md p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid z-20 flex-shrink-0">
+        <p className="text-center font-black text-xs sm:text-sm text-amber-900 mb-2 sm:mb-2.5 flex items-center justify-center gap-1">
           <span>🧠</span>
           <span>Jogo da Memória: Encontre o par de cada bichinho!</span>
         </p>
 
         {/* Grade 4x2 com as cartas viradas para baixo */}
-        <div className="grid grid-cols-4 gap-2 sm:gap-3">
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-3">
           {cards.map((card) => {
             const isMatched = matchedSpecies.includes(card.speciesId);
             const isFlipped = flippedIds.includes(card.id) || isPeekingAll || isMatched;
@@ -367,20 +369,20 @@ export function ArkAnimalsGame() {
                 key={card.id}
                 onClick={() => handleCardClick(card)}
                 disabled={isMatched || isLocked}
-                className={`kid-btn relative p-1 sm:p-2 rounded-2xl border-4 flex flex-col items-center justify-center aspect-square transition-all duration-300 ${
+                className={`kid-btn relative p-1 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center aspect-square transition-all duration-200 ${
                   isMatched
                     ? "bg-emerald-100 border-emerald-500 shadow-inner scale-95"
                     : isFlipped
-                    ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-lg ring-4 ring-yellow-400"
+                    ? "bg-kids-yellow border-amber-500 shadow-md ring-2 sm:ring-4 ring-yellow-400"
                     : "bg-gradient-to-br from-amber-700 via-amber-800 to-amber-950 border-amber-950 shadow-kid active:scale-95"
                 }`}
               >
                 {isFlipped ? (
                   // FRENTE DA CARTA (REVELADA)
                   <div className="flex flex-col items-center justify-center animate-wiggle">
-                    <span className="text-4xl sm:text-5xl drop-shadow">{card.emoji}</span>
+                    <span className="text-3xl sm:text-5xl drop-shadow">{card.emoji}</span>
                     {isMatched && (
-                      <span className="text-xs font-black text-emerald-800 bg-emerald-200 px-2 py-0.2 rounded-full mt-0.5 border border-emerald-400">
+                      <span className="text-[10px] sm:text-xs font-black text-emerald-800 bg-emerald-200 px-1.5 sm:px-2 py-0.2 rounded-full mt-0.5 border border-emerald-400">
                         PAR! ✓
                       </span>
                     )}
