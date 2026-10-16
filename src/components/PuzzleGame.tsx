@@ -325,10 +325,10 @@ export function PuzzleGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1 sm:p-2 select-none overflow-hidden touch-none">
-      {/* Topo com Seletor por Ícones e Botão de Reiniciar */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-purple shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-3">
+    <div className="flex flex-col w-full h-full select-none overflow-hidden touch-none bg-gradient-to-b from-amber-100 via-sky-100 to-emerald-100">
+      {/* BARRA SUPERIOR FULL-WIDTH: Seletor de Quebra-Cabeças e Reiniciar */}
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-3 sm:px-6 py-1.5 sm:py-2.5 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
           {PUZZLES.map((p, idx) => (
             <button
               key={p.id}
@@ -338,35 +338,43 @@ export function PuzzleGame() {
                 setPlacedPieces([]);
                 setDraggingPieceId(null);
               }}
-              className={`kid-btn p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 transition-all ${
+              className={`kid-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl border-3 sm:border-4 transition-all flex items-center gap-1.5 ${
                 currentIdx === idx
-                  ? "bg-kids-yellow border-amber-500 scale-105 sm:scale-110 shadow-kid ring-3 sm:ring-4 ring-yellow-300"
-                  : "bg-white border-slate-200"
+                  ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
+                  : "bg-slate-50 border-slate-200 hover:bg-amber-50"
               }`}
             >
               <span className="text-2xl sm:text-4xl">{p.icon}</span>
+              <span className="hidden md:inline text-sm font-black text-amber-950">
+                {p.title}
+              </span>
             </button>
           ))}
         </div>
 
-        <button
-          onClick={handleReset}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid"
-          title="Recomeçar"
-        >
-          <RotateCcw size={22} className="stroke-[2.5]" />
-        </button>
+        <div className="flex items-center gap-2">
+          <span className="text-xs sm:text-base font-black text-purple-900 bg-purple-100 px-3 py-1 rounded-full border-2 border-purple-300">
+            Peças: {placedPieces.length} / 4
+          </span>
+          <button
+            onClick={handleReset}
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid-sm"
+            title="Recomeçar"
+          >
+            <RotateCcw size={22} className="stroke-[2.5]" />
+          </button>
+        </div>
       </div>
 
-      {/* ÁREA CENTRAL: O TABULEIRO DO QUEBRA-CABEÇA */}
-      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-amber-50 via-sky-50 to-emerald-50 rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-wood shadow-2xl p-2 sm:p-3 flex items-center justify-center overflow-hidden">
-        {/* Moldura de Madeira com Aspecto de Quebra-Cabeça Real */}
+      {/* ÁREA CENTRAL GIGANTE: O TABULEIRO DO QUEBRA-CABEÇA OCUPANDO O PALCO */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-5 flex items-center justify-center overflow-hidden">
+        {/* Moldura de Madeira Gigante com Aspecto de Quebra-Cabeça Real */}
         <div
           ref={boardRef}
-          className="relative w-full max-w-[320px] sm:max-w-md aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border-4 sm:border-6 border-amber-950 shadow-2xl bg-amber-100/60"
+          className="relative w-full max-w-3xl max-h-full aspect-[4/3] rounded-3xl sm:rounded-4xl overflow-hidden border-6 sm:border-8 border-amber-950 shadow-[0_16px_45px_rgba(0,0,0,0.28)] bg-amber-100/80"
         >
           {/* Fundo Guia Sutil Desbotado */}
-          <div className="absolute inset-0 opacity-25 filter grayscale pointer-events-none">
+          <div className="absolute inset-0 opacity-30 filter grayscale pointer-events-none">
             {currentPuzzle.renderSvg()}
           </div>
 
@@ -383,25 +391,25 @@ export function PuzzleGame() {
                   ref={(el) => {
                     slotRefs.current[slotId] = el;
                   }}
-                  className={`relative border-2 border-dashed border-amber-800/40 flex items-center justify-center transition-all ${
+                  className={`relative border-2 border-dashed border-amber-900/40 flex items-center justify-center transition-all ${
                     isPlaced
                       ? "bg-transparent scale-100"
                       : isDraggingMatch && isTargetHovered
                       ? "bg-yellow-300/70 ring-4 sm:ring-6 ring-yellow-400 scale-105 shadow-inner animate-pulse-gentle"
                       : isDraggingMatch
-                      ? "bg-yellow-100/40 ring-2 ring-yellow-300 animate-pulse-gentle"
+                      ? "bg-yellow-100/45 ring-2 ring-yellow-300 animate-pulse-gentle"
                       : "bg-white/10"
                   }`}
                 >
                   {isPlaced ? (
                     <div className="absolute inset-0">
                       {renderQuadrantContent(slotId)}
-                      <div className="absolute top-1.5 right-1.5 bg-emerald-500 text-white p-1 rounded-full shadow-md">
-                        <Check size={14} className="stroke-[3]" />
+                      <div className="absolute top-2 right-2 bg-emerald-500 text-white p-1.5 rounded-full shadow-md">
+                        <Check size={16} className="stroke-[3]" />
                       </div>
                     </div>
                   ) : (
-                    <div className="text-2xl sm:text-4xl opacity-30 select-none pointer-events-none">
+                    <div className="text-4xl sm:text-6xl opacity-30 select-none pointer-events-none">
                       🧩
                     </div>
                   )}
@@ -414,41 +422,38 @@ export function PuzzleGame() {
         {/* VITÓRIA: O QUEBRA-CABEÇA ESTÁ COMPLETO! */}
         {isCompleted && (
           <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-6xl sm:text-9xl mb-1">{currentPuzzle.icon}</span>
-            <div className="text-2xl sm:text-4xl font-black text-kids-orange mb-1">
+            <span className="text-7xl sm:text-9xl mb-2">{currentPuzzle.icon}</span>
+            <div className="text-2xl sm:text-5xl font-black text-kids-orange mb-1">
               QUEBRA-CABEÇA COMPLETO!
             </div>
-            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-4 sm:mb-5">
+            <div className="text-sm sm:text-2xl font-bold text-slate-700 mb-5">
               Parabéns, Israel! Você montou a imagem inteirinha! ⭐
             </div>
             <button
               onClick={handleNext}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-3xl px-8 sm:px-12 py-3.5 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
             >
               <span>PRÓXIMO QUEBRA-CABEÇA!</span>
-              <ArrowRight size={26} className="stroke-[3]" />
+              <ArrowRight size={30} className="stroke-[3]" />
             </button>
           </div>
         )}
       </div>
 
-      {/* BANDEJA DE PEÇAS REAIS (A CRIANÇA PEGA E ARRASTA COM O DEDO) */}
+      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE PEÇAS GRANDES */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-teal shadow-kid z-20 flex flex-col gap-1 sm:gap-2 flex-shrink-0">
-          <div className="flex items-center justify-between px-1">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1.5 flex-shrink-0">
+          <div className="max-w-5xl mx-auto w-full flex items-center justify-between px-1">
             <div className="flex items-center gap-1.5">
-              <Sparkles className="text-amber-500 animate-spin" size={18} />
+              <Sparkles className="text-amber-500" size={18} />
               <span className="text-xs sm:text-base font-black text-teal-950">
-                Arraste a peça até o lugar certo no quadro:
+                Arraste ou toque na peça para encaixar no quadro:
               </span>
             </div>
-            <span className="text-xs sm:text-sm font-black text-teal-800 bg-teal-100 px-2.5 py-0.5 rounded-full border border-teal-300">
-              {placedPieces.length} / 4
-            </span>
           </div>
 
           {/* Os 4 Blocos da Imagem na Bandeja */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-3">
+          <div className="max-w-5xl mx-auto w-full grid grid-cols-4 gap-2 sm:gap-4">
             {[0, 1, 2, 3].map((pieceId) => {
               const isPlaced = placedPieces.includes(pieceId);
               const isDraggingThis = draggingPieceId === pieceId;
@@ -457,9 +462,9 @@ export function PuzzleGame() {
                 return (
                   <div
                     key={pieceId}
-                    className="p-1 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-20 flex items-center justify-center aspect-[4/3]"
+                    className="h-20 sm:h-28 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
                   >
-                    <span className="text-xl font-black text-slate-400">✓</span>
+                    <span className="text-2xl font-black text-slate-400">✓</span>
                   </div>
                 );
               }
@@ -469,7 +474,7 @@ export function PuzzleGame() {
                   key={pieceId}
                   onPointerDown={(e) => handlePiecePointerDown(pieceId, e)}
                   onClick={() => handleDirectClickPiece(pieceId)}
-                  className={`kid-btn relative p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border-3 sm:border-4 overflow-hidden aspect-[4/3] cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
+                  className={`kid-btn relative h-20 sm:h-28 rounded-2xl border-3 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
                     isDraggingThis
                       ? "opacity-30 border-dashed border-amber-500 scale-95"
                       : "border-amber-600 bg-white shadow-kid-sm hover:scale-105 active:scale-95"
@@ -477,7 +482,7 @@ export function PuzzleGame() {
                 >
                   {renderQuadrantContent(pieceId)}
                   {/* Puxador visual fofo */}
-                  <div className="absolute bottom-1 right-1 bg-amber-400/90 text-amber-950 text-[10px] font-black px-1 rounded shadow">
+                  <div className="absolute bottom-1 right-1 bg-amber-400/90 text-amber-950 text-xs font-black px-1.5 py-0.5 rounded-lg shadow">
                     ✋
                   </div>
                 </div>
@@ -490,7 +495,7 @@ export function PuzzleGame() {
       {/* PEÇA FLUTUANTE SOB O DEDO DA CRIANÇA ENQUANTO ARRASTA */}
       {draggingPieceId !== null && dragPos !== null && (
         <div
-          className="fixed pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2 w-28 h-20 sm:w-36 sm:h-28 rounded-2xl border-4 border-amber-500 shadow-2xl overflow-hidden bg-white scale-110 rotate-3 transition-transform duration-75"
+          className="fixed pointer-events-none z-50 -translate-x-1/2 -translate-y-1/2 w-36 h-28 sm:w-48 sm:h-36 rounded-2xl border-4 border-amber-500 shadow-2xl overflow-hidden bg-white scale-110 rotate-3 transition-transform duration-75"
           style={{
             left: `${dragPos.x}px`,
             top: `${dragPos.y}px`,

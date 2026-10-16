@@ -304,10 +304,10 @@ export function LetterTracingGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Barra de Letras no Topo */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-purple shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-1">
+    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-indigo-100 via-purple-100 to-pink-100">
+      {/* BARRA DE LETRAS FULL-WIDTH NO TOPO */}
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-2.5 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-0.5">
           {LETTER_LIST.map((item, idx) => (
             <button
               key={item.letter}
@@ -315,13 +315,13 @@ export function LetterTracingGame() {
                 sounds.playPop();
                 setCurrentIdx(idx);
               }}
-              className={`kid-btn p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 font-black transition-all flex-shrink-0 ${
+              className={`kid-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl border-3 sm:border-4 font-black transition-all flex-shrink-0 ${
                 currentIdx === idx
-                  ? "bg-kids-yellow border-amber-500 scale-105 sm:scale-110 shadow-kid ring-3 sm:ring-4 ring-yellow-300"
-                  : "bg-white border-slate-200"
+                  ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
+                  : "bg-slate-50 border-slate-200 hover:bg-amber-50"
               }`}
             >
-              <span className={`text-xl sm:text-3xl font-black ${item.colorName}`}>
+              <span className={`text-2xl sm:text-4xl font-black ${item.colorName}`}>
                 {item.letter}
               </span>
             </button>
@@ -330,22 +330,22 @@ export function LetterTracingGame() {
 
         <button
           onClick={handleReset}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
+          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid-sm flex-shrink-0"
           title="Recomeçar"
         >
-          <RotateCcw size={20} className="stroke-[2.5]" />
+          <RotateCcw size={22} className="stroke-[2.5]" />
         </button>
       </div>
 
-      {/* ÁREA CENTRAL COM O PALCO QUADRADO PROPORCIONAL UNIFICADO */}
-      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 flex items-center justify-center overflow-hidden">
+      {/* ÁREA CENTRAL GIGANTE: PALCO QUADRADO PROPORCIONAL PREENCHENDO O ESPAÇO */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 flex items-center justify-center overflow-hidden">
         <div
           ref={stageRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative aspect-square w-full max-w-[330px] sm:max-w-[420px] max-h-[48vh] sm:max-h-[55vh] rounded-3xl sm:rounded-4xl bg-gradient-to-b from-indigo-50 via-purple-50 to-pink-50 border-4 sm:border-8 border-kids-purple shadow-2xl overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
+          className="relative aspect-square h-full max-h-[68vh] sm:max-h-[74vh] max-w-[94vw] rounded-3xl sm:rounded-4xl bg-white border-6 sm:border-8 border-kids-purple shadow-[0_16px_45px_rgba(0,0,0,0.2)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
           {/* Letra em Traçado Vetorial SVG Perfeito com Checkpoints Integrados */}
           <div className="absolute inset-0 pointer-events-none">
@@ -357,7 +357,7 @@ export function LetterTracingGame() {
                   d={d}
                   fill="none"
                   stroke="#E2E8F0"
-                  strokeWidth="54"
+                  strokeWidth="56"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
@@ -380,7 +380,7 @@ export function LetterTracingGame() {
               {/* Checkpoints desenhados diretamente no SVG para alinhamento 1:1 perfeito */}
               {current.checkpoints.map((cp) => {
                 const isPassed = passedCheckpoints.includes(cp.id);
-                const isNext = !isPassed && cp.id === (passedCheckpoints.length + 1);
+                const isNext = !isPassed && cp.id === passedCheckpoints.length + 1;
 
                 return (
                   <g key={cp.id} className="transition-all duration-300">
@@ -389,9 +389,9 @@ export function LetterTracingGame() {
                       <circle
                         cx={cp.x}
                         cy={cp.y}
-                        r="30"
+                        r="32"
                         fill="#FDE047"
-                        opacity="0.5"
+                        opacity="0.55"
                       />
                     )}
 
@@ -399,7 +399,7 @@ export function LetterTracingGame() {
                     <circle
                       cx={cp.x}
                       cy={cp.y}
-                      r={isPassed ? "22" : "20"}
+                      r={isPassed ? "23" : "21"}
                       fill={isPassed ? "#FBBF24" : "#FFFFFF"}
                       stroke={isPassed ? "#D97706" : isNext ? "#9333EA" : "#CBD5E1"}
                       strokeWidth={isPassed || isNext ? "4" : "3"}
@@ -423,9 +423,12 @@ export function LetterTracingGame() {
             </svg>
           </div>
 
-          {/* Mascote no canto do palco */}
-          <div className="absolute bottom-2.5 right-2.5 text-3xl sm:text-5xl pointer-events-none opacity-85">
-            {current.emoji}
+          {/* Mascote grande no canto do palco */}
+          <div className="absolute bottom-3 right-3 bg-amber-50 border-2 border-amber-300 rounded-2xl px-3 py-1.5 flex items-center gap-2 pointer-events-none shadow-sm">
+            <span className="text-3xl sm:text-5xl">{current.emoji}</span>
+            <span className="text-xs sm:text-base font-black text-amber-950">
+              {current.word}
+            </span>
           </div>
 
           {/* Canvas onde o Israel desenha com precisão 1:1 */}
@@ -437,35 +440,35 @@ export function LetterTracingGame() {
           {/* Tela de Vitória Quando Israel Termina o Contorno */}
           {isCompleted && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-              <span className="text-6xl sm:text-8xl mb-2">{current.emoji}</span>
-              <div className="text-2xl sm:text-5xl font-black text-kids-purple mb-1">
+              <span className="text-7xl sm:text-9xl mb-2">{current.emoji}</span>
+              <div className="text-3xl sm:text-6xl font-black text-kids-purple mb-1">
                 LETRA {current.letter}!
               </div>
-              <div className="text-lg sm:text-2xl font-extrabold text-amber-600 mb-4 sm:mb-5">
+              <div className="text-xl sm:text-3xl font-extrabold text-amber-600 mb-6">
                 {current.letter} de {current.word}! ⭐
               </div>
               <button
                 onClick={nextLetter}
-                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
+                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
               >
                 <span>PRÓXIMA LETRA!</span>
-                <ArrowRight size={26} className="stroke-[3]" />
+                <ArrowRight size={30} className="stroke-[3]" />
               </button>
             </div>
           )}
         </div>
       </div>
 
-      {/* Dica no Rodapé com Progresso das Estrelas */}
-      <div className="w-full bg-white/95 backdrop-blur-md p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid flex items-center justify-between gap-2 z-20 flex-shrink-0">
+      {/* BARRA INFERIOR FULL-WIDTH COM PROGRESSO DAS ESTRELAS */}
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2 z-20 flex-shrink-0">
         <div className="flex items-center gap-2">
           <Sparkles className="text-amber-500" size={20} />
-          <span className="text-xs sm:text-base font-black text-slate-800">
-            Siga as estrelinhas da letra {current.letter}!
+          <span className="text-xs sm:text-lg font-black text-slate-800">
+            Siga os números da letra {current.letter} ({current.word})!
           </span>
         </div>
 
-        <div className="bg-amber-100 border-2 border-amber-400 px-3 py-1 rounded-xl flex items-center gap-1.5 font-black text-amber-900 text-sm">
+        <div className="bg-amber-100 border-2 border-amber-400 px-3.5 py-1 rounded-xl flex items-center gap-1.5 font-black text-amber-950 text-sm sm:text-base">
           <span>⭐</span>
           <span>
             {passedCheckpoints.length} / {current.checkpoints.length}

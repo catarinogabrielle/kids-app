@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { sounds } from "@/utils/soundEngine";
 import { Sparkles } from "lucide-react";
 
@@ -21,10 +21,8 @@ interface HomeHubProps {
 }
 
 export function HomeHub({ onSelectGame }: HomeHubProps) {
-  const [tab, setTab] = useState<"games" | "learn">("games");
-
-  // Brincadeiras
-  const playActivities = [
+  // Todos os 10 jogos juntos na tela principal (sem abas escondidas)
+  const allActivities = [
     {
       id: "car" as const,
       title: "VRUM!",
@@ -73,16 +71,12 @@ export function HomeHub({ onSelectGame }: HomeHubProps) {
       gradient: "from-teal-400 via-cyan-500 to-blue-600",
       borderColor: "border-teal-700",
     },
-  ];
-
-  // Aprendizado: Números & Alfabeto
-  const learnActivities = [
     {
       id: "counting" as const,
       title: "CONTAR!",
       emoji: "🔢",
       sideEmoji: "🦁",
-      gradient: "from-amber-400 via-orange-500 to-amber-600",
+      gradient: "from-yellow-400 via-amber-500 to-orange-500",
       borderColor: "border-amber-700",
     },
     {
@@ -90,116 +84,73 @@ export function HomeHub({ onSelectGame }: HomeHubProps) {
       title: "TREM 123!",
       emoji: "🚂",
       sideEmoji: "💨",
-      gradient: "from-teal-400 via-emerald-500 to-green-600",
+      gradient: "from-emerald-400 via-teal-500 to-cyan-600",
       borderColor: "border-teal-700",
     },
     {
       id: "tracing" as const,
-      title: "TRAÇAR A-B-C!",
+      title: "TRAÇAR ABC!",
       emoji: "✍️",
       sideEmoji: "✨",
-      gradient: "from-purple-400 via-fuchsia-500 to-pink-500",
-      borderColor: "border-purple-700",
+      gradient: "from-indigo-400 via-purple-500 to-violet-600",
+      borderColor: "border-indigo-700",
     },
     {
       id: "missingLetter" as const,
-      title: "LETRA MÁGICA!",
+      title: "PALAVRAS!",
       emoji: "🔤",
-      sideEmoji: "🎨",
-      gradient: "from-rose-400 via-pink-500 to-red-500",
+      sideEmoji: "👑",
+      gradient: "from-rose-400 via-pink-500 to-fuchsia-600",
       borderColor: "border-rose-700",
     },
   ];
 
-  const currentList = tab === "games" ? playActivities : learnActivities;
-
   return (
-    <div className="flex flex-col items-center justify-between sm:justify-center w-full h-full max-w-4xl mx-auto px-2 sm:px-4 py-2 select-none overflow-y-auto scrollbar-none">
-      {/* Topo com Solzinho e o Título Exato: AS AVENTURAS DO ISRAEL */}
-      <div className="relative w-full text-center flex flex-col items-center mb-2 sm:mb-4 flex-shrink-0">
-        <div className="flex items-center justify-center gap-2 sm:gap-3">
-          <span className="text-2xl sm:text-5xl">☀️</span>
+    <div className="flex flex-col justify-between w-full h-full px-2.5 sm:px-6 pt-1 pb-2.5 sm:pb-5 select-none overflow-hidden">
+      {/* Cabeçalho Integrado: AS AVENTURAS DO ISRAEL */}
+      <div className="relative w-full text-center flex items-center justify-center gap-2 sm:gap-4 mb-1.5 sm:mb-3 flex-shrink-0">
+        <span className="text-2xl sm:text-4xl drop-shadow">☀️</span>
 
-          <div className="flex flex-col items-center">
-            <span className="text-[10px] sm:text-xs font-black text-amber-900 bg-kids-yellow px-2 py-0.5 rounded-full border border-amber-400 shadow-sm mb-0.5 uppercase tracking-wider flex items-center gap-1">
-              <Sparkles size={11} className="text-amber-700" /> Mundinho Mágico <Sparkles size={11} className="text-amber-700" />
-            </span>
-            <h1 className="text-lg sm:text-4xl font-black text-white drop-shadow-[0_3px_0_rgba(15,23,42,0.4)] tracking-wide">
-              AS AVENTURAS DO ISRAEL
-            </h1>
-          </div>
-
-          <span className="text-2xl sm:text-5xl">☁️</span>
+        <div className="flex flex-col items-center">
+          <span className="text-[10px] sm:text-xs font-black text-amber-950 bg-kids-yellow px-3 py-0.5 rounded-full border-2 border-amber-500 shadow-sm uppercase tracking-wider flex items-center gap-1">
+            <Sparkles size={11} className="text-amber-700" /> Mundinho Mágico <Sparkles size={11} className="text-amber-700" />
+          </span>
+          <h1 className="text-xl sm:text-3xl md:text-4xl font-black text-white drop-shadow-[0_3px_0_rgba(15,23,42,0.45)] tracking-wide leading-tight">
+            AS AVENTURAS DO ISRAEL
+          </h1>
         </div>
 
-        {/* Abas de Categoria: BRINCAR vs 123 & ABC */}
-        <div className="flex items-center gap-2 sm:gap-4 mt-1.5 sm:mt-2 bg-white/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl sm:rounded-3xl border-2 sm:border-3 border-white shadow-md">
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setTab("games");
-            }}
-            className={`kid-btn px-3.5 sm:px-6 py-1 sm:py-2 rounded-xl sm:rounded-2xl font-black text-xs sm:text-base flex items-center gap-1.5 transition-all ${
-              tab === "games"
-                ? "bg-kids-yellow text-amber-950 border-2 sm:border-3 border-amber-500 shadow-kid scale-105"
-                : "bg-transparent text-slate-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="text-base sm:text-2xl">🧸</span>
-            <span>BRINCAR</span>
-          </button>
-
-          <button
-            onClick={() => {
-              sounds.playPop();
-              setTab("learn");
-            }}
-            className={`kid-btn px-3.5 sm:px-6 py-1 sm:py-2 rounded-xl sm:rounded-2xl font-black text-xs sm:text-base flex items-center gap-1.5 transition-all ${
-              tab === "learn"
-                ? "bg-kids-teal text-white border-2 sm:border-3 border-teal-700 shadow-kid scale-105"
-                : "bg-transparent text-slate-600 hover:bg-white/50"
-            }`}
-          >
-            <span className="text-base sm:text-2xl">⭐</span>
-            <span>NÚMEROS & ABC</span>
-          </button>
-        </div>
+        <span className="text-2xl sm:text-4xl drop-shadow">☁️</span>
       </div>
 
-      {/* Grade com os Cards de Jogos em Bloco Harmônico Aconchegante (Sem vãos vazios gigantes) */}
-      <div
-        className={`w-full max-w-xl mx-auto grid gap-2.5 sm:gap-4 content-center my-auto ${
-          tab === "games"
-            ? "grid-cols-2 md:grid-cols-3"
-            : "grid-cols-2"
-        }`}
-      >
-        {currentList.map((act) => (
+      {/* Grade Tela Cheia 100% Responsiva: Ocupa toda a largura e altura da tela (2x5 no Mobile, 5x2 no Tablet/Desktop) */}
+      <div className="w-full flex-1 min-h-0 grid grid-cols-2 sm:grid-cols-5 grid-rows-5 sm:grid-rows-2 gap-2 sm:gap-4">
+        {allActivities.map((act) => (
           <button
             key={act.id}
             onClick={() => {
               sounds.playPop();
               onSelectGame(act.id);
             }}
-            className={`kid-btn group relative w-full ${
-              tab === "games" ? "h-24 sm:h-36 md:h-40" : "h-28 sm:h-40 md:h-44"
-            } rounded-2xl sm:rounded-4xl border-3 sm:border-5 ${act.borderColor} bg-gradient-to-br ${act.gradient} shadow-kid-lg flex flex-col items-center justify-between p-2 sm:p-3 overflow-hidden active:scale-95 transition-all duration-150`}
+            className={`kid-btn group relative w-full h-full rounded-2xl sm:rounded-4xl border-3 sm:border-5 ${act.borderColor} bg-gradient-to-br ${act.gradient} shadow-kid-lg flex flex-col items-center justify-between p-1.5 sm:p-3.5 overflow-hidden active:scale-95 transition-all duration-150`}
           >
-            <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/15 rounded-t-2xl pointer-events-none" />
+            {/* Brilho Superior Estilo App Infantil */}
+            <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-2xl pointer-events-none" />
+            <div className="absolute -top-6 -right-6 w-20 h-20 bg-white/10 rounded-full pointer-events-none" />
 
-            {/* Imagens Grandes */}
-            <div className="relative flex items-center justify-center my-auto">
-              <span className="text-3xl sm:text-6xl group-hover:scale-115 group-hover:rotate-6 transition-all duration-200 drop-shadow-lg">
+            {/* Ícone Gigante Centralizado */}
+            <div className="relative flex-1 flex items-center justify-center w-full">
+              <span className="text-4xl sm:text-6xl md:text-7xl group-hover:scale-115 group-hover:rotate-6 transition-all duration-200 drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]">
                 {act.emoji}
               </span>
-              <span className="absolute -bottom-1 -right-3 text-xl sm:text-3xl group-hover:scale-110 transition-transform duration-200 drop-shadow">
+              <span className="absolute bottom-0 right-1/4 translate-x-6 text-xl sm:text-3xl group-hover:scale-110 transition-transform duration-200 drop-shadow">
                 {act.sideEmoji}
               </span>
             </div>
 
-            {/* Nome da Brincadeira em Botão Branco Fofo */}
-            <div className="bg-white/95 px-2.5 py-0.5 sm:px-4 sm:py-1 rounded-xl sm:rounded-2xl border sm:border-2 border-white shadow-sm z-10">
-              <span className="font-black text-xs sm:text-xl text-slate-800 tracking-wider">
+            {/* Placa do Nome da Brincadeira */}
+            <div className="w-[92%] bg-white/95 py-0.5 sm:py-1.5 px-2 rounded-xl sm:rounded-2xl border-2 border-white shadow-md z-10 flex items-center justify-center">
+              <span className="font-black text-xs sm:text-base md:text-lg text-slate-800 tracking-wider truncate">
                 {act.title}
               </span>
             </div>

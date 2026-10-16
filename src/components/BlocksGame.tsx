@@ -34,7 +34,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800",
     borderColor: "#451A03",
     textColor: "text-amber-100",
-    widthPx: 120,
+    widthPx: 145,
   },
   {
     id: "ark",
@@ -43,7 +43,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-yellow-700 via-amber-800 to-amber-950",
     borderColor: "#291001",
     textColor: "text-amber-200",
-    widthPx: 130,
+    widthPx: 155,
   },
   {
     id: "lion",
@@ -52,7 +52,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-600",
     borderColor: "#78350F",
     textColor: "text-amber-950",
-    widthPx: 110,
+    widthPx: 135,
   },
   {
     id: "dino",
@@ -61,7 +61,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-emerald-500 via-green-600 to-emerald-700",
     borderColor: "#064E3B",
     textColor: "text-white",
-    widthPx: 115,
+    widthPx: 140,
   },
   {
     id: "car",
@@ -70,7 +70,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-rose-500 via-red-600 to-rose-700",
     borderColor: "#881337",
     textColor: "text-white",
-    widthPx: 115,
+    widthPx: 140,
   },
   {
     id: "crown",
@@ -79,7 +79,7 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-yellow-300 via-amber-400 to-yellow-500",
     borderColor: "#B45309",
     textColor: "text-amber-950",
-    widthPx: 105,
+    widthPx: 130,
   },
   {
     id: "rainbow",
@@ -88,12 +88,12 @@ const BLOCK_TYPES: BlockType[] = [
     colorBg: "bg-gradient-to-r from-sky-400 via-indigo-500 to-purple-600",
     borderColor: "#3730A3",
     textColor: "text-white",
-    widthPx: 125,
+    widthPx: 150,
   },
 ];
 
-const BLOCK_HEIGHT = 52;
-const TABLE_HEIGHT = 44;
+const BLOCK_HEIGHT = 60;
+const TABLE_HEIGHT = 50;
 
 export function BlocksGame() {
   const [stackedBlocks, setStackedBlocks] = useState<PlacedBlock[]>([]);
@@ -124,13 +124,13 @@ export function BlocksGame() {
   }, []);
 
   // Câmera acompanha o topo da torre quando ela passa de 4 blocos
-  const cameraOffsetY = Math.max(0, (stackedBlocks.length - 3) * BLOCK_HEIGHT);
+  const cameraOffsetY = Math.max(0, (stackedBlocks.length - 4) * BLOCK_HEIGHT);
 
   const getContainerRelativeX = useCallback((clientX: number) => {
     if (!containerRef.current) return 200;
     const rect = containerRef.current.getBoundingClientRect();
     const localX = clientX - rect.left;
-    return Math.max(65, Math.min(rect.width - 65, localX));
+    return Math.max(75, Math.min(rect.width - 75, localX));
   }, []);
 
   // SOLTURA DO BLOCO COM GRAVIDADE
@@ -147,7 +147,7 @@ export function BlocksGame() {
       const centerX = containerWidth / 2;
       const dropXRelative = currentX - centerX;
 
-      const startY = 48; // Sai da garra no topo
+      const startY = 64; // Sai da garra no topo
       // Altura onde o bloco vai pousar em relação ao topo do container
       const currentTowerTopPx = TABLE_HEIGHT + stackedBlocks.length * BLOCK_HEIGHT;
       const targetY = containerHeight - currentTowerTopPx - BLOCK_HEIGHT + cameraOffsetY;
@@ -311,67 +311,70 @@ export function BlocksGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Placar e Botões */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-orange shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-100 border-2 border-amber-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-xl sm:text-3xl">🧱</span>
-          <span className="text-sm sm:text-2xl font-black text-amber-900">
-            Torre: {stackedBlocks.length} {stackedBlocks.length === 1 ? "Bloco" : "Blocos"}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            onClick={handleDemolish}
-            disabled={stackedBlocks.length === 0 || isDemolishing}
-            className={`kid-btn px-4 sm:px-7 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 font-black text-sm sm:text-lg flex items-center gap-1.5 transition-all ${
-              stackedBlocks.length > 0 && !isDemolishing
-                ? "bg-kids-coral text-white border-rose-700 shadow-kid active:scale-90 animate-pulse-gentle"
-                : "bg-gray-200 text-gray-400 border-gray-300 opacity-50 cursor-not-allowed"
-            }`}
-          >
-            <Bomb size={20} className="stroke-[2.5]" />
-            <span>BUM! 💥</span>
-          </button>
-
-          <button
-            onClick={handleClear}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
-            title="Limpar Torre"
-          >
-            <Trash2 size={20} className="stroke-[2.5]" />
-          </button>
-        </div>
-      </div>
-
-      {/* ÁREA DE GRAVIDADE COM CÂMERA DINÂMICA */}
+    <div className="flex flex-col w-full h-full select-none overflow-hidden">
+      {/* ÁREA DE GRAVIDADE FULL-SCREEN COM CÂMERA DINÂMICA E HUD FLUTUANTE */}
       <div
         ref={containerRef}
         onPointerDown={handleArenaPointerDown}
-        className={`relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-400 via-sky-200 to-amber-100 rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-wood shadow-2xl overflow-hidden cursor-crosshair touch-none select-none ${
+        className={`relative flex-1 min-h-0 w-full h-full bg-gradient-to-b from-sky-400 via-sky-200 to-amber-100 overflow-hidden cursor-crosshair touch-none select-none ${
           isScreenShaking ? "animate-wiggle" : ""
         }`}
       >
+        {/* HUD Flutuante no Topo */}
+        <div
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-40 pointer-events-none"
+        >
+          <div className="pointer-events-auto flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-orange px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
+            <span className="text-2xl sm:text-3xl">🧱</span>
+            <span className="text-sm sm:text-2xl font-black text-amber-950">
+              Torre: {stackedBlocks.length}
+            </span>
+          </div>
+
+          <div className="pointer-events-auto flex items-center gap-2">
+            <button
+              onClick={handleDemolish}
+              disabled={stackedBlocks.length === 0 || isDemolishing}
+              className={`kid-btn px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl border-3 sm:border-4 font-black text-sm sm:text-lg flex items-center gap-1.5 transition-all ${
+                stackedBlocks.length > 0 && !isDemolishing
+                  ? "bg-kids-coral text-white border-rose-700 shadow-lg active:scale-90 animate-pulse-gentle"
+                  : "bg-white/80 text-gray-400 border-gray-300 opacity-60 cursor-not-allowed"
+              }`}
+            >
+              <Bomb size={20} className="stroke-[2.5]" />
+              <span>BUM! 💥</span>
+            </button>
+
+            <button
+              onClick={handleClear}
+              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+              title="Limpar Torre"
+            >
+              <Trash2 size={20} className="stroke-[2.5]" />
+            </button>
+          </div>
+        </div>
+
         {/* Nuvens e Sol */}
-        <div className="absolute top-4 left-6 text-5xl opacity-40 animate-float pointer-events-none">
+        <div className="absolute top-16 left-8 text-6xl opacity-40 animate-float pointer-events-none">
           ☁️
         </div>
-        <div className="absolute top-8 right-10 text-5xl opacity-40 animate-float-delayed pointer-events-none">
+        <div className="absolute top-20 right-12 text-6xl opacity-40 animate-float-delayed pointer-events-none">
           ☁️
         </div>
-        <div className="absolute top-4 left-1/2 text-4xl opacity-80 pointer-events-none">
+        <div className="absolute top-14 left-1/2 text-5xl opacity-80 pointer-events-none">
           ☀️
         </div>
 
         {/* 1. GUINDASTE / BLOCO NA MÃO PRONTO PARA SOLTAR */}
         {!isDemolishing && !fallingBlock && (
           <div
-            className="absolute top-2 -translate-x-1/2 z-30 pointer-events-none transition-transform duration-75"
+            className="absolute top-14 -translate-x-1/2 z-30 pointer-events-none transition-transform duration-75"
             style={{ left: `${craneX}px` }}
           >
             {/* Garra mecânica */}
-            <div className="w-8 h-3.5 bg-slate-800 rounded-t-lg mx-auto border-2 border-slate-900" />
+            <div className="w-10 h-4 bg-slate-800 rounded-t-lg mx-auto border-2 border-slate-900" />
 
             {/* O Bloco selecionado */}
             <div
@@ -382,11 +385,11 @@ export function BlocksGame() {
                 borderColor: selectedType.borderColor,
               }}
             >
-              <span className="text-3xl drop-shadow">{selectedType.emoji}</span>
+              <span className="text-4xl drop-shadow">{selectedType.emoji}</span>
             </div>
 
             {/* Linha guia pontilhada até o chão */}
-            <div className="w-0.5 h-72 border-dashed border-r-2 border-amber-600/50 mx-auto" />
+            <div className="w-0.5 h-96 border-dashed border-r-2 border-amber-600/50 mx-auto" />
           </div>
         )}
 
@@ -410,7 +413,7 @@ export function BlocksGame() {
                 borderColor: fallingBlock.block.borderColor,
               }}
             >
-              <span className="text-3xl drop-shadow">{fallingBlock.block.emoji}</span>
+              <span className="text-4xl drop-shadow">{fallingBlock.block.emoji}</span>
             </div>
           </div>
         )}
@@ -427,7 +430,7 @@ export function BlocksGame() {
             className="absolute inset-x-0 bottom-0 bg-kids-wood border-t-6 border-amber-950 flex justify-center items-center shadow-2xl z-10"
             style={{ height: `${TABLE_HEIGHT}px` }}
           >
-            <span className="text-xs sm:text-sm text-amber-950 font-black tracking-wide">
+            <span className="text-xs sm:text-base text-amber-950 font-black tracking-wide">
               🪵 MESA DE EQUILÍBRIO DO ISRAEL 🪵
             </span>
           </div>
@@ -451,16 +454,16 @@ export function BlocksGame() {
                   borderColor: b.borderColor,
                 }}
               >
-                <span className="text-3xl drop-shadow">{b.emoji}</span>
+                <span className="text-4xl drop-shadow">{b.emoji}</span>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* BANDEJA DE SELEÇÃO DE BLOCOS TÁTEIS */}
-      <div className="w-full bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-blue shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center justify-around gap-2 overflow-x-auto py-1">
+      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE BLOCOS */}
+      <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-2 sm:py-3 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+        <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 overflow-x-auto py-0.5">
           {BLOCK_TYPES.map((t) => (
             <button
               key={t.id}
@@ -468,13 +471,16 @@ export function BlocksGame() {
                 sounds.playPop();
                 setSelectedType(t);
               }}
-              className={`kid-btn p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 transition-all flex-shrink-0 ${
+              className={`kid-btn px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border-3 sm:border-4 transition-all flex items-center gap-1.5 flex-shrink-0 ${
                 selectedType.id === t.id
-                  ? "bg-kids-yellow border-amber-500 scale-110 shadow-kid ring-3 ring-yellow-300"
+                  ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
                   : "bg-slate-50 border-slate-300 hover:bg-amber-50 shadow-sm"
               }`}
             >
-              <span className="text-2xl sm:text-3xl">{t.emoji}</span>
+              <span className="text-2xl sm:text-4xl">{t.emoji}</span>
+              <span className="hidden md:inline text-sm font-black text-amber-950">
+                {t.name}
+              </span>
             </button>
           ))}
         </div>

@@ -253,62 +253,60 @@ export function MissingLetterGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Topo com Placar e Botão de Reset */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-coral shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 bg-rose-100 border-2 border-rose-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-xl sm:text-2xl">🔤</span>
-          <span className="text-sm sm:text-xl font-black text-rose-900">
-            Letra Mágica: {currentIdx + 1} / {wordChallenges.length}
-          </span>
+    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-300 via-sky-100 to-amber-100">
+      {/* PALCO CENTRAL FULL-SCREEN: CARTÃO GIGANTE DE ILUSTRAÇÃO E PALAVRA */}
+      <div className="relative flex-1 min-h-0 w-full p-3 sm:p-6 pt-16 sm:pt-20 flex flex-col items-center justify-evenly overflow-hidden">
+        {/* HUD Flutuante no Topo */}
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-30">
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-coral px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
+            <span className="text-2xl sm:text-3xl">🔤</span>
+            <span className="text-sm sm:text-2xl font-black text-rose-950">
+              Palavra: {currentIdx + 1} / {wordChallenges.length}
+            </span>
+          </div>
+
+          <button
+            onClick={handleReset}
+            className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+            title="Recomeçar"
+          >
+            <RotateCcw size={20} className="stroke-[2.5]" />
+          </button>
         </div>
 
-        <button
-          onClick={handleReset}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid flex-shrink-0"
-          title="Recomeçar"
+        {/* Cartão Gigante de Exibição do Ícone */}
+        <div
+          className={`relative w-56 h-56 sm:w-80 sm:h-80 max-h-[42vh] aspect-square rounded-4xl border-6 sm:border-8 ${
+            current.borderColor
+          } bg-gradient-to-br ${current.bgGradient} shadow-[0_16px_40px_rgba(0,0,0,0.22)] flex flex-col items-center justify-center transition-all duration-300 ${
+            isCompleted ? "scale-105" : "scale-100"
+          }`}
         >
-          <RotateCcw size={18} className="stroke-[2.5]" />
-        </button>
-      </div>
+          {/* Brilho de fundo */}
+          <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-3xl pointer-events-none" />
 
-      {/* Cenário: CARTÃO VISUAL DE ALTA QUALIDADE COM ÍCONE REAL */}
-      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-200 via-sky-100 to-amber-100 rounded-3xl sm:rounded-4xl border-4 sm:border-8 border-kids-coral shadow-2xl p-2 sm:p-4 flex flex-col items-center justify-between overflow-hidden">
-        {/* Cartão de Exibição do Ícone */}
-        <div className="relative flex-1 min-h-0 w-full max-h-[40vh] flex items-center justify-center p-1 sm:p-2">
-          <div
-            className={`relative w-44 h-44 sm:w-60 sm:h-60 rounded-3xl sm:rounded-4xl border-4 sm:border-6 ${
-              current.borderColor
-            } bg-gradient-to-br ${current.bgGradient} shadow-kid-lg flex flex-col items-center justify-center transition-all duration-300 ${
-              isCompleted ? "scale-105" : "scale-100"
+          {/* Ícone Gigante de Alta Fidelidade */}
+          <span
+            className={`text-8xl sm:text-[130px] leading-none transition-transform duration-300 drop-shadow-2xl select-none ${
+              isCompleted ? "scale-110" : "scale-100"
             }`}
           >
-            {/* Brilho de fundo */}
-            <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-3xl pointer-events-none" />
+            {current.emoji}
+          </span>
 
-            {/* Ícone Gigante de Alta Fidelidade */}
-            <span
-              className={`text-7xl sm:text-9xl transition-transform duration-300 drop-shadow-xl select-none ${
-                isCompleted ? "scale-110" : "scale-100"
-              }`}
-            >
-              {current.emoji}
+          {/* Dica da Palavra */}
+          <div className="mt-3 bg-white/95 px-4 py-1 rounded-full border-2 border-white/80 shadow-md">
+            <span className="text-xs sm:text-base font-black text-slate-800 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-amber-500" /> {current.hint}
             </span>
-
-            {/* Dica da Palavra */}
-            <div className="mt-2 bg-white/90 px-3 py-0.5 rounded-full border border-white/60 shadow-sm">
-              <span className="text-[11px] sm:text-xs font-black text-slate-800 flex items-center gap-1">
-                <Sparkles size={11} className="text-amber-500" /> {current.hint}
-              </span>
-            </div>
           </div>
         </div>
 
-        {/* Palavra com o Espaço da Letra que Falta */}
-        <div className="bg-white/95 px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid flex items-center gap-2 sm:gap-3 z-10 flex-shrink-0">
+        {/* Palavra Gigante com o Espaço da Letra que Falta */}
+        <div className="bg-white/95 px-6 sm:px-10 py-2.5 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-kids-yellow shadow-xl flex items-center gap-3 sm:gap-4 z-10 flex-shrink-0">
           {/* Caixa da Letra que Falta */}
           <div
-            className={`w-11 h-13 sm:w-16 sm:h-18 rounded-xl sm:rounded-2xl border-3 sm:border-4 flex items-center justify-center font-black text-2xl sm:text-5xl transition-all ${
+            className={`w-14 h-16 sm:w-20 sm:h-24 rounded-2xl sm:rounded-3xl border-4 flex items-center justify-center font-black text-3xl sm:text-6xl transition-all ${
               isCompleted
                 ? "bg-kids-green text-white border-emerald-700 scale-105 shadow-kid"
                 : "bg-amber-100 text-amber-950 border-dashed border-amber-500"
@@ -318,52 +316,54 @@ export function MissingLetterGame() {
           </div>
 
           {/* Resto da Palavra */}
-          <span className="font-black text-xl sm:text-4xl text-slate-800 tracking-wider">
+          <span className="font-black text-3xl sm:text-6xl text-slate-800 tracking-wider">
             {current.restOfWord}
           </span>
         </div>
 
         {/* Modal de Vitória ao Completar a Palavra */}
         {isCompleted && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-7xl sm:text-8xl mb-1">{current.emoji}</span>
-            <div className="text-2xl sm:text-4xl font-black text-kids-coral mb-1">
+          <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
+            <span className="text-8xl sm:text-9xl mb-2">{current.emoji}</span>
+            <div className="text-3xl sm:text-6xl font-black text-kids-coral mb-2">
               {current.fullName}! ⭐
             </div>
-            <div className="text-sm sm:text-lg font-bold text-slate-700 mb-4">
+            <div className="text-base sm:text-2xl font-bold text-slate-700 mb-6">
               Muito bem, Israel! Você completou a palavra!
             </div>
             <button
               onClick={handleNext}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
             >
               <span>MAIS PALAVRAS!</span>
-              <ArrowRight size={24} className="stroke-[3]" />
+              <ArrowRight size={30} className="stroke-[3]" />
             </button>
           </div>
         )}
       </div>
 
-      {/* Caixa de Letras Grandes para o Israel Escolher */}
+      {/* DOCK INFERIOR FULL-WIDTH: Letras Gigantes para Escolher */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-blue shadow-kid flex items-center justify-around gap-2 sm:gap-3 z-20 flex-shrink-0">
-          {current.options.map((letter) => {
-            const isWrong = wrongShakeLetter === letter;
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+          <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-3 sm:gap-5">
+            {current.options.map((letter) => {
+              const isWrong = wrongShakeLetter === letter;
 
-            return (
-              <button
-                key={letter}
-                onClick={() => handlePickLetter(letter)}
-                className={`kid-btn flex-1 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl border-3 sm:border-4 font-black text-2xl sm:text-4xl transition-all ${
-                  isWrong
-                    ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
-                    : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95"
-                }`}
-              >
-                {letter}
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={letter}
+                  onClick={() => handlePickLetter(letter)}
+                  className={`kid-btn flex-1 py-3 sm:py-5 rounded-2xl sm:rounded-3xl border-4 font-black text-3xl sm:text-5xl transition-all ${
+                    isWrong
+                      ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
+                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95"
+                  }`}
+                >
+                  {letter}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

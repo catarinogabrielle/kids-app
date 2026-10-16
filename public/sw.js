@@ -1,47 +1,55 @@
-// Service Worker simples e eficiente para suporte Offline total
-const CACHE_NAME = "israel-kids-cache-v1";
-const STATIC_ASSETS = [
-  "/",
-  "/manifest.json",
-  "/icons/icon.svg",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png"
-];
+// Service Worker com Estratégia Network-First:
+// Sempre busca a versão mais nova do servidor quando há internet (sem precisar dar Clear Site Data!)
+// E mantém o cache atualizado automaticamente para funcionar offline quando necessário.
+const CACHE_NAME = "israel-kids-cache-v3";
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
-  );
+self.addEventListener("install", () => {
+  // Assume o controle imediatamente sem ficar preso esperando fechar abas
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.map((key) => {
+            if (key !== CACHE_NAME) {
+              return caches.delete(key);
+            }
+          })
+        )
+      )
+      .then(() => self.clients.claim())
   );
-  self.clients.claim();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  // Ignora requisições de extensões ou esquemas não-http
+  if (!event.request.url.startsWith("http")) return;
+
+  // Para páginas HTML (navegação), força busca direta na rede ignorando cache HTTP do navegador
+  const isHtmlNavigation =
+    event.request.mode === "navigate" ||
+    (event.request.headers.get("accept") || "").includes("text/html");
+
+  const networkFetch = isHtmlNavigation
+    ? fetch(event.request.url, { cache: "no-store" })
+    : fetch(event.request);
+
+  // ESTRATÉGIA NETWORK-FIRST (Rede Primeiro, Cache apenas se estiver Offline)
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request).then((networkResponse) => {
-        // Guarda no cache se for requisição válida
+    networkFetch
+      .then((networkResponse) => {
         if (
           networkResponse &&
           networkResponse.status === 200 &&
@@ -53,10 +61,12 @@ self.addEventListener("fetch", (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        // Fallback offline se a rede falhar
-        return caches.match("/");
-      });
-    })
+      })
+      .catch(() => {
+        // Somente se estiver sem internet (offline), usa o cache salvo
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match("/");
+        });
+      })
   );
 });

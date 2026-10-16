@@ -107,10 +107,10 @@ export function BalloonPopGame() {
         emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
         colorBg: chosenColor.gradient,
         borderColor: chosenColor.borderColor,
-        leftPercent: 10 + Math.random() * 72,
+        leftPercent: 8 + Math.random() * 76,
         durationSec: 5.5 + Math.random() * 2.2,
         delaySec,
-        sizePx: 66 + Math.random() * 14,
+        sizePx: 80 + Math.random() * 20,
       };
     },
     [currentMission]
@@ -118,8 +118,8 @@ export function BalloonPopGame() {
 
   const initBalloons = useCallback(() => {
     const initialList: BalloonItem[] = [];
-    for (let i = 0; i < 5; i++) {
-      initialList.push(createSingleBalloon(i * 0.85));
+    for (let i = 0; i < 6; i++) {
+      initialList.push(createSingleBalloon(i * 0.75));
     }
     setBalloons(initialList);
   }, [createSingleBalloon]);
@@ -190,33 +190,36 @@ export function BalloonPopGame() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-between w-full h-full max-w-4xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Placar de Missão de Cores (Totalmente Responsivo para Mobile) */}
-      <div className="w-full flex items-center justify-between gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-pink shadow-kid z-20 flex-shrink-0">
+    <div
+      ref={containerRef}
+      className="relative flex flex-col w-full h-full bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-200 select-none overflow-hidden touch-none"
+    >
+      {/* HUD Flutuante no Topo: Placar de Missão de Cores */}
+      <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-pink shadow-lg z-30">
         <div
-          className={`flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
+          className={`flex items-center gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
         >
-          <span className="text-xl sm:text-3xl">
+          <span className="text-2xl sm:text-4xl">
             {currentMission.emoji}
           </span>
           <div className="flex flex-col">
-            <span className="text-[9px] sm:text-xs font-black uppercase text-slate-500 tracking-wider hidden sm:block">
+            <span className="text-[10px] sm:text-xs font-black uppercase text-slate-500 tracking-wider hidden sm:block">
               Missão de Cores
             </span>
-            <span className={`text-xs sm:text-xl font-black ${currentMission.textColor} whitespace-nowrap`}>
+            <span className={`text-sm sm:text-2xl font-black ${currentMission.textColor} whitespace-nowrap`}>
               <span className="hidden sm:inline">Pegue 10 </span>{currentMission.name}!
             </span>
           </div>
         </div>
 
-        {/* Bloco da Direita: Contador e Botão de Reset (Sem estourar a tela) */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        {/* Bloco da Direita: Contador e Botão de Reset */}
+        <div className="flex items-center gap-2 flex-shrink-0">
           {/* Marcadores de Progresso (10 Balões Miniatura - Tablets e Telas Maiores) */}
-          <div className="hidden sm:flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-xl border border-slate-300">
+          <div className="hidden md:flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-2xl border-2 border-slate-300">
             {[...Array(GOAL)].map((_, idx) => (
               <span
                 key={idx}
-                className={`text-xs sm:text-base transition-all duration-200 ${
+                className={`text-base sm:text-lg transition-all duration-200 ${
                   idx < targetCount
                     ? "scale-110 opacity-100"
                     : "scale-90 opacity-20 grayscale"
@@ -225,149 +228,143 @@ export function BalloonPopGame() {
                 🎈
               </span>
             ))}
-            <span className="text-xs sm:text-sm font-black text-slate-700 ml-1.5">
+            <span className="text-sm sm:text-base font-black text-slate-700 ml-2">
               {targetCount}/{GOAL}
             </span>
           </div>
 
-          {/* Versão Compacta Mobile do Contador (Zero corte horizontal) */}
-          <div className="flex sm:hidden items-center gap-1 bg-amber-100 border-2 border-amber-400 px-2.5 py-1 rounded-xl font-black text-xs text-amber-950 shadow-sm">
-            <span>⭐</span>
+          {/* Versão Compacta Mobile/Tablet do Contador */}
+          <div className="flex md:hidden items-center gap-1.5 bg-amber-100 border-2 border-amber-400 px-3 py-1.5 rounded-xl font-black text-sm text-amber-950 shadow-sm">
+            <span>🎈</span>
             <span>{targetCount}/{GOAL}</span>
           </div>
 
           <button
             onClick={handleReset}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid flex-shrink-0"
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid-sm flex-shrink-0"
             title="Recomeçar"
           >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <RotateCcw size={20} className="stroke-[2.5]" />
           </button>
         </div>
       </div>
 
-      {/* Cenário do Céu com Subida Suave dos Balões a partir do Fundo */}
-      <div
-        ref={containerRef}
-        className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-200 rounded-3xl sm:rounded-4xl border-6 sm:border-8 border-kids-blue shadow-2xl overflow-hidden touch-none"
-      >
-        {/* Nuvens decorativas */}
-        <div className="absolute top-4 left-6 text-5xl opacity-40 animate-float pointer-events-none">
-          ☁️
-        </div>
-        <div className="absolute top-10 right-10 text-5xl opacity-40 animate-float-delayed pointer-events-none">
-          ☁️
-        </div>
-        <div className="absolute top-4 left-1/2 text-4xl opacity-80 pointer-events-none">
-          ☀️
-        </div>
-
-        {/* Estilo de animação CSS: Balões começam SEMPRE abaixo do container */}
-        <style jsx>{`
-          @keyframes floatUpFromBottom {
-            0% {
-              top: 105%;
-              transform: translateX(0px) scale(0.95);
-              opacity: 0.95;
-            }
-            50% {
-              transform: translateX(14px) scale(1.02);
-            }
-            100% {
-              top: -25%;
-              transform: translateX(-12px) scale(1.06);
-              opacity: 1;
-            }
-          }
-          .balloon-rising {
-            animation-name: floatUpFromBottom;
-            animation-timing-function: linear;
-            animation-iteration-count: infinite;
-            will-change: top, transform;
-          }
-        `}</style>
-
-        {/* Renderiza os 5 balões espaçados */}
-        {balloons.map((b) => {
-          const isTarget = b.missionId === currentMission.id;
-
-          return (
-            <div
-              key={b.id}
-              onPointerDown={(e) => handlePop(b, e)}
-              className="balloon-rising absolute cursor-pointer active:scale-125 transition-transform"
-              style={{
-                left: `${b.leftPercent}%`,
-                animationDuration: `${b.durationSec}s`,
-                animationDelay: `${b.delaySec}s`,
-                width: `${b.sizePx}px`,
-                height: `${b.sizePx * 1.25}px`,
-              }}
-            >
-              {/* O Balão 3D */}
-              <div
-                className={`relative w-full h-full rounded-full flex flex-col items-center justify-center shadow-lg transition-transform ${
-                  isTarget ? "ring-4 ring-white/60 animate-pulse-gentle" : ""
-                }`}
-                style={{
-                  background: b.colorBg,
-                  border: `3.5px solid ${b.borderColor}`,
-                }}
-              >
-                {/* Brilho do Balão */}
-                <div className="absolute top-2 left-3 w-4 h-6 bg-white/45 rounded-full blur-[1px] -rotate-12" />
-
-                {/* Emoji fofinho dentro do balão */}
-                <span className="text-3xl sm:text-4xl drop-shadow select-none pointer-events-none">
-                  {b.emoji}
-                </span>
-
-                {/* Estrela brilhante se for o balão da missão */}
-                {isTarget && (
-                  <span className="absolute -top-2 -right-1 text-xl animate-spin pointer-events-none">
-                    ✨
-                  </span>
-                )}
-
-                {/* Nó do balão */}
-                <div
-                  className="absolute -bottom-2 w-3.5 h-2.5 rounded-sm"
-                  style={{ background: b.borderColor }}
-                />
-                {/* Cordinha */}
-                <div className="absolute -bottom-7 w-0.5 h-6 bg-white/80" />
-              </div>
-            </div>
-          );
-        })}
-
-        {/* Tela de Vitória da Missão Concluída */}
-        {isVictory && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-7xl sm:text-8xl mb-1">🎉🎈🏆</span>
-            <div className="text-2xl sm:text-4xl font-black text-kids-purple mb-1">
-              MISSÃO CUMPRIDA!
-            </div>
-            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-5">
-              Muito bem, Israel! Você juntou todos os 10 balões{" "}
-              {currentMission.name.toLowerCase()}! ⭐
-            </div>
-            <button
-              onClick={handleNextMission}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
-            >
-              <span>PRÓXIMA COR!</span>
-              <ArrowRight size={26} className="stroke-[3]" />
-            </button>
-          </div>
-        )}
+      {/* Nuvens decorativas no Céu */}
+      <div className="absolute top-20 left-8 text-6xl opacity-40 animate-float pointer-events-none">
+        ☁️
+      </div>
+      <div className="absolute top-28 right-12 text-6xl opacity-40 animate-float-delayed pointer-events-none">
+        ☁️
+      </div>
+      <div className="absolute top-20 left-1/2 text-5xl opacity-80 pointer-events-none">
+        ☀️
       </div>
 
-      {/* Dica no rodapé */}
-      <div className="w-full bg-white/90 backdrop-blur-md py-1 px-2.5 sm:py-1.5 sm:px-3 rounded-xl sm:rounded-2xl border-2 border-kids-pink flex items-center justify-center gap-1.5 z-20 flex-shrink-0 text-center">
-        <Sparkles className="text-amber-500 flex-shrink-0" size={16} />
-        <span className="text-[11px] sm:text-sm font-black text-slate-700 truncate">
-          Toque nos balões {currentMission.name.toLowerCase()} {currentMission.emoji} para vencer!
+      {/* Estilo de animação CSS: Balões começam SEMPRE abaixo da tela e sobem até o topo */}
+      <style jsx>{`
+        @keyframes floatUpFromBottom {
+          0% {
+            top: 105%;
+            transform: translateX(0px) scale(0.95);
+            opacity: 0.95;
+          }
+          50% {
+            transform: translateX(16px) scale(1.03);
+          }
+          100% {
+            top: -25%;
+            transform: translateX(-14px) scale(1.08);
+            opacity: 1;
+          }
+        }
+        .balloon-rising {
+          animation-name: floatUpFromBottom;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          will-change: top, transform;
+        }
+      `}</style>
+
+      {/* Renderiza os balões gigantes pelo céu inteiro */}
+      {balloons.map((b) => {
+        const isTarget = b.missionId === currentMission.id;
+
+        return (
+          <div
+            key={b.id}
+            onPointerDown={(e) => handlePop(b, e)}
+            className="balloon-rising absolute cursor-pointer active:scale-125 transition-transform z-20"
+            style={{
+              left: `${b.leftPercent}%`,
+              animationDuration: `${b.durationSec}s`,
+              animationDelay: `${b.delaySec}s`,
+              width: `${b.sizePx}px`,
+              height: `${b.sizePx * 1.25}px`,
+            }}
+          >
+            {/* O Balão 3D Gigante */}
+            <div
+              className={`relative w-full h-full rounded-full flex flex-col items-center justify-center shadow-xl transition-transform ${
+                isTarget ? "ring-4 ring-white/80 animate-pulse-gentle" : ""
+              }`}
+              style={{
+                background: b.colorBg,
+                border: `4px solid ${b.borderColor}`,
+              }}
+            >
+              {/* Brilho do Balão */}
+              <div className="absolute top-2.5 left-3.5 w-4 h-7 bg-white/45 rounded-full blur-[1px] -rotate-12" />
+
+              {/* Emoji fofinho dentro do balão */}
+              <span className="text-4xl sm:text-5xl drop-shadow select-none pointer-events-none">
+                {b.emoji}
+              </span>
+
+              {/* Estrela brilhante se for o balão da missão */}
+              {isTarget && (
+                <span className="absolute -top-2 -right-1 text-2xl animate-spin pointer-events-none">
+                  ✨
+                </span>
+              )}
+
+              {/* Nó do balão */}
+              <div
+                className="absolute -bottom-2 w-4 h-3 rounded-sm"
+                style={{ background: b.borderColor }}
+              />
+              {/* Cordinha */}
+              <div className="absolute -bottom-8 w-0.5 h-7 bg-white/85" />
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Tela de Vitória da Missão Concluída */}
+      {isVictory && (
+        <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
+          <span className="text-7xl sm:text-9xl mb-2">🎉🎈🏆</span>
+          <div className="text-3xl sm:text-5xl font-black text-kids-purple mb-2">
+            MISSÃO CUMPRIDA!
+          </div>
+          <div className="text-base sm:text-2xl font-bold text-slate-700 mb-6">
+            Muito bem, Israel! Você juntou todos os 10 balões{" "}
+            {currentMission.name.toLowerCase()}! ⭐
+          </div>
+          <button
+            onClick={handleNextMission}
+            className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
+          >
+            <span>PRÓXIMA COR!</span>
+            <ArrowRight size={30} className="stroke-[3]" />
+          </button>
+        </div>
+      )}
+
+      {/* Pílula Flutuante de Dica no Rodapé */}
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md py-1.5 px-4 sm:py-2 sm:px-6 rounded-full border-3 border-kids-pink shadow-lg flex items-center justify-center gap-2 z-30 pointer-events-none whitespace-nowrap">
+        <Sparkles className="text-amber-500 flex-shrink-0" size={18} />
+        <span className="text-xs sm:text-base font-black text-slate-800">
+          Estoure os balões {currentMission.name.toLowerCase()} {currentMission.emoji}!
         </span>
       </div>
     </div>

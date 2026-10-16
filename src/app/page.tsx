@@ -54,11 +54,11 @@ export default function Home() {
   return (
     <main
       suppressHydrationWarning
-      className="h-screen h-[100dvh] max-h-[100dvh] w-full flex flex-col justify-between bg-gradient-to-b from-sky-400 via-sky-300 to-green-400 overflow-hidden select-none pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]"
+      className="h-screen h-[100dvh] max-h-[100dvh] w-screen max-w-full flex flex-col justify-between bg-gradient-to-b from-sky-400 via-sky-300 to-emerald-400 overflow-hidden select-none pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]"
     >
       <PWARegistration />
 
-      {/* Barra Superior Compacta */}
+      {/* HUD Superior Global estilo App Infantil de Mercado */}
       <TopBar
         title={title}
         icon={icon}
@@ -67,8 +67,8 @@ export default function Home() {
         onOpenParents={() => setIsParentalOpen(true)}
       />
 
-      {/* Conteúdo do Jogo Selecionado: flex-1 min-h-0 garante que NADA transborde */}
-      <div className="flex-1 min-h-0 w-full flex flex-col justify-center items-center px-1 sm:px-2 pb-1 overflow-hidden">
+      {/* Palco Tela Cheia (100% da largura e altura disponíveis, sem margens que encolham o jogo) */}
+      <div className="flex-1 min-h-0 w-full h-full flex flex-col overflow-hidden">
         {currentScreen === "hub" && (
           <HomeHub onSelectGame={(game) => setCurrentScreen(game)} />
         )}

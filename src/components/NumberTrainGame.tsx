@@ -134,7 +134,7 @@ function SteamLocomotive({ isMoving }: { isMoving: boolean }) {
 
       <svg
         viewBox="0 0 170 120"
-        className="w-32 h-24 sm:w-44 sm:h-32 drop-shadow-xl overflow-visible select-none"
+        className="w-44 h-32 sm:w-64 sm:h-48 drop-shadow-2xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id="boilerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -248,18 +248,18 @@ function FreightWagon({
     <div className="relative flex-shrink-0 flex flex-col items-center">
       {/* Indicador suave sobre o próximo vagão */}
       {isNext && (
-        <div className="absolute -top-9 z-20 flex flex-col items-center pointer-events-none">
-          <span className="bg-kids-yellow text-amber-950 text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full border border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
-            <Sparkles size={11} className="text-amber-600" />
+        <div className="absolute -top-11 z-20 flex flex-col items-center pointer-events-none">
+          <span className="bg-kids-yellow text-amber-950 text-xs sm:text-sm font-black px-3 py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
+            <Sparkles size={13} className="text-amber-600" />
             Vagão {wagon.num}
           </span>
-          <span className="text-base -mt-0.5">👇</span>
+          <span className="text-lg -mt-0.5">👇</span>
         </div>
       )}
 
       <svg
         viewBox="0 0 130 120"
-        className="w-24 h-24 sm:w-34 sm:h-32 drop-shadow-lg overflow-visible select-none"
+        className="w-32 h-32 sm:w-48 sm:h-44 drop-shadow-xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id={`wagonGrad-${wagon.num}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -319,26 +319,26 @@ function FreightWagon({
               width="106"
               height="48"
               rx="8"
-              fill={isNext ? "rgba(254, 240, 138, 0.3)" : "rgba(241, 245, 249, 0.35)"}
+              fill={isNext ? "rgba(254, 240, 138, 0.45)" : "rgba(255, 255, 255, 0.45)"}
               stroke={isNext ? "#eab308" : "#94a3b8"}
-              strokeWidth={isNext ? 3 : 2}
+              strokeWidth={isNext ? 3.5 : 2.5}
               strokeDasharray={isNext ? "6,4" : "4,4"}
             />
             {/* Círculo do número guia */}
             <circle
               cx="65"
               cy="56"
-              r="15"
+              r="16"
               fill={isNext ? "#fef08a" : "#f1f5f9"}
               stroke={isNext ? "#ca8a04" : "#cbd5e1"}
-              strokeWidth="2"
+              strokeWidth="2.5"
             />
             <text
               x="65"
               y="63"
-              fontSize="17"
+              fontSize="18"
               fontWeight="900"
-              fill={isNext ? "#854d0e" : "#94a3b8"}
+              fill={isNext ? "#854d0e" : "#64748b"}
               textAnchor="middle"
             >
               {wagon.num}
@@ -358,11 +358,11 @@ function FreightWagon({
       </svg>
 
       {/* Carga dos Bichinhos/Itens colocados no vagão */}
-      <div className="absolute top-2 w-22 sm:w-28 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-0.5">
+      <div className="absolute top-2.5 w-28 sm:w-40 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-1">
         {wagon.items.map((item, i) => (
           <span
             key={i}
-            className={`text-xs sm:text-base transition-all duration-300 ${
+            className={`text-sm sm:text-xl transition-all duration-300 ${
               isPlaced ? "scale-100 opacity-100" : "scale-75 opacity-0"
             }`}
           >
@@ -441,59 +441,58 @@ export function NumberTrainGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between w-full h-full max-w-5xl mx-auto p-1.5 sm:p-2 select-none overflow-hidden">
-      {/* Placar e Botões */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-teal shadow-kid z-20 flex-shrink-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 bg-teal-100 border-2 border-teal-400 px-3 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl shadow-inner">
-          <span className="text-xl sm:text-2xl">🚂</span>
-          <span className="text-xs sm:text-xl font-black text-teal-900">
-            Trem dos Números: {placedNumbers.length} / {wagons.length}
-          </span>
+    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
+      {/* PALCO FERROVIÁRIO FULL-SCREEN */}
+      <div className="relative flex-1 min-h-0 w-full flex flex-col justify-center items-center overflow-hidden">
+        {/* HUD Flutuante no Topo */}
+        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-30">
+          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-teal px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
+            <span className="text-2xl sm:text-3xl">🚂</span>
+            <span className="text-sm sm:text-2xl font-black text-teal-950">
+              Trem: {placedNumbers.length} / {wagons.length}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => sounds.playWhistle()}
+              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-2xl border-3 sm:border-4 border-amber-600 shadow-lg font-black text-xs sm:text-base flex items-center gap-1.5"
+              title="Tocar Apito"
+            >
+              <span>📢</span>
+              <span>PIUÍ!</span>
+            </button>
+
+            <button
+              onClick={handleReset}
+              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+              title="Recomeçar"
+            >
+              <RotateCcw size={20} className="stroke-[2.5]" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <button
-            onClick={() => sounds.playWhistle()}
-            className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-2.5 sm:px-4 py-1 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-amber-600 shadow-kid font-black text-xs sm:text-sm flex items-center gap-1"
-            title="Tocar Apito"
-          >
-            <span>📢</span>
-            <span>PIUÍ!</span>
-          </button>
+        {/* Nuvens decorativas e Sol */}
+        <div className="absolute top-16 left-8 text-5xl opacity-40 pointer-events-none">☁️</div>
+        <div className="absolute top-20 right-10 text-5xl opacity-40 pointer-events-none">☁️</div>
+        <div className="absolute top-14 left-1/2 -translate-x-1/2 text-5xl opacity-80 pointer-events-none">☀️</div>
 
-          <button
-            onClick={handleReset}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid flex-shrink-0"
-            title="Recomeçar"
-          >
-            <RotateCcw size={18} className="stroke-[2.5]" />
-          </button>
-        </div>
-      </div>
-
-      {/* ÁREA CENTRAL: O TREM COM ROLAGEM INTELIGENTE SEM CORTES */}
-      <div className="relative flex-1 min-h-0 w-full my-1 sm:my-2 bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-300 rounded-3xl sm:rounded-4xl border-4 sm:border-8 border-kids-blue shadow-2xl p-1.5 sm:p-3 flex flex-col justify-center items-center overflow-hidden">
-        {/* Nuvens decorativas estáticas */}
-        <div className="absolute top-3 left-6 text-3xl opacity-40 pointer-events-none">☁️</div>
-        <div className="absolute top-5 right-8 text-3xl opacity-40 pointer-events-none">☁️</div>
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 text-3xl opacity-75 pointer-events-none">☀️</div>
-
-        {/* Cenário com os Trilhos e o Comboio */}
-        <div className="relative w-full flex flex-col items-center justify-center my-auto">
-          {/* Container de Rolagem: margin: auto evita corte negativo à esquerda */}
+        {/* Cenário com os Trilhos e o Comboio Gigante */}
+        <div className="relative w-full flex flex-col items-center justify-center mt-8">
           <div
             ref={scrollContainerRef}
-            className="relative w-full overflow-x-auto pb-2 scrollbar-none flex items-end justify-start sm:justify-center px-4 sm:px-8"
+            className="relative w-full overflow-x-auto pb-2 pt-10 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
           >
             <div
-              className={`relative flex items-end gap-1.5 sm:gap-2.5 transition-transform duration-1000 mx-auto ${
+              className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${
                 isTrainMoving ? "translate-x-full scale-105" : ""
               }`}
             >
-              {/* 1. LOCOMOTIVA A VAPOR NA FRENTE */}
+              {/* 1. LOCOMOTIVA A VAPOR GIGANTE NA FRENTE */}
               <SteamLocomotive isMoving={isTrainMoving} />
 
-              {/* 2. OS VAGÕES EM SEQUÊNCIA */}
+              {/* 2. OS VAGÕES GIGANTES EM SEQUÊNCIA */}
               {wagons.map((w) => {
                 const isPlaced = placedNumbers.includes(w.num);
                 const isNext = w.num === expectedNumber;
@@ -516,63 +515,65 @@ export function NumberTrainGame() {
             </div>
           </div>
 
-          {/* Trilhos de Madeira com Trilhos de Aço */}
-          <div className="w-full h-6 sm:h-7 bg-slate-800 border-t-3 border-slate-950 flex justify-around items-center shadow-lg -mt-1">
-            {[...Array(24)].map((_, i) => (
-              <div key={i} className="w-2 h-full bg-amber-900 border-x border-amber-950" />
+          {/* Trilhos de Madeira com Trilhos de Aço Full-Width */}
+          <div className="w-full h-8 sm:h-10 bg-slate-800 border-t-4 border-slate-950 flex justify-around items-center shadow-2xl -mt-1.5">
+            {[...Array(28)].map((_, i) => (
+              <div key={i} className="w-2.5 sm:w-3 h-full bg-amber-900 border-x border-amber-950" />
             ))}
           </div>
         </div>
 
         {/* Vitória: Trem Completo Parte */}
         {isTrainMoving && (
-          <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-7xl sm:text-8xl mb-1">🚂💨✨</span>
-            <div className="text-2xl sm:text-4xl font-black text-kids-teal mb-1">
+          <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
+            <span className="text-7xl sm:text-9xl mb-2">🚂💨✨</span>
+            <div className="text-3xl sm:text-5xl font-black text-kids-teal mb-2">
               TREM COMPLETO!
             </div>
-            <div className="text-sm sm:text-xl font-bold text-slate-700 mb-5">
+            <div className="text-base sm:text-2xl font-bold text-slate-700 mb-6">
               Muito bem, Israel! Você engatou todos os números na ordem certa! ⭐
             </div>
             <button
               onClick={handleNextLevel}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-2xl px-6 sm:px-10 py-3 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
             >
               <span>{level === "1-5" ? "VAMOS DO 6 AO 10!" : "JOGAR DE NOVO!"}</span>
-              <ArrowRight size={26} className="stroke-[3]" />
+              <ArrowRight size={30} className="stroke-[3]" />
             </button>
           </div>
         )}
       </div>
 
-      {/* BANDEJA DE NÚMEROS ERGONÔMICA */}
+      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE NÚMEROS GIGANTES */}
       {!isTrainMoving && (
-        <div className="w-full bg-white/95 backdrop-blur-md p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-kids-yellow shadow-kid flex items-center justify-around gap-1.5 sm:gap-2.5 z-20 flex-shrink-0">
-          {wagons.map((w) => {
-            const isPlaced = placedNumbers.includes(w.num);
-            const isExpected = w.num === expectedNumber;
-            const isShaking = wrongShakeNum === w.num;
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+          <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-4">
+            {wagons.map((w) => {
+              const isPlaced = placedNumbers.includes(w.num);
+              const isExpected = w.num === expectedNumber;
+              const isShaking = wrongShakeNum === w.num;
 
-            return (
-              <button
-                key={w.num}
-                onClick={() => handlePickNumber(w.num)}
-                disabled={isPlaced}
-                className={`kid-btn flex-1 py-1.5 sm:py-3 rounded-xl sm:rounded-2xl border-2 sm:border-3 font-black flex flex-col items-center justify-center transition-all ${
-                  isPlaced
-                    ? "bg-slate-200 border-slate-300 text-slate-400 opacity-20 cursor-not-allowed scale-90"
-                    : isShaking
-                    ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
-                    : isExpected
-                    ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-3 ring-yellow-400"
-                    : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid active:scale-95"
-                }`}
-              >
-                <span className="text-xl sm:text-3xl leading-tight">{w.num}</span>
-                <span className="text-xs sm:text-lg">{w.emoji}</span>
-              </button>
-            );
-          })}
+              return (
+                <button
+                  key={w.num}
+                  onClick={() => handlePickNumber(w.num)}
+                  disabled={isPlaced}
+                  className={`kid-btn flex-1 py-2.5 sm:py-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                    isPlaced
+                      ? "bg-slate-200 border-slate-300 text-slate-400 opacity-20 cursor-not-allowed scale-90"
+                      : isShaking
+                      ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
+                      : isExpected
+                      ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-3 sm:ring-4 ring-yellow-400"
+                      : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
+                  }`}
+                >
+                  <span className="text-2xl sm:text-4xl leading-tight">{w.num}</span>
+                  <span className="text-base sm:text-2xl">{w.emoji}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
