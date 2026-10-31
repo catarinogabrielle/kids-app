@@ -235,12 +235,12 @@ function FreightWagon({
     >
       {/* Indicador no Vagão da Vez */}
       {isNext && (
-        <div className="absolute -top-11 z-20 flex flex-col items-center pointer-events-none animate-bounce">
-          <span className="bg-kids-yellow text-amber-950 text-xs sm:text-sm font-black px-3 py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
-            <Sparkles size={13} className="text-amber-600" />
+        <div className="absolute -top-10 sm:-top-12 z-20 flex flex-col items-center pointer-events-none animate-pulse-gentle">
+          <span className="bg-kids-yellow text-amber-950 text-[11px] sm:text-sm font-black px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
+            <Sparkles size={12} className="text-amber-600 sm:w-3.5 sm:h-3.5" />
             {isMystery ? "Qual é o Número?" : `Vagão ${wagon.num}`}
           </span>
-          <span className="text-lg -mt-0.5">👇</span>
+          <span className="text-base sm:text-lg -mt-0.5">👇</span>
         </div>
       )}
 
@@ -578,8 +578,8 @@ export function NumberTrainGame() {
           <div className="absolute top-2 left-1/2 -translate-x-1/2 text-5xl opacity-85 pointer-events-none">☀️</div>
 
           {/* Banner de Instrução Inteligente */}
-          <div className="bg-white/90 backdrop-blur-sm px-4 py-1 rounded-full border-2 border-white shadow-sm mb-2 z-10">
-            <span className="font-black text-xs sm:text-base text-slate-800">
+          <div className="bg-white/90 backdrop-blur-sm px-3.5 py-0.5 sm:px-4 sm:py-1 rounded-full border-2 border-white shadow-sm mb-0.5 sm:mb-2 z-10">
+            <span className="font-black text-[11px] sm:text-base text-slate-800">
               {mode === "missing"
                 ? "Detetive do Trem: Descubra qual vagão está faltando!"
                 : mode === "countdown"
@@ -594,7 +594,7 @@ export function NumberTrainGame() {
           <div className="relative w-full flex flex-col items-center justify-center">
             <div
               ref={scrollContainerRef}
-              className="relative w-full overflow-x-auto pb-1 pt-6 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
+              className="relative w-full overflow-x-auto pb-1 pt-12 sm:pt-16 landscape:pt-12 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
             >
               <div
                 className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${
@@ -660,31 +660,31 @@ export function NumberTrainGame() {
 
         {/* DOCK INFERIOR COM AS OPÇÕES DE NÚMEROS (COM SAFE AREA BOTTOM) */}
         {!isTrainMoving && (
-          <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-1 sm:pt-2 pb-[max(8px,env(safe-area-inset-bottom))] border-t-2 sm:border-t-4 border-kids-yellow shadow-md z-20 flex-shrink-0 landscape-dock-compact">
+          <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 pt-1 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] border-t-2 sm:border-t-4 border-kids-yellow shadow-md z-20 flex-shrink-0 landscape-dock-compact">
             {/* Opções Modo Missing (3 opções grandonas de múltipla escolha) */}
             {mode === "missing" ? (
-              <div className="max-w-md mx-auto w-full flex items-center justify-center gap-3 sm:gap-6 py-1">
+              <div className="max-w-md mx-auto w-full flex items-center justify-center gap-2 sm:gap-6 py-0.5 sm:py-1">
                 {missingOptions.map((opt) => {
                   const isShaking = wrongShakeNum === opt;
                   return (
                     <button
                       key={opt}
                       onClick={() => handlePickNumber(opt)}
-                      className={`kid-btn flex-1 py-3 sm:py-5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                      className={`kid-btn flex-1 py-1.5 sm:py-5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
                         isShaking
                           ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
                           : "bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-950 shadow-kid active:scale-95"
                       }`}
                     >
-                      <span className="text-3xl sm:text-5xl leading-tight font-black">{opt}</span>
-                      <span className="text-xs sm:text-sm font-bold opacity-80">Número {opt}</span>
+                      <span className="text-2xl sm:text-5xl landscape:text-2xl leading-tight font-black">{opt}</span>
+                      <span className="text-[10px] sm:text-sm font-bold opacity-80 landscape:hidden">Número {opt}</span>
                     </button>
                   );
                 })}
               </div>
             ) : (
               /* Opções Normais: Bandeja Completa dos 5 Vagões */
-              <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-4 py-1">
+              <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-1.5 sm:gap-4 py-0.5 sm:py-1">
                 {wagons.map((w) => {
                   const isPlaced = placedNumbers.includes(w.num);
                   const isExpected = w.num === expectedNumber;
@@ -695,18 +695,18 @@ export function NumberTrainGame() {
                       key={w.num}
                       onClick={() => handlePickNumber(w.num)}
                       disabled={isPlaced}
-                      className={`kid-btn flex-1 py-2 sm:py-3.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                      className={`kid-btn flex-1 py-1 sm:py-3.5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
                         isPlaced
                           ? "bg-slate-200 border-slate-300 text-slate-400 opacity-25 cursor-not-allowed scale-90"
                           : isShaking
                           ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
                           : isExpected
-                          ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-3 sm:ring-4 ring-yellow-400"
+                          ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-2 sm:ring-4 ring-yellow-400"
                           : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
                       }`}
                     >
-                      <span className="text-2xl sm:text-4xl leading-tight font-black">{w.num}</span>
-                      <span className="text-base sm:text-2xl">{w.emoji}</span>
+                      <span className="text-xl sm:text-4xl landscape:text-xl leading-tight font-black">{w.num}</span>
+                      <span className="text-sm sm:text-2xl landscape:text-base">{w.emoji}</span>
                     </button>
                   );
                 })}
