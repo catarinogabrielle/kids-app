@@ -1488,7 +1488,7 @@ export function PaintingGame() {
                 }}
                 className={`kid-btn text-2xl sm:text-3xl p-1 rounded-xl border-2 transition-transform ${
                   selectedStamp === st
-                    ? "bg-white border-pink-500 scale-115 shadow-md ring-2 ring-pink-300"
+                    ? "bg-white border-pink-500 scale-[1.15] shadow-md ring-2 ring-pink-300"
                     : "border-transparent"
                 }`}
               >
@@ -1544,7 +1544,7 @@ export function PaintingGame() {
                 }}
                 className={`kid-btn p-1.5 rounded-xl border-2 flex items-center justify-center transition-transform ${
                   brushSize === b.size
-                    ? "bg-purple-600 border-purple-900 scale-115 shadow-md ring-2 ring-purple-300"
+                    ? "bg-purple-600 border-purple-900 scale-[1.15] shadow-md ring-2 ring-purple-300"
                     : "bg-white border-purple-200"
                 }`}
               >
@@ -1633,7 +1633,7 @@ export function PaintingGame() {
                 }}
                 className={`kid-btn w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 transition-all duration-150 flex-shrink-0 ${
                   selectedColor === c.hex
-                    ? "scale-120 border-slate-900 shadow-kid z-10 ring-2 sm:ring-3 ring-yellow-400"
+                    ? "scale-[1.2] border-slate-900 shadow-kid z-10 ring-2 sm:ring-3 ring-yellow-400"
                     : "border-white shadow-sm hover:scale-105"
                 }`}
                 style={{ backgroundColor: c.hex }}

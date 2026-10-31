@@ -306,7 +306,7 @@ export function MissingLetterGame() {
         <div className="bg-white/95 px-4 sm:px-10 py-2 sm:py-4 landscape:py-1.5 landscape:px-5 rounded-2xl sm:rounded-4xl border-3 sm:border-6 border-kids-yellow shadow-xl flex items-center gap-2 sm:gap-4 z-10 flex-shrink-0">
           {/* Caixa da Letra que Falta */}
           <div
-            className={`w-11 h-13 sm:w-20 sm:h-24 landscape:w-11 landscape:h-13 rounded-xl sm:rounded-3xl border-3 sm:border-4 flex items-center justify-center font-black text-2xl sm:text-6xl landscape:text-2xl transition-all ${
+            className={`w-12 h-14 sm:w-20 sm:h-24 landscape:w-11 landscape:h-12 rounded-xl sm:rounded-3xl border-3 sm:border-4 flex items-center justify-center font-black text-2xl sm:text-6xl landscape:text-2xl transition-all ${
               isCompleted
                 ? "bg-kids-green text-white border-emerald-700 scale-105 shadow-kid"
                 : "bg-amber-100 text-amber-950 border-dashed border-amber-500"

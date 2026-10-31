@@ -146,7 +146,7 @@ function SteamLocomotive({
 
       <svg
         viewBox="0 0 170 120"
-        className="w-32 h-24 sm:w-48 sm:h-36 landscape:w-28 landscape:h-22 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
+        className="w-32 h-24 sm:w-48 sm:h-36 landscape:w-28 landscape:h-20 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
       >
         <defs>
           <linearGradient id="boilerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -235,7 +235,7 @@ function FreightWagon({
     >
       {/* Indicador no Vagão da Vez */}
       {isNext && (
-        <div className="absolute -top-10 sm:-top-12 z-20 flex flex-col items-center pointer-events-none animate-pulse-gentle">
+        <div className="absolute -top-9 sm:-top-12 z-20 flex flex-col items-center pointer-events-none animate-pulse-gentle">
           <span className="bg-kids-yellow text-amber-950 text-[11px] sm:text-sm font-black px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
             <Sparkles size={12} className="text-amber-600 sm:w-3.5 sm:h-3.5" />
             {isMystery ? "Qual é o Número?" : `Vagão ${wagon.num}`}
@@ -246,7 +246,7 @@ function FreightWagon({
 
       <svg
         viewBox="0 0 130 120"
-        className="w-26 h-24 sm:w-36 sm:h-32 landscape:w-22 landscape:h-20 drop-shadow-xl overflow-visible select-none"
+        className="w-28 h-24 sm:w-36 sm:h-32 landscape:w-20 landscape:h-16 drop-shadow-xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id={`wagonGrad-${wagon.num}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -339,7 +339,7 @@ function FreightWagon({
       </svg>
 
       {/* Carga dos Bichinhos Bíblicos no Vagão */}
-      <div className="absolute top-2 w-26 sm:w-36 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-1">
+      <div className="absolute top-2 w-28 sm:w-36 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-1">
         {wagon.items.map((item, i) => (
           <span
             key={i}

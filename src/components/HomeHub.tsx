@@ -142,7 +142,7 @@ export function HomeHub({ onSelectGame }: HomeHubProps) {
 
             {/* Ícone Centralizado Proporcional */}
             <div className="relative flex-1 flex items-center justify-center w-full min-h-0">
-              <span className="text-3xl sm:text-5xl md:text-6xl landscape:text-3xl lg:text-6xl group-hover:scale-115 transition-transform duration-200 drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]">
+              <span className="text-3xl sm:text-5xl md:text-6xl landscape:text-2xl lg:text-6xl group-hover:scale-110 transition-transform duration-200 drop-shadow-[0_4px_6px_rgba(0,0,0,0.25)]">
                 {act.emoji}
               </span>
               <span className="absolute bottom-0 right-1/4 translate-x-4 text-base sm:text-2xl landscape:text-base group-hover:scale-110 transition-transform duration-200 drop-shadow">
