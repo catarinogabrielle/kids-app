@@ -120,14 +120,14 @@ export function GameHeader({
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full h-11 sm:h-14 landscape:h-9 px-2 sm:px-4 flex items-center justify-between gap-1.5 sm:gap-3 z-30 select-none flex-shrink-0 bg-white/75 backdrop-blur-md border-b-2 sm:border-b-3 border-white/60 shadow-sm">
+    <header className="w-full py-2 sm:py-3.5 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/85 backdrop-blur-md border-b-2 sm:border-b-3 border-white/70 shadow-sm">
       {/* Lado Esquerdo: Botão Início + Controles Primários do Jogo */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <HomeButton onHome={onHome} />
 
         {title && (
-          <div className="hidden md:flex items-center gap-1.5 bg-white/95 px-2.5 py-1 rounded-xl border border-slate-200 shadow-sm flex-shrink-0">
-            {icon && <span className="text-lg">{icon}</span>}
+          <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 bg-white/95 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm flex-shrink-0">
+            {icon && <span className="text-base sm:text-xl">{icon}</span>}
             <span className="font-extrabold text-xs sm:text-sm text-slate-800 tracking-wide">
               {title}
             </span>
@@ -138,7 +138,7 @@ export function GameHeader({
       </div>
 
       {/* Lado Direito: Ações do Jogo + Som */}
-      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
         {rightControls}
         <SoundButton />
       </div>
@@ -156,9 +156,9 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
 
   return (
     <>
-      <header className="w-full py-1 sm:py-2.5 px-2 sm:px-4 flex items-center justify-between gap-2 z-30 select-none flex-shrink-0">
+      <header className="w-full py-2.5 sm:py-4 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0">
         {/* Lado Esquerdo: Marca & Subtítulo (NUNCA TRUNCA COM RETICÊNCIAS) */}
-        <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0 min-w-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0">
           <span className="text-xl sm:text-3xl drop-shadow select-none">☀️</span>
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-1 min-w-0">
