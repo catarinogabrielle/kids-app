@@ -84,17 +84,25 @@ interface BalloonItem {
   sizePx: number;
 }
 
+interface PopBurst {
+  id: number;
+  x: number;
+  y: number;
+  emoji: string;
+}
+
 export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
   const [missionIdx, setMissionIdx] = useState(0);
   const [targetCount, setTargetCount] = useState(0);
   const [isVictory, setIsVictory] = useState(false);
   const [balloons, setBalloons] = useState<BalloonItem[]>([]);
+  const [popBursts, setPopBursts] = useState<PopBurst[]>([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const currentMission = MISSIONS[missionIdx];
   const GOAL = 10;
 
-  // Cria um único balão balanceando cor da missão e cores aleatórias
+  // Cria um único balão que SEMPRE nasce abaixo da tela (top: 110%)
   const createSingleBalloon = useCallback(
     (delaySec = 0): BalloonItem => {
       const isTarget = Math.random() < 0.55;
@@ -117,13 +125,33 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
     [currentMission]
   );
 
+  // Inicializa balões já distribuídos pelo céu com offsets negativos
   const initBalloons = useCallback(() => {
     const initialList: BalloonItem[] = [];
     for (let i = 0; i < 6; i++) {
-      initialList.push(createSingleBalloon(i * 0.75));
+      const duration = 5.5 + Math.random() * 2.0;
+      // Delay negativo inicia a animação como se já estivesse rodando há X segundos
+      // Isso espalha os balões pelo céu imediatamente, sem piscar no topo nem esperar no rodapé!
+      const startOffset = -(i * 1.1 + Math.random() * 0.8);
+      const isTarget = i % 2 === 0;
+      const chosenColor = isTarget
+        ? currentMission
+        : MISSIONS[Math.floor(Math.random() * MISSIONS.length)];
+
+      initialList.push({
+        id: Date.now() + Math.random() + i,
+        missionId: chosenColor.id,
+        emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
+        colorBg: chosenColor.gradient,
+        borderColor: chosenColor.borderColor,
+        leftPercent: 8 + (i * 14) + Math.random() * 4,
+        durationSec: duration,
+        delaySec: startOffset,
+        sizePx: 80 + Math.random() * 20,
+      });
     }
     setBalloons(initialList);
-  }, [createSingleBalloon]);
+  }, [currentMission]);
 
   useEffect(() => {
     initBalloons();
@@ -144,6 +172,18 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
     const clientX = e.clientX || (typeof window !== "undefined" ? window.innerWidth / 2 : 200);
     const clientY = e.clientY || (typeof window !== "undefined" ? window.innerHeight / 2 : 300);
 
+    // Efeito visual instantâneo de explosão no local do toque
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const burstX = clientX - rect.left;
+      const burstY = clientY - rect.top;
+      const burstId = Date.now() + Math.random();
+      setPopBursts((prev) => [...prev, { id: burstId, x: burstX, y: burstY, emoji: balloon.emoji }]);
+      setTimeout(() => {
+        setPopBursts((prev) => prev.filter((p) => p.id !== burstId));
+      }, 400);
+    }
+
     confetti({
       particleCount: isMatch ? 36 : 18,
       spread: isMatch ? 70 : 45,
@@ -153,9 +193,10 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
       },
     });
 
+    // Remove o balão estourado e nasce um novo SEMPRE no rodapé (delay = 0, top: 110%)
     setBalloons((prev) => {
       const remaining = prev.filter((b) => b.id !== balloon.id);
-      const newBalloon = createSingleBalloon(0.2);
+      const newBalloon = createSingleBalloon(0);
       return [...remaining, newBalloon];
     });
 
@@ -236,30 +277,43 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
         ☀️
       </div>
 
-      {/* Estilo de animação CSS: Balões começam SEMPRE abaixo da tela e sobem até o topo */}
+      {/* Estilo de animação CSS: Balões começam SEMPRE abaixo da tela (top: 110%) e sobem até o topo */}
       <style jsx>{`
         @keyframes floatUpFromBottom {
           0% {
-            top: 105%;
+            top: 108%;
             transform: translateX(0px) scale(0.95);
             opacity: 0.95;
           }
           50% {
-            transform: translateX(16px) scale(1.03);
+            transform: translateX(18px) scale(1.02);
           }
           100% {
             top: -25%;
-            transform: translateX(-14px) scale(1.08);
+            transform: translateX(-16px) scale(1.06);
             opacity: 1;
           }
         }
         .balloon-rising {
+          top: 110%;
           animation-name: floatUpFromBottom;
           animation-timing-function: linear;
           animation-iteration-count: infinite;
+          animation-fill-mode: both;
           will-change: top, transform;
         }
       `}</style>
+
+      {/* Explosões visuais táteis de balões estourados */}
+      {popBursts.map((p) => (
+        <div
+          key={p.id}
+          className="absolute z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center animate-ping"
+          style={{ left: `${p.x}px`, top: `${p.y}px` }}
+        >
+          <span className="text-6xl drop-shadow select-none">💥</span>
+        </div>
+      ))}
 
       {/* Renderiza os balões gigantes pelo céu inteiro */}
       {balloons.map((b) => {
@@ -271,6 +325,7 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
             onPointerDown={(e) => handlePop(b, e)}
             className="balloon-rising absolute cursor-pointer active:scale-125 transition-transform z-20"
             style={{
+              top: "110%",
               left: `${b.leftPercent}%`,
               animationDuration: `${b.durationSec}s`,
               animationDelay: `${b.delaySec}s`,
