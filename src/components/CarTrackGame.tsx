@@ -484,7 +484,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
         {/* VEÍCULO DO JOGADOR COM TILT DINÂMICO E ANIMAÇÃO */}
         <div
-          className={`absolute z-25 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-100 ease-out top-[68%] landscape:top-[58%] ${
+          className={`absolute z-25 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-100 ease-out top-[64%] landscape:top-[48%] ${
             isJumping ? "scale-125 -translate-y-16" : "scale-100"
           }`}
           style={{
@@ -503,7 +503,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 1. JIPE DA ARCA DE NOÉ (Safari Bíblico) */}
           {vehicle === "safari" && (
-            <div className="w-16 h-24 sm:w-24 sm:h-36 landscape:w-12 landscape:h-16 drop-shadow-2xl">
+            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 {/* Rodas Robustas */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#0F172A" />
@@ -530,7 +530,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
           {vehicle === "chariot" && (
-            <div className="w-16 h-24 sm:w-24 sm:h-36 landscape:w-12 landscape:h-16 drop-shadow-2xl">
+            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 {/* Rodas Flamejantes de Fogo */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#EA580C" />
@@ -556,7 +556,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
           {vehicle === "fire" && (
-            <div className="w-16 h-24 sm:w-24 sm:h-36 landscape:w-12 landscape:h-16 drop-shadow-2xl">
+            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="6" y="30" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="118" y="30" width="16" height="34" rx="6" fill="#0F172A" />
@@ -582,7 +582,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 4. DINO DA CRIAÇÃO */}
           {vehicle === "dino" && (
-            <div className="w-16 h-24 sm:w-24 sm:h-36 landscape:w-12 landscape:h-16 drop-shadow-2xl">
+            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="2" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="116" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />

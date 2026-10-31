@@ -157,15 +157,15 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
   return (
     <>
       <header className="w-full py-1 sm:py-2.5 px-2 sm:px-4 flex items-center justify-between gap-2 z-30 select-none flex-shrink-0">
-        {/* Lado Esquerdo: Marca & Subtítulo */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
-          <span className="text-2xl sm:text-3xl drop-shadow animate-pulse">☀️</span>
+        {/* Lado Esquerdo: Marca & Subtítulo (NUNCA TRUNCA COM RETICÊNCIAS) */}
+        <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0 min-w-0">
+          <span className="text-xl sm:text-3xl drop-shadow select-none">☀️</span>
           <div className="flex flex-col min-w-0">
-            <div className="flex items-center gap-1">
-              <h1 className="text-base sm:text-2xl md:text-3xl font-black text-white drop-shadow-[0_2px_4px_rgba(15,23,42,0.45)] tracking-wide leading-tight truncate">
+            <div className="flex items-center gap-1 min-w-0">
+              <h1 className="text-sm sm:text-2xl md:text-3xl font-black text-white drop-shadow-[0_2px_4px_rgba(15,23,42,0.45)] tracking-wide leading-tight whitespace-nowrap">
                 MUNDINHO MÁGICO
               </h1>
-              <span className="text-base sm:text-xl drop-shadow">🌈</span>
+              <span className="text-sm sm:text-xl drop-shadow select-none">🌈</span>
             </div>
             <span className="hidden sm:inline-block text-[10px] sm:text-xs font-black text-amber-950 bg-kids-yellow px-2 py-0.5 rounded-full border border-amber-500 shadow-sm uppercase tracking-wider w-fit">
               <Sparkles size={11} className="inline mr-1 text-amber-700" />
@@ -183,17 +183,19 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
               className="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-emerald-700 shadow-kid flex items-center gap-1 font-black text-xs sm:text-sm animate-pulse-gentle active:scale-95"
               title="Instalar Aplicativo Mundinho Mágico"
             >
-              <Download size={16} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+              <Download size={14} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="hidden sm:inline">INSTALAR APP</span>
-              <span className="sm:hidden text-[11px]">INSTALAR</span>
+              <span className="sm:hidden text-[10px] tracking-wider">APP</span>
             </button>
           )}
 
           {/* Som */}
           <SoundButton />
 
-          {/* Tela Cheia */}
-          <FullscreenButton />
+          {/* Tela Cheia (apenas tablet / desktop para não espremer o mobile vertical) */}
+          <div className="hidden sm:block">
+            <FullscreenButton />
+          </div>
 
           {/* Cantinho dos Pais */}
           {onOpenParents && (

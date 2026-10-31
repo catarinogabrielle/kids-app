@@ -1562,7 +1562,7 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
         )}
 
         {/* Linha de Ferramentas + Paleta de Cores Integrada */}
-        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4">
+        <div className="w-full flex flex-col sm:flex-row landscape:flex-row items-center justify-between gap-1.5 sm:gap-4 landscape:gap-2">
           {/* 4 Ferramentas Táteis: Balde, Pincel, Borracha, Carimbos */}
           <div className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button

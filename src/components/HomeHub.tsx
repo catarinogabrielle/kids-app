@@ -117,46 +117,50 @@ export function HomeHub({ onSelectGame, onOpenParents }: HomeHubProps) {
 
   return (
     <div className="w-full h-full flex flex-col justify-between overflow-hidden select-none px-2 sm:px-4 py-1 sm:py-2">
-      {/* 1. HEADER DO HUB: LOGO + INSTALAR + SOM + TELA CHEIA + PAIS (SEM COLISÃO) */}
+      {/* 1. HEADER DO HUB: LOGO + INSTALAR + SOM + TELA CHEIA + PAIS (SEM RETICÊNCIAS) */}
       <HubHeader onOpenParents={onOpenParents} />
 
-      {/* 2. GRADE DOS 10 JOGOS COM PROPORÇÕES REAIS (NUNCA EXPANDIDAS DEMAIS NO DESKTOP) */}
-      <div className="max-w-5xl mx-auto w-full flex-1 min-h-0 flex flex-col justify-center px-1 sm:px-2 pb-[max(6px,env(safe-area-inset-bottom))]">
-        <div className="w-full h-full max-h-[82vh] landscape:max-h-[80vh] grid grid-cols-2 grid-rows-5 landscape:grid-cols-5 landscape:grid-rows-2 sm:grid-cols-5 sm:grid-rows-2 gap-2 sm:gap-3">
-          {allActivities.map((act) => (
-            <button
-              key={act.id}
-              onClick={() => {
-                sounds.playPop();
-                onSelectGame(act.id);
-              }}
-              className={`kid-btn group relative w-full h-full rounded-2xl sm:rounded-3xl border-3 sm:border-4 ${act.borderColor} bg-gradient-to-br ${act.gradient} shadow-kid flex flex-col items-center justify-between p-1.5 sm:p-2.5 overflow-hidden active:scale-95 transition-transform duration-100 hover:scale-[1.02]`}
-            >
-              {/* Brilho Superior Curvo Estilo Brinquedo */}
-              <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-2xl pointer-events-none" />
-              <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full pointer-events-none" />
+      {/* 2. GRADE DOS 10 JOGOS: ASPECTO REAL EQUILIBRADO NO DESKTOP E FULLSCREEN NO MOBILE */}
+      <div className="w-full flex-1 min-h-0 flex items-center justify-center p-1 sm:p-2 lg:p-4">
+        <div className="w-full max-w-7xl 2xl:max-w-[1440px] h-full flex flex-col justify-center">
+          <div className="w-full h-full max-h-[84vh] landscape:max-h-[82vh] sm:max-h-[75vh] sm:h-auto sm:aspect-[5/2.25] grid grid-cols-2 grid-rows-5 landscape:grid-cols-5 landscape:grid-rows-2 sm:grid-cols-5 sm:grid-rows-2 gap-2 sm:gap-3 lg:gap-4">
+            {allActivities.map((act) => (
+              <button
+                key={act.id}
+                onClick={() => {
+                  sounds.playPop();
+                  onSelectGame(act.id);
+                }}
+                className={`kid-btn group relative w-full h-full rounded-2xl sm:rounded-3xl border-3 sm:border-4 ${act.borderColor} bg-gradient-to-br ${act.gradient} shadow-kid flex flex-col items-center justify-between p-1.5 sm:p-2.5 overflow-hidden active:scale-95 transition-transform duration-100 hover:scale-[1.02]`}
+              >
+                {/* Brilho Superior Curvo Estilo Brinquedo */}
+                <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-2xl pointer-events-none" />
+                <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full pointer-events-none" />
 
-              {/* Ícone Central Gigante e Proporcional */}
-              <div className="relative flex-1 flex items-center justify-center w-full min-h-0">
-                <span className="text-4xl sm:text-5xl md:text-6xl landscape:text-3xl lg:text-6xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)] group-hover:scale-110 transition-transform duration-200 select-none">
-                  {act.emoji}
-                </span>
-                <span className="absolute bottom-0 right-1/4 translate-x-3 text-lg sm:text-2xl landscape:text-base drop-shadow select-none">
-                  {act.sideEmoji}
-                </span>
-              </div>
+                {/* Ícone Central em Medalhão 3D Grande e Proporcional */}
+                <div className="relative flex-1 flex items-center justify-center w-full min-h-0 py-0.5">
+                  <div className="w-12 h-12 landscape:w-11 landscape:h-11 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-2xl sm:rounded-3xl bg-white/25 backdrop-blur-sm border border-white/50 shadow-inner flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <span className="text-2xl landscape:text-2xl sm:text-4xl md:text-5xl lg:text-6xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)] select-none">
+                      {act.emoji}
+                    </span>
+                  </div>
+                  <span className="absolute bottom-0 right-1/4 translate-x-3 text-xs sm:text-base md:text-xl lg:text-2xl drop-shadow select-none">
+                    {act.sideEmoji}
+                  </span>
+                </div>
 
-              {/* Placa do Título com Contraste Alto e Texto Legível */}
-              <div className="w-full bg-white/95 py-0.5 sm:py-1 px-1 sm:px-2 rounded-xl sm:rounded-2xl border border-white shadow-sm z-10 flex flex-col items-center justify-center flex-shrink-0">
-                <span className="font-black text-[11px] sm:text-xs md:text-sm text-slate-800 tracking-tight whitespace-nowrap leading-tight text-center">
-                  {act.title}
-                </span>
-                <span className="hidden sm:inline text-[9px] font-bold text-slate-500 whitespace-nowrap leading-none mt-0.5">
-                  {act.sub}
-                </span>
-              </div>
-            </button>
-          ))}
+                {/* Placa do Título com Contraste Alto e Texto Sem Reticências */}
+                <div className="w-full bg-white/95 py-0.5 sm:py-1 px-1 sm:px-2 rounded-xl sm:rounded-2xl border border-white shadow-sm z-10 flex flex-col items-center justify-center flex-shrink-0">
+                  <span className="font-black text-[10px] landscape:text-[10px] sm:text-xs md:text-sm lg:text-base text-slate-800 tracking-tight leading-tight text-center break-words">
+                    {act.title}
+                  </span>
+                  <span className="hidden sm:inline text-[9px] md:text-[11px] lg:text-xs font-bold text-slate-500 whitespace-nowrap leading-none mt-0.5">
+                    {act.sub}
+                  </span>
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

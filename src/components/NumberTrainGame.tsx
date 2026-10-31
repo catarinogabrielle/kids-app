@@ -236,12 +236,12 @@ function FreightWagon({
     >
       {/* Indicador no Vagão da Vez */}
       {isNext && (
-        <div className="absolute -top-9 sm:-top-12 z-20 flex flex-col items-center pointer-events-none animate-pulse-gentle">
-          <span className="bg-kids-yellow text-amber-950 text-[11px] sm:text-sm font-black px-2.5 py-0.5 sm:px-3 sm:py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
-            <Sparkles size={12} className="text-amber-600 sm:w-3.5 sm:h-3.5" />
+        <div className="absolute -top-7 sm:-top-10 landscape:-top-7 z-20 flex flex-col items-center pointer-events-none animate-pulse-gentle">
+          <span className="bg-kids-yellow text-amber-950 text-[10px] sm:text-xs font-black px-2 py-0.5 sm:px-2.5 sm:py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
+            <Sparkles size={11} className="text-amber-600 sm:w-3 sm:h-3" />
             {isMystery ? "Qual é o Número?" : `Vagão ${wagon.num}`}
           </span>
-          <span className="text-base sm:text-lg -mt-0.5">👇</span>
+          <span className="text-sm sm:text-base -mt-0.5">👇</span>
         </div>
       )}
 
@@ -561,7 +561,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
           <div className="relative w-full flex flex-col items-center justify-center">
             <div
               ref={scrollContainerRef}
-              className="relative w-full overflow-x-auto pb-1 pt-12 sm:pt-16 landscape:pt-12 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
+              className="relative w-full overflow-x-auto pb-1 pt-14 sm:pt-20 landscape:pt-14 scrollbar-none flex items-end justify-start xl:justify-center px-4 sm:px-12"
             >
               <div
                 className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${

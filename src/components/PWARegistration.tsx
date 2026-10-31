@@ -2,22 +2,25 @@
 
 import { useEffect } from "react";
 
+const CURRENT_CACHE_NAME = "mundinho-magico-v6";
+
 export function PWARegistration() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    // 1. Limpa automaticamente caches antigos (v1/v2) que prendiam versões antigas
+    // 1. Limpa automaticamente QUALQUER cache antigo do navegador (israel-kids-*, mundinho-magico-v1..v5)
+    // Isso garante que o usuário nunca mais precise dar "Clear site data" manualmente para ver as atualizações!
     if ("caches" in window) {
       caches.keys().then((keys) => {
         keys.forEach((key) => {
-          if (key !== "israel-kids-cache-v3") {
+          if (key !== CURRENT_CACHE_NAME) {
             caches.delete(key);
           }
         });
       });
     }
 
-    // 2. Registra o Service Worker sem cache de script e força verificação de atualizações
+    // 2. Registra o Service Worker com bypass de cache HTTP e atualização automática
     if ("serviceWorker" in navigator) {
       let refreshing = false;
 
@@ -31,7 +34,7 @@ export function PWARegistration() {
       navigator.serviceWorker
         .register("/sw.js", { updateViaCache: "none" })
         .then((registration) => {
-          // Verifica imediatamente no servidor se há nova versão
+          // Força verificação imediata no servidor
           registration.update().catch(() => {});
 
           if (registration.waiting) {
