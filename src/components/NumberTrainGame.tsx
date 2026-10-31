@@ -447,6 +447,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
     if (isTrainMoving) return;
 
     if (num === expectedNumber) {
+      sounds.playScale(num);
       sounds.playSnap();
       sounds.playChime(620 + num * 35);
       const updated = [...placedNumbers, num];

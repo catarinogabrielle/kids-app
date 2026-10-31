@@ -134,6 +134,51 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
     return Math.max(75, Math.min(rect.width - 75, localX));
   }, []);
 
+  const tumbleOff = useCallback(
+    (
+      block: PlacedBlock,
+      direction: number,
+      fromY: number,
+      containerHeight: number
+    ) => {
+      sounds.playTowerFall();
+
+      setFallingBlock({
+        block: { ...block, x: block.x + direction * 45 },
+        currentY: fromY,
+        targetY: containerHeight + 120,
+        rotation: direction * 80,
+        isTumbling: true,
+      });
+
+      setTimeout(() => {
+        setFallingBlock(null);
+      }, 550);
+    },
+    []
+  );
+
+  const finalizePlacement = useCallback((block: PlacedBlock, tilt: number) => {
+    sounds.playScale(stackedBlocks.length + 1);
+    sounds.playSnap();
+    setIsScreenShaking(true);
+    setTimeout(() => setIsScreenShaking(false), 180);
+
+    setStackedBlocks((prev) => {
+      const next = [...prev, { ...block, rotation: tilt }];
+      if (next.length % 5 === 0) {
+        sounds.playSparkle();
+        sounds.playSuccess();
+        confetti({
+          particleCount: 80,
+          spread: 85,
+          origin: { y: 0.6 },
+        });
+      }
+      return next;
+    });
+  }, [stackedBlocks.length]);
+
   // SOLTURA DO BLOCO COM GRAVIDADE
   const triggerDrop = useCallback(
     (dropClientX: number) => {
@@ -211,48 +256,8 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
 
       requestAnimationFrame(animateFall);
     },
-    [isDemolishing, fallingBlock, getContainerRelativeX, stackedBlocks, cameraOffsetY, selectedType]
+    [isDemolishing, fallingBlock, getContainerRelativeX, stackedBlocks, cameraOffsetY, selectedType, finalizePlacement, tumbleOff]
   );
-
-  const finalizePlacement = (block: PlacedBlock, tilt: number) => {
-    sounds.playSnap();
-    setIsScreenShaking(true);
-    setTimeout(() => setIsScreenShaking(false), 180);
-
-    setStackedBlocks((prev) => {
-      const next = [...prev, { ...block, rotation: tilt }];
-      if (next.length % 5 === 0) {
-        sounds.playSuccess();
-        confetti({
-          particleCount: 70,
-          spread: 80,
-          origin: { y: 0.6 },
-        });
-      }
-      return next;
-    });
-  };
-
-  const tumbleOff = (
-    block: PlacedBlock,
-    direction: number,
-    fromY: number,
-    containerHeight: number
-  ) => {
-    sounds.playTowerFall();
-
-    setFallingBlock({
-      block: { ...block, x: block.x + direction * 45 },
-      currentY: fromY,
-      targetY: containerHeight + 120,
-      rotation: direction * 80,
-      isTumbling: true,
-    });
-
-    setTimeout(() => {
-      setFallingBlock(null);
-    }, 550);
-  };
 
   // Eventos de ponteiro robustos com listeners globais enquanto arrasta
   const handleArenaPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -458,6 +463,12 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
               >
                 <span className="text-4xl drop-shadow">{b.emoji}</span>
               </div>
+              {/* Pombinha da Paz no topo da torre */}
+              {idx === stackedBlocks.length - 1 && (
+                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-2xl animate-bounce pointer-events-none select-none">
+                  🕊️
+                </div>
+              )}
             </div>
           ))}
         </div>

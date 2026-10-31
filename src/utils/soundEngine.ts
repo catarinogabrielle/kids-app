@@ -409,6 +409,130 @@ class SoundEngine {
     osc.start(now);
     osc.stop(now + 0.45);
   }
+
+  // Escala Musical Dó Maior (para contagem progressiva, blocos empilhados e vagões do trem)
+  public playScale(step: number) {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    // Frequências da escala maior C4 a C6
+    const majorScale = [
+      261.63, // C4 (Dó)
+      293.66, // D4 (Ré)
+      329.63, // E4 (Mi)
+      349.23, // F4 (Fá)
+      392.0,  // G4 (Sol)
+      440.0,  // A4 (Lá)
+      493.88, // B4 (Si)
+      523.25, // C5 (Dó agudo)
+      587.33, // D5 (Ré)
+      659.25, // E5 (Mi)
+      698.46, // F5 (Fá)
+      783.99, // G5 (Sol)
+      880.0,  // A5 (Lá)
+      987.77, // B5 (Si)
+      1046.5, // C6 (Dó super agudo)
+    ];
+
+    const noteIdx = Math.max(0, Math.min(majorScale.length - 1, step - 1));
+    const freq = majorScale[noteIdx];
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(freq, now);
+
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.35);
+  }
+
+  // Efeito de Brilho / Glitter Mágico (Sparkle cintilante)
+  public playSparkle() {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    const sparkleFreqs = [1318.51, 1567.98, 2093.0, 2637.02];
+    const now = this.ctx.currentTime;
+
+    sparkleFreqs.forEach((freq, i) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const t = now + i * 0.045;
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, t);
+
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.2);
+    });
+  }
+
+  // Sons carinhosos e procedurais para animais bíblicos
+  public playAnimalSound(species: string) {
+    if (this.isMuted) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+
+    if (species === "lion") {
+      // Rugido amigável e fofo de leãozinho (tom grave com vibração amigável)
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(140, now);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.35);
+
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.35);
+    } else if (species === "elephant") {
+      // Trombinha de elefantinho
+      this.playHonk();
+    } else if (species === "sheep") {
+      // Méééé carinhoso de ovelhinha
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.linearRampToValueAtTime(290, now + 0.12);
+      osc.frequency.linearRampToValueAtTime(310, now + 0.25);
+
+      gain.gain.setValueAtTime(0.28, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    } else if (species === "giraffe") {
+      // Girafinha curiosa (duplo sininho)
+      this.playStar();
+    } else {
+      this.playPop();
+    }
+  }
 }
 
 export const sounds = new SoundEngine();

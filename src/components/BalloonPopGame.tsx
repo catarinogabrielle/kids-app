@@ -89,6 +89,7 @@ interface PopBurst {
   x: number;
   y: number;
   emoji: string;
+  isMatch: boolean;
 }
 
 export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
@@ -163,8 +164,8 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
     const isMatch = balloon.missionId === currentMission.id;
 
     if (isMatch) {
-      sounds.playStar();
-      sounds.playChime(640 + targetCount * 30);
+      sounds.playSparkle();
+      sounds.playScale((targetCount % 8) + 1);
     } else {
       sounds.playPop();
     }
@@ -178,10 +179,10 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
       const burstX = clientX - rect.left;
       const burstY = clientY - rect.top;
       const burstId = Date.now() + Math.random();
-      setPopBursts((prev) => [...prev, { id: burstId, x: burstX, y: burstY, emoji: balloon.emoji }]);
+      setPopBursts((prev) => [...prev, { id: burstId, x: burstX, y: burstY, emoji: balloon.emoji, isMatch }]);
       setTimeout(() => {
         setPopBursts((prev) => prev.filter((p) => p.id !== burstId));
-      }, 400);
+      }, 450);
     }
 
     confetti({
@@ -304,14 +305,19 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
         }
       `}</style>
 
-      {/* Explosões visuais táteis de balões estourados */}
+      {/* Explosões visuais táteis de balões estourados com pontos flutuantes */}
       {popBursts.map((p) => (
         <div
           key={p.id}
-          className="absolute z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2 flex items-center justify-center animate-ping"
+          className="absolute z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center animate-ping"
           style={{ left: `${p.x}px`, top: `${p.y}px` }}
         >
           <span className="text-6xl drop-shadow select-none">💥</span>
+          {p.isMatch && (
+            <span className="text-lg font-black text-amber-500 bg-white/95 px-2 py-0.5 rounded-full border border-amber-400 shadow-md whitespace-nowrap">
+              +1 ⭐
+            </span>
+          )}
         </div>
       ))}
 

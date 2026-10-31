@@ -1,7 +1,7 @@
 // Service Worker com Estratégia Network-First:
 // Sempre busca a versão mais nova do servidor quando há internet (sem precisar dar Clear Site Data!)
 // E mantém o cache atualizado automaticamente para funcionar offline quando necessário.
-const CACHE_NAME = "mundinho-magico-v12";
+const CACHE_NAME = "mundinho-magico-v13";
 
 const PRECACHE_ASSETS = [
   "/",

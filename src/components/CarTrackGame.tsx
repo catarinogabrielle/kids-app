@@ -514,6 +514,11 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
             title="Clique para cumprimentar!"
           >
             {s.emoji}
+            {s.isBouncing && (
+              <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-sm sm:text-base animate-bounce">
+                ❤️
+              </span>
+            )}
           </div>
         ))}
 

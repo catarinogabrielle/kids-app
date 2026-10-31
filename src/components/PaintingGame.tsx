@@ -102,7 +102,7 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
     const y = cssY * scaleY;
 
     if (toolMode === "stamp") {
-      sounds.playPop();
+      sounds.playSparkle();
       setStamps((prev) => [
         ...prev,
         { id: Date.now() + Math.random(), emoji: selectedStamp, x: cssX, y: cssY },

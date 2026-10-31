@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { GameHeader } from "@/components/TopBar";
-import { RotateCcw, ArrowRight, Check, Sparkles } from "lucide-react";
+import { RotateCcw, ArrowRight, Check, Sparkles, Eye } from "lucide-react";
 
 interface PuzzleDefinition {
   id: string;
@@ -207,6 +207,7 @@ const PUZZLES: PuzzleDefinition[] = [
 export function PuzzleGame({ onHome }: { onHome?: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [placedPieces, setPlacedPieces] = useState<number[]>([]);
+  const [showHint, setShowHint] = useState(true);
 
   // Estado do arraste com o dedo
   const [draggingPieceId, setDraggingPieceId] = useState<number | null>(null);
@@ -284,6 +285,7 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
 
       if (targetMatched) {
         // ENCAIXOU PERFEITAMENTE NO LUGAR CERTO!
+        sounds.playSparkle();
         sounds.playSnap();
         const nextPlaced = [...placedPieces, pieceId];
         setPlacedPieces(nextPlaced);
@@ -417,10 +419,25 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 sm:gap-1.5">
             <span className="text-xs font-black text-purple-900 bg-purple-100 px-2 py-0.5 rounded-xl border border-purple-300">
               {placedPieces.length} / 4
             </span>
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setShowHint((prev) => !prev);
+              }}
+              className={`kid-btn px-2 py-1 rounded-xl border shadow-sm font-black text-xs flex items-center gap-1 ${
+                showHint
+                  ? "bg-yellow-300 text-amber-950 border-amber-500"
+                  : "bg-white text-slate-600 border-slate-300"
+              }`}
+              title="Espiar Imagem Completa"
+            >
+              <Eye size={15} />
+              <span className="hidden sm:inline">DICA</span>
+            </button>
             <button
               onClick={handleReset}
               className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
@@ -440,9 +457,11 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
           className="relative w-full max-w-3xl max-h-full aspect-[4/3] rounded-3xl sm:rounded-4xl overflow-hidden border-6 sm:border-8 border-amber-950 shadow-[0_16px_45px_rgba(0,0,0,0.28)] bg-amber-100/80"
         >
           {/* Fundo Guia Sutil Desbotado */}
-          <div className="absolute inset-0 opacity-30 filter grayscale pointer-events-none">
-            {currentPuzzle.renderSvg()}
-          </div>
+          {showHint && (
+            <div className="absolute inset-0 opacity-35 filter grayscale pointer-events-none transition-opacity duration-300">
+              {currentPuzzle.renderSvg()}
+            </div>
+          )}
 
           {/* Grid dos 4 Quadrantes com Encaixe Interativo */}
           <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
@@ -508,18 +527,18 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
 
       {/* DOCK INFERIOR: BANDEJA DE PEÇAS PROPORCIONAIS */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1 sm:gap-2 flex-shrink-0">
-          <div className="max-w-2xl md:max-w-3xl mx-auto w-full flex items-center justify-between px-1">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3.5 border-t-3 sm:border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1 sm:gap-2 flex-shrink-0">
+          <div className="max-w-md sm:max-w-xl md:max-w-2xl mx-auto w-full flex items-center justify-between px-1">
             <div className="flex items-center gap-1.5">
               <Sparkles className="text-amber-500" size={16} />
-              <span className="text-xs sm:text-base font-black text-teal-950">
+              <span className="text-xs sm:text-sm font-black text-teal-950">
                 Arraste ou toque na peça para encaixar no quadro:
               </span>
             </div>
           </div>
 
-          {/* Os 4 Blocos da Imagem na Bandeja com Proporção 4:3 Real */}
-          <div className="max-w-2xl md:max-w-3xl mx-auto w-full grid grid-cols-4 gap-2 sm:gap-4">
+          {/* Os 4 Blocos da Imagem na Bandeja com Proporção 4:3 Real Estrita */}
+          <div className="max-w-md sm:max-w-xl md:max-w-2xl mx-auto w-full grid grid-cols-4 gap-2 sm:gap-4 justify-items-center">
             {[0, 1, 2, 3].map((pieceId) => {
               const isPlaced = placedPieces.includes(pieceId);
               const isDraggingThis = draggingPieceId === pieceId;
@@ -528,7 +547,7 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
                 return (
                   <div
                     key={pieceId}
-                    className="aspect-[4/3] h-16 sm:h-24 md:h-28 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
+                    className="w-full max-w-[125px] aspect-[4/3] rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
                   >
                     <span className="text-xl sm:text-3xl font-black text-slate-400">✓</span>
                   </div>
@@ -540,7 +559,7 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
                   key={pieceId}
                   onPointerDown={(e) => handlePiecePointerDown(pieceId, e)}
                   onClick={() => handleDirectClickPiece(pieceId)}
-                  className={`kid-btn relative aspect-[4/3] h-16 sm:h-24 md:h-28 rounded-xl sm:rounded-2xl border-2 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
+                  className={`kid-btn relative w-full max-w-[125px] aspect-[4/3] rounded-xl sm:rounded-2xl border-2 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
                     isDraggingThis
                       ? "opacity-30 border-dashed border-amber-500 scale-95"
                       : "border-amber-600 bg-white shadow-kid-sm hover:scale-105 active:scale-95"

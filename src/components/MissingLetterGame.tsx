@@ -230,6 +230,7 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
     if (isCompleted) return;
 
     if (letter === current.missingLetter) {
+      sounds.playSparkle();
       sounds.playSuccess();
       setIsCompleted(true);
       confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
@@ -314,7 +315,7 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
             className={`w-12 h-14 sm:w-20 sm:h-24 landscape:w-11 landscape:h-12 rounded-xl sm:rounded-3xl border-3 sm:border-4 flex items-center justify-center font-black text-2xl sm:text-6xl landscape:text-2xl transition-all ${
               isCompleted
                 ? "bg-kids-green text-white border-emerald-700 scale-105 shadow-kid"
-                : "bg-amber-100 text-amber-950 border-dashed border-amber-500"
+                : "bg-amber-100 text-amber-950 border-dashed border-amber-500 animate-pulse ring-2 sm:ring-4 ring-yellow-400"
             }`}
           >
             {isCompleted ? current.missingLetter : "?"}

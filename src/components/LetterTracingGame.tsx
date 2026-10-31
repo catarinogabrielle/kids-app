@@ -382,6 +382,7 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
           const next = [...prev, cp.id];
           if (next.length === current.checkpoints.length && !isCompleted) {
             setIsCompleted(true);
+            sounds.playSparkle();
             sounds.playSuccess();
             confetti({
               particleCount: 130,
