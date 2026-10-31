@@ -323,35 +323,35 @@ export function BlocksGame() {
         {/* HUD Flutuante no Topo */}
         <div
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-40 pointer-events-none"
+          className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-40 pointer-events-none landscape-compact-topbar"
         >
-          <div className="pointer-events-auto flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-orange px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
-            <span className="text-2xl sm:text-3xl">🧱</span>
-            <span className="text-sm sm:text-2xl font-black text-amber-950">
+          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-orange px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg">
+            <span className="text-xl sm:text-3xl">🧱</span>
+            <span className="text-xs sm:text-2xl font-black text-amber-950">
               Torre: {stackedBlocks.length}
             </span>
           </div>
 
-          <div className="pointer-events-auto flex items-center gap-2">
+          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
             <button
               onClick={handleDemolish}
               disabled={stackedBlocks.length === 0 || isDemolishing}
-              className={`kid-btn px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl border-3 sm:border-4 font-black text-sm sm:text-lg flex items-center gap-1.5 transition-all ${
+              className={`kid-btn px-3 sm:px-6 py-1 sm:py-2.5 landscape:py-1 rounded-xl sm:rounded-2xl border-2 sm:border-4 font-black text-xs sm:text-lg flex items-center gap-1 transition-all ${
                 stackedBlocks.length > 0 && !isDemolishing
                   ? "bg-kids-coral text-white border-rose-700 shadow-lg active:scale-90 animate-pulse-gentle"
                   : "bg-white/80 text-gray-400 border-gray-300 opacity-60 cursor-not-allowed"
               }`}
             >
-              <Bomb size={20} className="stroke-[2.5]" />
+              <Bomb size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span>BUM! 💥</span>
             </button>
 
             <button
               onClick={handleClear}
-              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
               title="Limpar Torre"
             >
-              <Trash2 size={20} className="stroke-[2.5]" />
+              <Trash2 size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
             </button>
           </div>
         </div>
@@ -462,8 +462,8 @@ export function BlocksGame() {
       </div>
 
       {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE BLOCOS */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-2 sm:py-3 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
-        <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 overflow-x-auto py-0.5">
+      <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-3 landscape:py-1 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
+        <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-1.5 sm:gap-2 overflow-x-auto py-0.5">
           {BLOCK_TYPES.map((t) => (
             <button
               key={t.id}
@@ -471,13 +471,13 @@ export function BlocksGame() {
                 sounds.playPop();
                 setSelectedType(t);
               }}
-              className={`kid-btn px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border-3 sm:border-4 transition-all flex items-center gap-1.5 flex-shrink-0 ${
+              className={`kid-btn px-2.5 py-1 sm:px-5 sm:py-2.5 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 transition-all flex items-center gap-1 sm:gap-1.5 flex-shrink-0 ${
                 selectedType.id === t.id
                   ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
                   : "bg-slate-50 border-slate-300 hover:bg-amber-50 shadow-sm"
               }`}
             >
-              <span className="text-2xl sm:text-4xl">{t.emoji}</span>
+              <span className="text-xl sm:text-4xl landscape:text-xl">{t.emoji}</span>
               <span className="hidden md:inline text-sm font-black text-amber-950">
                 {t.name}
               </span>

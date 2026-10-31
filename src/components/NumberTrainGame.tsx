@@ -146,7 +146,7 @@ function SteamLocomotive({
 
       <svg
         viewBox="0 0 170 120"
-        className="w-40 h-28 sm:w-60 sm:h-44 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
+        className="w-32 h-24 sm:w-48 sm:h-36 landscape:w-28 landscape:h-22 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
       >
         <defs>
           <linearGradient id="boilerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -246,7 +246,7 @@ function FreightWagon({
 
       <svg
         viewBox="0 0 130 120"
-        className="w-30 h-28 sm:w-44 sm:h-40 drop-shadow-xl overflow-visible select-none"
+        className="w-26 h-24 sm:w-36 sm:h-32 landscape:w-22 landscape:h-20 drop-shadow-xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id={`wagonGrad-${wagon.num}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -485,7 +485,7 @@ export function NumberTrainGame() {
       {/* PALCO FERROVIÁRIO FULL-SCREEN */}
       <div className="relative flex-1 min-h-0 w-full flex flex-col justify-between items-center overflow-hidden">
         {/* HUD SUPERIOR: SELETOR DE MODOS INTELIGENTES + APITO */}
-        <div className="w-full px-2 sm:px-4 pt-2 z-30 flex items-center justify-between gap-1.5 sm:gap-3 flex-shrink-0">
+        <div className="w-full px-2 sm:px-4 pt-1 sm:pt-2 landscape:pt-0.5 z-30 flex items-center justify-between gap-1.5 sm:gap-3 flex-shrink-0 landscape-compact-topbar">
           {/* Seletor dos 4 Modos Inteligentes */}
           <div className="flex items-center gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-teal shadow-md overflow-x-auto scrollbar-none">
             <button
@@ -660,7 +660,7 @@ export function NumberTrainGame() {
 
         {/* DOCK INFERIOR COM AS OPÇÕES DE NÚMEROS (COM SAFE AREA BOTTOM) */}
         {!isTrainMoving && (
-          <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-2 pb-[max(12px,env(safe-area-inset-bottom))] border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+          <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-1 sm:pt-2 pb-[max(8px,env(safe-area-inset-bottom))] border-t-2 sm:border-t-4 border-kids-yellow shadow-md z-20 flex-shrink-0 landscape-dock-compact">
             {/* Opções Modo Missing (3 opções grandonas de múltipla escolha) */}
             {mode === "missing" ? (
               <div className="max-w-md mx-auto w-full flex items-center justify-center gap-3 sm:gap-6 py-1">

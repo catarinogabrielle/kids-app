@@ -208,7 +208,7 @@ export function PaintingGame() {
   return (
     <div className="flex flex-col justify-between w-full h-full select-none overflow-hidden bg-white">
       {/* HUD Superior do Estúdio: Seleção de Desenhos + Foto/Limpar */}
-      <div className="w-full flex items-center justify-between gap-1 sm:gap-3 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-2 sm:px-4 py-1.5 sm:py-2 border-b-4 border-blue-700 shadow-md z-20 flex-shrink-0">
+      <div className="w-full flex items-center justify-between gap-1 sm:gap-3 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-2 sm:px-4 py-1 sm:py-2 landscape:py-0.5 border-b-2 sm:border-b-4 border-blue-700 shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
         {/* 5 Modelos de Desenho Grandes */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
           {[
@@ -1475,7 +1475,7 @@ export function PaintingGame() {
       </div>
 
       {/* DOCK INFERIOR DE ESTÚDIO: FERRAMENTAS + CORES (100% LARGURA COM SAFE AREA) */}
-      <div className="w-full flex flex-col bg-slate-100/95 backdrop-blur-md border-t-4 border-kids-coral px-2 sm:px-4 pt-1.5 sm:pt-2 pb-[max(10px,env(safe-area-inset-bottom))] gap-1.5 z-20 flex-shrink-0">
+      <div className="w-full flex flex-col bg-slate-100/95 backdrop-blur-md border-t-2 sm:border-t-4 border-kids-coral px-2 sm:px-4 pt-1 sm:pt-2 pb-[max(8px,env(safe-area-inset-bottom))] gap-1 sm:gap-1.5 z-20 flex-shrink-0 landscape-dock-compact">
         {/* Sub-barra Dinâmica: Carimbos Emojis */}
         {toolMode === "stamp" && (
           <div className="w-full flex items-center justify-around bg-pink-100 py-1 px-2 rounded-xl border-2 border-pink-300 shadow-sm">

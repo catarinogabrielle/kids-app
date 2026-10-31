@@ -93,3 +93,33 @@ body {
 .animate-pulse-gentle {
   animation: pulseGentle 2.5s ease-in-out infinite;
 }
+
+/* Otimizações Específicas para Mobile Horizontal (Landscape com altura <= 520px) */
+@media (orientation: landscape) and (max-height: 520px) {
+  .landscape-compact-header {
+    margin-bottom: 2px !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+  }
+  .landscape-compact-header h1 {
+    font-size: 1.15rem !important;
+    line-height: 1.1 !important;
+  }
+  .landscape-compact-header .header-badge {
+    display: none !important;
+  }
+  .landscape-compact-topbar {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    height: 36px !important;
+  }
+  .landscape-card-title {
+    font-size: 0.72rem !important;
+    line-height: 1 !important;
+  }
+  .landscape-dock-compact {
+    padding-top: 3px !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom)) !important;
+    gap: 4px !important;
+  }
+}

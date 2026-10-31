@@ -255,28 +255,28 @@ export function MissingLetterGame() {
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-300 via-sky-100 to-amber-100">
       {/* PALCO CENTRAL FULL-SCREEN: CARTÃO GIGANTE DE ILUSTRAÇÃO E PALAVRA */}
-      <div className="relative flex-1 min-h-0 w-full p-3 sm:p-6 pt-16 sm:pt-20 flex flex-col items-center justify-evenly overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col landscape:flex-row items-center justify-evenly landscape:justify-center landscape:gap-6 overflow-hidden">
         {/* HUD Flutuante no Topo */}
-        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-30">
-          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-coral px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
-            <span className="text-2xl sm:text-3xl">🔤</span>
-            <span className="text-sm sm:text-2xl font-black text-rose-950">
+        <div className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-30 landscape-compact-topbar">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-coral px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg">
+            <span className="text-xl sm:text-3xl">🔤</span>
+            <span className="text-xs sm:text-2xl font-black text-rose-950">
               Palavra: {currentIdx + 1} / {wordChallenges.length}
             </span>
           </div>
 
           <button
             onClick={handleReset}
-            className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+            className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
             title="Recomeçar"
           >
-            <RotateCcw size={20} className="stroke-[2.5]" />
+            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
           </button>
         </div>
 
         {/* Cartão Gigante de Exibição do Ícone */}
         <div
-          className={`relative w-56 h-56 sm:w-80 sm:h-80 max-h-[42vh] aspect-square rounded-4xl border-6 sm:border-8 ${
+          className={`relative w-44 h-44 sm:w-80 sm:h-80 landscape:w-36 landscape:h-36 max-h-[42vh] landscape:max-h-[55vh] aspect-square rounded-3xl sm:rounded-4xl border-4 sm:border-8 ${
             current.borderColor
           } bg-gradient-to-br ${current.bgGradient} shadow-[0_16px_40px_rgba(0,0,0,0.22)] flex flex-col items-center justify-center transition-all duration-300 ${
             isCompleted ? "scale-105" : "scale-100"
@@ -287,7 +287,7 @@ export function MissingLetterGame() {
 
           {/* Ícone Gigante de Alta Fidelidade */}
           <span
-            className={`text-8xl sm:text-[130px] leading-none transition-transform duration-300 drop-shadow-2xl select-none ${
+            className={`text-6xl sm:text-[130px] landscape:text-5xl leading-none transition-transform duration-300 drop-shadow-2xl select-none ${
               isCompleted ? "scale-110" : "scale-100"
             }`}
           >
@@ -295,18 +295,18 @@ export function MissingLetterGame() {
           </span>
 
           {/* Dica da Palavra */}
-          <div className="mt-3 bg-white/95 px-4 py-1 rounded-full border-2 border-white/80 shadow-md">
-            <span className="text-xs sm:text-base font-black text-slate-800 flex items-center gap-1.5">
-              <Sparkles size={14} className="text-amber-500" /> {current.hint}
+          <div className="mt-2 bg-white/95 px-3 py-0.5 rounded-full border border-white/80 shadow-md landscape:hidden">
+            <span className="text-[10px] sm:text-base font-black text-slate-800 flex items-center gap-1">
+              <Sparkles size={12} className="text-amber-500" /> {current.hint}
             </span>
           </div>
         </div>
 
         {/* Palavra Gigante com o Espaço da Letra que Falta */}
-        <div className="bg-white/95 px-6 sm:px-10 py-2.5 sm:py-4 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-kids-yellow shadow-xl flex items-center gap-3 sm:gap-4 z-10 flex-shrink-0">
+        <div className="bg-white/95 px-4 sm:px-10 py-2 sm:py-4 landscape:py-1.5 landscape:px-5 rounded-2xl sm:rounded-4xl border-3 sm:border-6 border-kids-yellow shadow-xl flex items-center gap-2 sm:gap-4 z-10 flex-shrink-0">
           {/* Caixa da Letra que Falta */}
           <div
-            className={`w-14 h-16 sm:w-20 sm:h-24 rounded-2xl sm:rounded-3xl border-4 flex items-center justify-center font-black text-3xl sm:text-6xl transition-all ${
+            className={`w-11 h-13 sm:w-20 sm:h-24 landscape:w-11 landscape:h-13 rounded-xl sm:rounded-3xl border-3 sm:border-4 flex items-center justify-center font-black text-2xl sm:text-6xl landscape:text-2xl transition-all ${
               isCompleted
                 ? "bg-kids-green text-white border-emerald-700 scale-105 shadow-kid"
                 : "bg-amber-100 text-amber-950 border-dashed border-amber-500"
@@ -316,7 +316,7 @@ export function MissingLetterGame() {
           </div>
 
           {/* Resto da Palavra */}
-          <span className="font-black text-3xl sm:text-6xl text-slate-800 tracking-wider">
+          <span className="font-black text-2xl sm:text-6xl landscape:text-2xl text-slate-800 tracking-wider">
             {current.restOfWord}
           </span>
         </div>
@@ -324,19 +324,19 @@ export function MissingLetterGame() {
         {/* Modal de Vitória ao Completar a Palavra */}
         {isCompleted && (
           <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-8xl sm:text-9xl mb-2">{current.emoji}</span>
-            <div className="text-3xl sm:text-6xl font-black text-kids-coral mb-2">
+            <span className="text-6xl sm:text-9xl mb-2">{current.emoji}</span>
+            <div className="text-2xl sm:text-6xl font-black text-kids-coral mb-1 sm:mb-2">
               {current.fullName}! ⭐
             </div>
-            <div className="text-base sm:text-2xl font-bold text-slate-700 mb-6">
+            <div className="text-xs sm:text-2xl font-bold text-slate-700 mb-4 sm:mb-6">
               Muito bem, Israel! Você completou a palavra!
             </div>
             <button
               onClick={handleNext}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-3xl px-6 sm:px-12 py-3 sm:py-5 rounded-2xl sm:rounded-4xl border-3 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-2 sm:gap-3"
             >
               <span>MAIS PALAVRAS!</span>
-              <ArrowRight size={30} className="stroke-[3]" />
+              <ArrowRight size={24} className="sm:w-7 sm:h-7 stroke-[3]" />
             </button>
           </div>
         )}
@@ -344,8 +344,8 @@ export function MissingLetterGame() {
 
       {/* DOCK INFERIOR FULL-WIDTH: Letras Gigantes para Escolher (com Safe Area) */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-2 pb-[max(12px,env(safe-area-inset-bottom))] border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
-          <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-3 sm:gap-5">
+        <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] landscape:py-1 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
+          <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-5">
             {current.options.map((letter) => {
               const isWrong = wrongShakeLetter === letter;
 
@@ -353,7 +353,7 @@ export function MissingLetterGame() {
                 <button
                   key={letter}
                   onClick={() => handlePickLetter(letter)}
-                  className={`kid-btn flex-1 py-3 sm:py-5 rounded-2xl sm:rounded-3xl border-4 font-black text-3xl sm:text-5xl transition-all ${
+                  className={`kid-btn flex-1 py-1.5 sm:py-5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black text-2xl sm:text-5xl landscape:text-2xl transition-all ${
                     isWrong
                       ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
                       : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95"

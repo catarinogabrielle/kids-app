@@ -53,55 +53,31 @@ export function TopBar({
     }
   };
 
-  return (
-    <header className="w-full px-1.5 sm:px-4 py-1 sm:py-2 flex items-center justify-between z-30 select-none flex-shrink-0">
-      {/* Botão de Voltar para Casa (Compacto no Mobile, Gigante no Tablet) */}
-      <div className="flex items-center gap-1.5 sm:gap-3">
-        {showHome && onHome && (
-          <button
-            onClick={() => {
-              sounds.playPop();
-              onHome();
-            }}
-            className="kid-btn bg-kids-yellow hover:bg-amber-300 text-amber-950 p-1.5 sm:p-3 rounded-xl sm:rounded-3xl border-2 sm:border-4 border-amber-500 shadow-kid active:scale-95 transition-transform"
-            aria-label="Voltar para a tela inicial"
-          >
-            <Home size={22} className="sm:w-8 sm:h-8 stroke-[2.5]" />
-          </button>
-        )}
+  const isHub = !showHome && !title;
 
-        {title && (
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/85 backdrop-blur-md px-2 sm:px-4 py-0.5 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 border-white shadow-sm">
-            {icon && <span className="text-lg sm:text-3xl">{icon}</span>}
-            <span className="font-extrabold text-xs sm:text-2xl text-slate-800 tracking-wide truncate max-w-[150px] sm:max-w-none">
-              {title}
-            </span>
-          </div>
-        )}
-      </div>
-
-      {/* Botões de Ação da Direita (Som, Tela Cheia, Cantinho dos Pais) */}
-      <div className="flex items-center gap-1 sm:gap-3">
+  if (isHub) {
+    return (
+      <div className="absolute top-1.5 sm:top-2.5 right-1.5 sm:right-3.5 z-40 flex items-center gap-1 sm:gap-2 pointer-events-auto">
         {/* Alternar Som */}
         <button
           onClick={handleToggleMute}
-          className={`kid-btn p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 shadow-kid ${
+          className={`kid-btn p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-kid ${
             isMuted
               ? "bg-gray-200 text-gray-500 border-gray-400"
               : "bg-kids-teal text-white border-teal-600"
           }`}
           title={isMuted ? "Ligar som" : "Desligar som"}
         >
-          {isMuted ? <VolumeX size={20} className="sm:w-6 sm:h-6" /> : <Volume2 size={20} className="sm:w-6 sm:h-6" />}
+          {isMuted ? <VolumeX size={18} className="sm:w-5 sm:h-5" /> : <Volume2 size={18} className="sm:w-5 sm:h-5" />}
         </button>
 
-        {/* Tela Cheia (Ideal para Tablet) */}
+        {/* Tela Cheia */}
         <button
           onClick={handleToggleFullscreen}
-          className="kid-btn hidden sm:flex bg-kids-blue text-white p-2.5 rounded-2xl border-4 border-blue-600 shadow-kid"
+          className="kid-btn bg-kids-blue text-white p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-blue-600 shadow-kid"
           title="Tela Cheia"
         >
-          {isFullscreen ? <Minimize2 size={24} /> : <Maximize2 size={24} />}
+          {isFullscreen ? <Minimize2 size={18} className="sm:w-5 sm:h-5" /> : <Maximize2 size={18} className="sm:w-5 sm:h-5" />}
         </button>
 
         {/* Cantinho dos Pais */}
@@ -111,10 +87,78 @@ export function TopBar({
               sounds.playPop();
               onOpenParents();
             }}
-            className="kid-btn bg-white/90 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid hover:bg-slate-100"
+            className="kid-btn bg-white/95 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100"
             title="Cantinho dos Pais"
           >
-            <Shield size={22} className="sm:w-6 sm:h-6 text-kids-purple stroke-[2.5]" />
+            <Shield size={18} className="sm:w-5 sm:h-5 text-kids-purple stroke-[2.5]" />
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <header className="w-full px-2 sm:px-4 py-1 sm:py-1.5 landscape:py-0.5 flex items-center justify-between z-30 select-none flex-shrink-0 landscape-compact-topbar">
+      {/* Botão de Voltar para Casa (Compacto no Mobile, Gigante no Tablet) */}
+      <div className="flex items-center gap-1.5 sm:gap-2.5">
+        {showHome && onHome && (
+          <button
+            onClick={() => {
+              sounds.playPop();
+              onHome();
+            }}
+            className="kid-btn bg-kids-yellow hover:bg-amber-300 text-amber-950 p-1 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-amber-500 shadow-kid active:scale-95 transition-transform"
+            aria-label="Voltar para a tela inicial"
+          >
+            <Home size={20} className="sm:w-6 sm:h-6 stroke-[2.5]" />
+          </button>
+        )}
+
+        {title && (
+          <div className="flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur-md px-2 sm:px-3.5 py-0.5 sm:py-1 rounded-xl sm:rounded-2xl border-2 border-white shadow-sm">
+            {icon && <span className="text-base sm:text-2xl">{icon}</span>}
+            <span className="font-extrabold text-xs sm:text-xl text-slate-800 tracking-wide truncate max-w-[160px] sm:max-w-none">
+              {title}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Botões de Ação da Direita (Som, Tela Cheia, Cantinho dos Pais) */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Alternar Som */}
+        <button
+          onClick={handleToggleMute}
+          className={`kid-btn p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 shadow-kid ${
+            isMuted
+              ? "bg-gray-200 text-gray-500 border-gray-400"
+              : "bg-kids-teal text-white border-teal-600"
+          }`}
+          title={isMuted ? "Ligar som" : "Desligar som"}
+        >
+          {isMuted ? <VolumeX size={18} className="sm:w-5 sm:h-5" /> : <Volume2 size={18} className="sm:w-5 sm:h-5" />}
+        </button>
+
+        {/* Tela Cheia */}
+        <button
+          onClick={handleToggleFullscreen}
+          className="kid-btn bg-kids-blue text-white p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-blue-600 shadow-kid"
+          title="Tela Cheia"
+        >
+          {isFullscreen ? <Minimize2 size={18} className="sm:w-5 sm:h-5" /> : <Maximize2 size={18} className="sm:w-5 sm:h-5" />}
+        </button>
+
+        {/* Cantinho dos Pais */}
+        {onOpenParents && (
+          <button
+            onClick={() => {
+              sounds.playPop();
+              onOpenParents();
+            }}
+            className="kid-btn bg-white/90 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100"
+            title="Cantinho dos Pais"
+          >
+            <Shield size={18} className="sm:w-5 sm:h-5 text-kids-purple stroke-[2.5]" />
           </button>
         )}
       </div>

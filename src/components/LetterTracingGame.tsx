@@ -507,16 +507,16 @@ export function LetterTracingGame() {
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-indigo-100 via-purple-100 to-pink-100">
       {/* BARRA SUPERIOR: FAIXA ROLÁVEL COM TODO O ALFABETO BÍBLICO */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-2 sm:py-2.5 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0">
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-2.5 landscape:py-1 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
         <button
           onClick={prevLetter}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm flex-shrink-0"
+          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm flex-shrink-0"
           title="Letra Anterior"
         >
-          <ChevronLeft size={22} className="stroke-[3]" />
+          <ChevronLeft size={20} className="sm:w-6 sm:h-6 stroke-[3]" />
         </button>
 
-        <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-0.5 scrollbar-none">
+        <div className="flex items-center gap-1 sm:gap-2.5 overflow-x-auto py-0.5 scrollbar-none">
           {BIBLICAL_ALPHABET.map((item, idx) => (
             <button
               key={item.letter}
@@ -524,13 +524,13 @@ export function LetterTracingGame() {
                 sounds.playPop();
                 setCurrentIdx(idx);
               }}
-              className={`kid-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl border-3 sm:border-4 font-black transition-all flex-shrink-0 ${
+              className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-2 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 font-black transition-all flex-shrink-0 ${
                 currentIdx === idx
                   ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
                   : "bg-slate-50 border-slate-200 hover:bg-amber-50"
               }`}
             >
-              <span className="text-xl sm:text-3xl font-black" style={{ color: item.themeColor }}>
+              <span className="text-lg sm:text-3xl landscape:text-lg font-black" style={{ color: item.themeColor }}>
                 {item.letter}
               </span>
             </button>
@@ -540,31 +540,31 @@ export function LetterTracingGame() {
         <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
           <button
             onClick={nextLetter}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
             title="Próxima Letra"
           >
-            <ChevronRight size={22} className="stroke-[3]" />
+            <ChevronRight size={20} className="sm:w-6 sm:h-6 stroke-[3]" />
           </button>
 
           <button
             onClick={handleReset}
-            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
+            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
             title="Recomeçar Desenho"
           >
-            <RotateCcw size={20} className="stroke-[2.5]" />
+            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
           </button>
         </div>
       </div>
 
       {/* ÁREA CENTRAL: PALCO QUADRADO PROPORCIONAL COM PRECISÃO 1:1 */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 flex items-center justify-center overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
         <div
           ref={stageRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] max-w-[92vw] rounded-3xl sm:rounded-4xl bg-white border-6 sm:border-8 border-kids-purple shadow-[0_16px_45px_rgba(0,0,0,0.2)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
+          className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] landscape:max-h-[76vh] max-w-[92vw] rounded-2xl sm:rounded-4xl bg-white border-4 sm:border-8 border-kids-purple shadow-[0_16px_45px_rgba(0,0,0,0.2)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
           {/* Letra em Traçado Vetorial SVG Perfeito */}
           <div className="absolute inset-0 pointer-events-none">
@@ -644,9 +644,9 @@ export function LetterTracingGame() {
           </div>
 
           {/* Mascote Bíblico no Canto */}
-          <div className="absolute bottom-3 right-3 bg-amber-50/95 border-2 border-amber-300 rounded-2xl px-3 py-1.5 flex items-center gap-2 pointer-events-none shadow-sm">
-            <span className="text-3xl sm:text-5xl">{current.emoji}</span>
-            <span className="text-xs sm:text-base font-black text-amber-950">
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-amber-50/95 border-2 border-amber-300 rounded-xl sm:rounded-2xl px-2 py-0.5 sm:px-3 sm:py-1.5 flex items-center gap-1 sm:gap-2 pointer-events-none shadow-sm">
+            <span className="text-2xl sm:text-5xl landscape:text-2xl">{current.emoji}</span>
+            <span className="text-[10px] sm:text-base landscape:text-xs font-black text-amber-950">
               {current.word}
             </span>
           </div>
@@ -660,19 +660,19 @@ export function LetterTracingGame() {
           {/* Tela de Vitória ao Terminar a Letra */}
           {isCompleted && (
             <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-              <span className="text-7xl sm:text-9xl mb-2 animate-bounce">{current.emoji}</span>
-              <div className="text-3xl sm:text-6xl font-black text-kids-purple mb-1">
+              <span className="text-6xl sm:text-9xl mb-2 animate-bounce">{current.emoji}</span>
+              <div className="text-2xl sm:text-6xl font-black text-kids-purple mb-1">
                 LETRA {current.letter}!
               </div>
-              <div className="text-xl sm:text-3xl font-extrabold text-amber-600 mb-6">
+              <div className="text-lg sm:text-3xl font-extrabold text-amber-600 mb-4 sm:mb-6">
                 {current.letter} de {current.word}! ⭐
               </div>
               <button
                 onClick={nextLetter}
-                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-3.5 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 active:scale-95"
+                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-3xl px-6 sm:px-12 py-2.5 sm:py-5 rounded-2xl sm:rounded-4xl border-3 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 active:scale-95"
               >
                 <span>PRÓXIMA LETRA!</span>
-                <ArrowRight size={28} className="stroke-[3]" />
+                <ArrowRight size={24} className="sm:w-7 sm:h-7 stroke-[3]" />
               </button>
             </div>
           )}
@@ -680,15 +680,15 @@ export function LetterTracingGame() {
       </div>
 
       {/* BARRA INFERIOR COM PROGRESSO DAS ESTRELAS (COM SAFE AREA BOTTOM) */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-2 pb-[max(10px,env(safe-area-inset-bottom))] border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2 z-20 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          <Sparkles className="text-amber-500" size={20} />
-          <span className="text-xs sm:text-base font-black text-slate-800">
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-1.5 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] landscape:py-1 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2 z-20 flex-shrink-0 landscape-dock-compact">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Sparkles className="text-amber-500" size={16} />
+          <span className="text-[11px] sm:text-base font-black text-slate-800">
             Siga os números para desenhar {current.letter} ({current.word})!
           </span>
         </div>
 
-        <div className="bg-amber-100 border-2 border-amber-400 px-3.5 py-1 rounded-xl flex items-center gap-1.5 font-black text-amber-950 text-sm sm:text-base">
+        <div className="bg-amber-100 border-2 border-amber-400 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-xl flex items-center gap-1 font-black text-amber-950 text-xs sm:text-base">
           <span>⭐</span>
           <span>
             {passedCheckpoints.length} / {current.checkpoints.length}

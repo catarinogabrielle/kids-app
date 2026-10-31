@@ -389,8 +389,8 @@ export function PuzzleGame() {
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden touch-none bg-gradient-to-b from-amber-100 via-sky-100 to-emerald-100">
       {/* BARRA SUPERIOR FULL-WIDTH: Seletor de Quebra-Cabeças e Reiniciar */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-3 sm:px-6 py-1.5 sm:py-2.5 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1 sm:py-2.5 landscape:py-1 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           {PUZZLES.map((p, idx) => (
             <button
               key={p.id}
@@ -400,13 +400,13 @@ export function PuzzleGame() {
                 setPlacedPieces([]);
                 setDraggingPieceId(null);
               }}
-              className={`kid-btn px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl border-3 sm:border-4 transition-all flex items-center gap-1.5 ${
+              className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-2 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 transition-all flex items-center gap-1 sm:gap-1.5 ${
                 currentIdx === idx
                   ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
                   : "bg-slate-50 border-slate-200 hover:bg-amber-50"
               }`}
             >
-              <span className="text-2xl sm:text-4xl">{p.icon}</span>
+              <span className="text-xl sm:text-4xl landscape:text-xl">{p.icon}</span>
               <span className="hidden md:inline text-sm font-black text-amber-950">
                 {p.title}
               </span>
@@ -414,22 +414,22 @@ export function PuzzleGame() {
           ))}
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-xs sm:text-base font-black text-purple-900 bg-purple-100 px-3 py-1 rounded-full border-2 border-purple-300">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="text-xs sm:text-base font-black text-purple-900 bg-purple-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border-2 border-purple-300">
             Peças: {placedPieces.length} / 4
           </span>
           <button
             onClick={handleReset}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-kid-sm"
+            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid-sm"
             title="Recomeçar"
           >
-            <RotateCcw size={22} className="stroke-[2.5]" />
+            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
           </button>
         </div>
       </div>
 
       {/* ÁREA CENTRAL GIGANTE: O TABULEIRO DO QUEBRA-CABEÇA OCUPANDO O PALCO */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-5 flex items-center justify-center overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-5 landscape:p-1 flex items-center justify-center overflow-hidden">
         {/* Moldura de Madeira Gigante com Aspecto de Quebra-Cabeça Real */}
         <div
           ref={boardRef}
@@ -504,10 +504,10 @@ export function PuzzleGame() {
 
       {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE PEÇAS GRANDES */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1.5 flex-shrink-0">
-          <div className="max-w-5xl mx-auto w-full flex items-center justify-between px-1">
+        <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-3 landscape:py-1 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1 sm:gap-1.5 flex-shrink-0 landscape-dock-compact">
+          <div className="max-w-5xl mx-auto w-full flex items-center justify-between px-1 landscape:hidden">
             <div className="flex items-center gap-1.5">
-              <Sparkles className="text-amber-500" size={18} />
+              <Sparkles className="text-amber-500" size={16} />
               <span className="text-xs sm:text-base font-black text-teal-950">
                 Arraste ou toque na peça para encaixar no quadro:
               </span>
@@ -515,7 +515,7 @@ export function PuzzleGame() {
           </div>
 
           {/* Os 4 Blocos da Imagem na Bandeja */}
-          <div className="max-w-5xl mx-auto w-full grid grid-cols-4 gap-2 sm:gap-4">
+          <div className="max-w-5xl mx-auto w-full grid grid-cols-4 gap-1.5 sm:gap-4">
             {[0, 1, 2, 3].map((pieceId) => {
               const isPlaced = placedPieces.includes(pieceId);
               const isDraggingThis = draggingPieceId === pieceId;
@@ -524,9 +524,9 @@ export function PuzzleGame() {
                 return (
                   <div
                     key={pieceId}
-                    className="h-20 sm:h-28 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
+                    className="h-14 sm:h-28 landscape:h-12 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
                   >
-                    <span className="text-2xl font-black text-slate-400">✓</span>
+                    <span className="text-xl sm:text-2xl font-black text-slate-400">✓</span>
                   </div>
                 );
               }
@@ -536,7 +536,7 @@ export function PuzzleGame() {
                   key={pieceId}
                   onPointerDown={(e) => handlePiecePointerDown(pieceId, e)}
                   onClick={() => handleDirectClickPiece(pieceId)}
-                  className={`kid-btn relative h-20 sm:h-28 rounded-2xl border-3 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
+                  className={`kid-btn relative h-14 sm:h-28 landscape:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
                     isDraggingThis
                       ? "opacity-30 border-dashed border-amber-500 scale-95"
                       : "border-amber-600 bg-white shadow-kid-sm hover:scale-105 active:scale-95"
@@ -544,7 +544,7 @@ export function PuzzleGame() {
                 >
                   {renderQuadrantContent(pieceId)}
                   {/* Puxador visual fofo */}
-                  <div className="absolute bottom-1 right-1 bg-amber-400/90 text-amber-950 text-xs font-black px-1.5 py-0.5 rounded-lg shadow">
+                  <div className="absolute bottom-0.5 right-0.5 sm:bottom-1 sm:right-1 bg-amber-400/90 text-amber-950 text-[10px] sm:text-xs font-black px-1 py-0.5 rounded shadow">
                     ✋
                   </div>
                 </div>

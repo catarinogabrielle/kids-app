@@ -468,7 +468,7 @@ export function CarTrackGame() {
 
           {/* 1. JIPE DA ARCA DE NOÉ (Safari Bíblico) */}
           {vehicle === "safari" && (
-            <div className="w-26 h-38 sm:w-36 sm:h-52 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-28 sm:h-40 landscape:w-18 landscape:h-26 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 {/* Rodas Robustas */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#0F172A" />
@@ -495,7 +495,7 @@ export function CarTrackGame() {
 
           {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
           {vehicle === "chariot" && (
-            <div className="w-26 h-38 sm:w-36 sm:h-52 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-28 sm:h-40 landscape:w-18 landscape:h-26 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 {/* Rodas Flamejantes de Fogo */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#EA580C" />
@@ -521,7 +521,7 @@ export function CarTrackGame() {
 
           {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
           {vehicle === "fire" && (
-            <div className="w-26 h-38 sm:w-36 sm:h-52 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-28 sm:h-40 landscape:w-18 landscape:h-26 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="6" y="30" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="118" y="30" width="16" height="34" rx="6" fill="#0F172A" />
@@ -547,7 +547,7 @@ export function CarTrackGame() {
 
           {/* 4. DINO DA CRIAÇÃO */}
           {vehicle === "dino" && (
-            <div className="w-26 h-38 sm:w-36 sm:h-52 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-28 sm:h-40 landscape:w-18 landscape:h-26 drop-shadow-2xl">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="2" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="116" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
@@ -569,9 +569,9 @@ export function CarTrackGame() {
         </div>
 
         {/* HUD SUPERIOR: SELEÇÃO DE VEÍCULO + VELOCÍMETRO + ESTRELAS */}
-        <div className="absolute top-2 left-2 right-2 z-30 flex items-center justify-between pointer-events-none">
+        <div className="absolute top-1.5 sm:top-2 left-2 right-2 z-30 flex items-center justify-between pointer-events-none">
           {/* Seletor de Veículos */}
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-3 border-kids-yellow shadow-kid pointer-events-auto">
+          <div className="flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-yellow shadow-kid pointer-events-auto">
             {vehicles.map((v) => (
               <button
                 key={v.id}
@@ -580,31 +580,31 @@ export function CarTrackGame() {
                   sounds.playPop();
                   setVehicle(v.id);
                 }}
-                className={`kid-btn px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border-2 transition-all ${
+                className={`kid-btn px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-xl border-2 transition-all ${
                   vehicle === v.id
                     ? "bg-kids-yellow border-amber-600 scale-105 shadow-md ring-2 ring-yellow-300"
                     : "bg-slate-50 border-slate-200"
                 }`}
                 title={v.name}
               >
-                <span className="text-xl sm:text-3xl">{v.icon}</span>
+                <span className="text-lg sm:text-3xl">{v.icon}</span>
               </button>
             ))}
           </div>
 
           {/* Contador de Estrelas Bíblicas */}
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-400 border-3 border-amber-600 px-3.5 py-1 sm:px-5 sm:py-2 rounded-2xl shadow-kid pointer-events-auto">
-            <span className="text-xl sm:text-3xl">⭐</span>
-            <span className="text-lg sm:text-3xl font-black text-amber-950">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-400 border-2 sm:border-3 border-amber-600 px-3 py-1 sm:px-5 sm:py-2 rounded-2xl shadow-kid pointer-events-auto">
+            <span className="text-lg sm:text-3xl">⭐</span>
+            <span className="text-base sm:text-3xl font-black text-amber-950">
               {score}
             </span>
           </div>
         </div>
 
-        {/* CONTROLES TÁTEIS MOBILE INTELIGENTES (ELEVADOS ACIMA DO TOAST DO SISTEMA) */}
-        <div className="absolute bottom-4 sm:bottom-6 left-3 right-3 z-30 flex items-center justify-between pointer-events-none pb-[max(6px,env(safe-area-inset-bottom))]">
-          {/* Pedais de Direção Esquerda / Direita (Perfeitos para o Polegar no Celular) */}
-          <div className="flex items-center gap-2 pointer-events-auto">
+        {/* CONTROLES TÁTEIS MOBILE INTELIGENTES (PERFEITOS PARA LANDSCAPE & PORTRAIT) */}
+        <div className="absolute bottom-2 sm:bottom-4 landscape:bottom-2 left-2 right-2 sm:left-4 sm:right-4 z-30 flex items-center justify-between pointer-events-none pb-[max(4px,env(safe-area-inset-bottom))]">
+          {/* Pedais de Direção Esquerda / Direita */}
+          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
             <button
               onPointerDown={(e) => {
                 e.stopPropagation();
@@ -613,10 +613,10 @@ export function CarTrackGame() {
               }}
               onPointerUp={() => setSteerDirection(null)}
               onPointerCancel={() => setSteerDirection(null)}
-              className="kid-btn w-14 h-14 sm:w-20 sm:h-20 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
+              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-11 landscape:h-11 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
               aria-label="Virar para a Esquerda"
             >
-              <ChevronLeft size={36} className="sm:w-12 sm:h-12 stroke-[3.5]" />
+              <ChevronLeft className="w-8 h-8 sm:w-10 sm:h-10 landscape:w-7 landscape:h-7 stroke-[3]" />
             </button>
 
             <button
@@ -627,10 +627,10 @@ export function CarTrackGame() {
               }}
               onPointerUp={() => setSteerDirection(null)}
               onPointerCancel={() => setSteerDirection(null)}
-              className="kid-btn w-14 h-14 sm:w-20 sm:h-20 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
+              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-11 landscape:h-11 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
               aria-label="Virar para a Direita"
             >
-              <ChevronRight size={36} className="sm:w-12 sm:h-12 stroke-[3.5]" />
+              <ChevronRight className="w-8 h-8 sm:w-10 sm:h-10 landscape:w-7 landscape:h-7 stroke-[3]" />
             </button>
           </div>
 
@@ -640,9 +640,9 @@ export function CarTrackGame() {
               e.stopPropagation();
               sounds.playHonk();
             }}
-            className="kid-btn pointer-events-auto px-4 sm:px-8 py-2.5 sm:py-3.5 bg-kids-coral hover:bg-rose-500 text-white font-black text-sm sm:text-xl rounded-full border-3 sm:border-4 border-rose-800 shadow-kid active:scale-90 flex items-center gap-1.5"
+            className="kid-btn pointer-events-auto px-3 sm:px-6 py-1.5 sm:py-2.5 landscape:px-3 landscape:py-1 bg-kids-coral hover:bg-rose-500 text-white font-black text-xs sm:text-lg rounded-full border-2 sm:border-4 border-rose-800 shadow-kid active:scale-90 flex items-center gap-1"
           >
-            <span className="text-xl sm:text-2xl">📢</span>
+            <span className="text-base sm:text-xl">📢</span>
             <span className="tracking-wide">BI-BI!</span>
           </button>
 
@@ -652,13 +652,13 @@ export function CarTrackGame() {
               e.stopPropagation();
               triggerTurbo();
             }}
-            className={`kid-btn pointer-events-auto px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black text-sm sm:text-xl shadow-kid-lg active:scale-90 flex items-center gap-1.5 ${
+            className={`kid-btn pointer-events-auto px-3 sm:px-6 py-1.5 sm:py-2.5 landscape:px-3 landscape:py-1 rounded-2xl sm:rounded-3xl border-2 sm:border-4 font-black text-xs sm:text-lg shadow-kid-lg active:scale-90 flex items-center gap-1 ${
               isTurboActive
-                ? "bg-amber-400 border-amber-600 text-amber-950 animate-bounce ring-4 ring-yellow-300"
+                ? "bg-amber-400 border-amber-600 text-amber-950 animate-bounce ring-3 ring-yellow-300"
                 : "bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-800"
             }`}
           >
-            <Zap size={22} className="sm:w-7 sm:h-7 stroke-[3] fill-current" />
+            <Zap className="w-4 h-4 sm:w-6 sm:h-6 stroke-[3] fill-current" />
             <span>TURBO!</span>
           </button>
         </div>
