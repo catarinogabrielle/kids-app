@@ -120,15 +120,15 @@ export function GameHeader({
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full py-2 sm:py-3.5 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/85 backdrop-blur-md border-b-2 sm:border-b-3 border-white/70 shadow-sm">
-      {/* Lado Esquerdo: Botão Início + Controles Primários do Jogo */}
-      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+    <header className="w-full pt-[max(8px,env(safe-area-inset-top))] pb-2 sm:py-3.5 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/85 backdrop-blur-md border-b-2 sm:border-b-3 border-white/70 shadow-sm">
+      {/* Lado Esquerdo: Botão Início + Título + Controles Primários do Jogo */}
+      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
         <HomeButton onHome={onHome} />
 
         {title && (
-          <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 bg-white/95 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm flex-shrink-0">
-            {icon && <span className="text-base sm:text-xl">{icon}</span>}
-            <span className="font-extrabold text-xs sm:text-sm text-slate-800 tracking-wide">
+          <div className="flex items-center gap-1 sm:gap-2 bg-white/95 px-2 py-0.5 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm flex-shrink-0">
+            {icon && <span className="text-sm sm:text-xl">{icon}</span>}
+            <span className="font-extrabold text-[11px] sm:text-sm text-slate-800 tracking-wide whitespace-nowrap">
               {title}
             </span>
           </div>
@@ -138,7 +138,7 @@ export function GameHeader({
       </div>
 
       {/* Lado Direito: Ações do Jogo + Som */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
         {rightControls}
         <SoundButton />
       </div>
@@ -156,7 +156,7 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
 
   return (
     <>
-      <header className="w-full py-2.5 sm:py-4 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0">
+      <header className="w-full pt-[max(10px,env(safe-area-inset-top))] pb-2 sm:py-4 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0">
         {/* Lado Esquerdo: Marca & Subtítulo (NUNCA TRUNCA COM RETICÊNCIAS) */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0">
           <span className="text-xl sm:text-3xl drop-shadow select-none">☀️</span>
@@ -204,11 +204,11 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
                 sounds.playPop();
                 onOpenParents();
               }}
-              className="kid-btn bg-white/95 text-slate-700 p-1.5 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100 flex-shrink-0 active:scale-95"
+              className="kid-btn bg-white/95 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100 flex-shrink-0 active:scale-95"
               title="Cantinho dos Pais"
               aria-label="Cantinho dos Pais"
             >
-              <Shield size={18} className="sm:w-5 sm:h-5 landscape:w-4 landscape:h-4 text-kids-purple stroke-[2.5]" />
+              <Shield size={18} className="sm:w-5 sm:h-5 text-kids-purple stroke-[2.5]" />
             </button>
           )}
         </div>

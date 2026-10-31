@@ -506,10 +506,10 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
         )}
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE PEÇAS GRANDES */}
+      {/* DOCK INFERIOR: BANDEJA DE PEÇAS PROPORCIONAIS */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-3 landscape:py-1 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1 sm:gap-1.5 flex-shrink-0 landscape-dock-compact">
-          <div className="max-w-5xl mx-auto w-full flex items-center justify-between px-1 landscape:hidden">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-teal shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex flex-col gap-1 sm:gap-2 flex-shrink-0">
+          <div className="max-w-2xl md:max-w-3xl mx-auto w-full flex items-center justify-between px-1">
             <div className="flex items-center gap-1.5">
               <Sparkles className="text-amber-500" size={16} />
               <span className="text-xs sm:text-base font-black text-teal-950">
@@ -518,8 +518,8 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
             </div>
           </div>
 
-          {/* Os 4 Blocos da Imagem na Bandeja */}
-          <div className="max-w-5xl mx-auto w-full grid grid-cols-4 gap-1.5 sm:gap-4">
+          {/* Os 4 Blocos da Imagem na Bandeja com Proporção 4:3 Real */}
+          <div className="max-w-2xl md:max-w-3xl mx-auto w-full grid grid-cols-4 gap-2 sm:gap-4">
             {[0, 1, 2, 3].map((pieceId) => {
               const isPlaced = placedPieces.includes(pieceId);
               const isDraggingThis = draggingPieceId === pieceId;
@@ -528,9 +528,9 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
                 return (
                   <div
                     key={pieceId}
-                    className="h-14 sm:h-28 landscape:h-12 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
+                    className="aspect-[4/3] h-16 sm:h-24 md:h-28 rounded-xl sm:rounded-2xl border-2 border-dashed border-slate-300 bg-slate-100/60 opacity-30 flex items-center justify-center"
                   >
-                    <span className="text-xl sm:text-2xl font-black text-slate-400">✓</span>
+                    <span className="text-xl sm:text-3xl font-black text-slate-400">✓</span>
                   </div>
                 );
               }
@@ -540,7 +540,7 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
                   key={pieceId}
                   onPointerDown={(e) => handlePiecePointerDown(pieceId, e)}
                   onClick={() => handleDirectClickPiece(pieceId)}
-                  className={`kid-btn relative h-14 sm:h-28 landscape:h-12 rounded-xl sm:rounded-2xl border-2 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
+                  className={`kid-btn relative aspect-[4/3] h-16 sm:h-24 md:h-28 rounded-xl sm:rounded-2xl border-2 sm:border-4 overflow-hidden cursor-grab active:cursor-grabbing transition-all select-none touch-none ${
                     isDraggingThis
                       ? "opacity-30 border-dashed border-amber-500 scale-95"
                       : "border-amber-600 bg-white shadow-kid-sm hover:scale-105 active:scale-95"

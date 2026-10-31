@@ -64,14 +64,14 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     { id: "dino" as const, name: "Dino Veloz", icon: "🦖", label: "T-Rex Piloto" },
   ];
 
-  // Coordenada X ideal de cada faixa (0, 1, 2) na altura do carro (progress = 0.85)
+  // Coordenada X ideal de cada faixa (0, 1, 2) perfeitamente alinhada com as faixas do asfalto
   const getLaneXAtProgress = useCallback((lane: 0 | 1 | 2, p: number, curve: number) => {
-    // Curvatura suave que diminui conforme se aproxima do carro
-    const center = 50 + curve * Math.pow(1 - p, 1.8);
-    // Largura da pista varia de 26% no horizonte a 74% no rodapé
-    const roadWidth = 26 + p * 48;
-    // Espaçamento entre as 3 faixas
-    const laneSpacing = roadWidth * 0.31;
+    // Curvatura linear idêntica à do SVG da pista (nunca deixa itens saírem da estrada!)
+    const center = 50 + (curve * 0.85) * (1 - p);
+    // Largura da pista varia de 26% no horizonte a 76% no rodapé
+    const roadWidth = 26 + p * 50;
+    // Espaçamento de 32% garante alinhamento exato no centro de cada uma das 3 faixas
+    const laneSpacing = roadWidth * 0.32;
     return center + (lane - 1) * laneSpacing;
   }, []);
 
@@ -80,7 +80,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     (newLane: 0 | 1 | 2) => {
       setCarLane(newLane);
       sounds.playPop();
-      const target = getLaneXAtProgress(newLane, 0.85, roadCurve);
+      const target = getLaneXAtProgress(newLane, 0.74, roadCurve);
       targetXRef.current = target;
       setCarTilt(newLane < carLane ? -12 : newLane > carLane ? 12 : 0);
       setTimeout(() => setCarTilt(0), 220);
@@ -158,7 +158,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
       // Suavização do movimento horizontal do carro (Lerp suave)
       if (!isDraggingRef.current) {
-        const target = getLaneXAtProgress(carLane, 0.85, currentCurve);
+        const target = getLaneXAtProgress(carLane, 0.74, currentCurve);
         targetXRef.current = target;
       }
       const dx = targetXRef.current - carXRef.current;
@@ -214,11 +214,11 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
         for (const item of prev) {
           const newProgress = item.progress + delta * moveSpeed;
 
-          // Área de colisão do carro: progress entre 0.74 e 0.94
-          if (newProgress >= 0.74 && newProgress <= 0.94) {
+          // Área de colisão do carro: progress entre 0.65 e 0.85 (com carro centrado em 0.74)
+          if (newProgress >= 0.65 && newProgress <= 0.85) {
             const itemX = getLaneXAtProgress(item.lane, newProgress, currentCurve);
-            // Tolerância de coleta ampla para crianças
-            const hitDistance = isTurboActive ? 18 : 13;
+            // Tolerância de coleta generosa e gostosa para crianças
+            const hitDistance = isTurboActive ? 20 : 16;
 
             if (Math.abs(itemX - currentCarX) < hitDistance) {
               // Efeitos de coleta
@@ -366,119 +366,135 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
         }
       />
 
-      {/* PALCO PRINCIPAL DA PISTA */}
-      <div
-        ref={trackRef}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-        className="relative flex-1 min-h-0 w-full overflow-hidden touch-none select-none cursor-pointer"
-      >
-        {/* 1. CÉU BÍBLICO ENSOLARADO COM NUVENS E COLINAS */}
-        <div className="absolute top-0 left-0 right-0 h-[22%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-100 overflow-hidden pointer-events-none z-0">
-          <div className="absolute top-2 left-6 text-4xl animate-pulse">☀️</div>
-          <div className="absolute top-3 left-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
-          <div className="absolute top-4 right-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
-          <div className="absolute top-3 right-8 text-2xl animate-bounce">🕊️</div>
-
-          {/* Colinas ao horizonte que balançam com a curva */}
-          <div
-            className="absolute -bottom-2 left-[-15%] right-[-15%] h-12 bg-emerald-600 rounded-t-[100%] transition-transform duration-100"
-            style={{ transform: `translateX(${roadCurve * 1.8}px)` }}
-          />
-          <div
-            className="absolute -bottom-1 left-[-10%] right-[-10%] h-8 bg-emerald-500 rounded-t-[100%] transition-transform duration-100"
-            style={{ transform: `translateX(${roadCurve * 1.1}px)` }}
-          />
+      {/* PALCO PRINCIPAL DA PISTA CENTRALIZADO COM CENÁRIO LATERAL NO DESKTOP */}
+      <div className="relative flex-1 min-h-0 w-full flex items-center justify-center overflow-hidden bg-gradient-to-b from-sky-400 via-sky-300 to-emerald-800">
+        {/* Elementos cenográficos nas laterais no desktop/tablet (árvores, colinas bíblicas) */}
+        <div className="hidden lg:flex absolute left-4 xl:left-8 top-1/4 flex-col items-center gap-8 opacity-80 pointer-events-none select-none">
+          <span className="text-6xl animate-wiggle">🌳</span>
+          <span className="text-5xl">🦁</span>
+          <span className="text-6xl">🌴</span>
+          <span className="text-5xl">🦒</span>
+        </div>
+        <div className="hidden lg:flex absolute right-4 xl:right-8 top-1/4 flex-col items-center gap-8 opacity-80 pointer-events-none select-none">
+          <span className="text-6xl animate-wiggle">🌴</span>
+          <span className="text-5xl">🐑</span>
+          <span className="text-6xl">🌳</span>
+          <span className="text-5xl">🐘</span>
         </div>
 
-        {/* 2. GRAMADO VERDE LATERAL */}
-        <div className="absolute top-[22%] bottom-0 left-0 right-0 bg-emerald-600 overflow-hidden pointer-events-none z-0">
-          {/* Textura de grama */}
-          <div className="absolute inset-0 bg-gradient-to-b from-emerald-600 to-emerald-700 opacity-90" />
-        </div>
-
-        {/* 3. PISTA DE ASFALTO COM PERSPECTIVA REAL (POLÍGONO TRAPEZOIDAL) */}
-        <svg
-          viewBox="0 0 1000 1000"
-          preserveAspectRatio="none"
-          className="absolute top-[22%] bottom-0 left-0 w-full h-[78%] pointer-events-none z-1"
+        {/* Pista delimitada no centro: proporções perfeitas para mobile e desktop */}
+        <div
+          ref={trackRef}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerUp}
+          className="relative w-full max-w-lg md:max-w-xl lg:max-w-2xl h-full overflow-hidden touch-none select-none cursor-pointer shadow-2xl bg-emerald-600"
         >
-          <defs>
-            <linearGradient id="asphaltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#1e293b" />
-              <stop offset="60%" stopColor="#0f172a" />
-              <stop offset="100%" stopColor="#090d16" />
-            </linearGradient>
-            <linearGradient id="curbRedWhite" x1="0%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#ef4444" />
-              <stop offset="50%" stopColor="#ffffff" />
-              <stop offset="100%" stopColor="#ef4444" />
-            </linearGradient>
-          </defs>
+          {/* 1. CÉU BÍBLICO ENSOLARADO COM NUVENS E COLINAS */}
+          <div className="absolute top-0 left-0 right-0 h-[22%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-100 overflow-hidden pointer-events-none z-0">
+            <div className="absolute top-2 left-6 text-4xl animate-pulse">☀️</div>
+            <div className="absolute top-3 left-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
+            <div className="absolute top-4 right-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
+            <div className="absolute top-3 right-8 text-2xl animate-bounce">🕊️</div>
 
-          {/* Asfalto da Pista */}
-          <polygon
-            points={`
-              ${(50 + roadCurve * 0.9 - 13) * 10},0
-              ${(50 + roadCurve * 0.9 + 13) * 10},0
-              ${(50 + 38) * 10},1000
-              ${(50 - 38) * 10},1000
-            `}
-            fill="url(#asphaltGrad)"
-            stroke="#020617"
-            strokeWidth="4"
-          />
+            {/* Colinas ao horizonte que balançam com a curva */}
+            <div
+              className="absolute -bottom-2 left-[-15%] right-[-15%] h-12 bg-emerald-600 rounded-t-[100%] transition-transform duration-100"
+              style={{ transform: `translateX(${roadCurve * 1.8}px)` }}
+            />
+            <div
+              className="absolute -bottom-1 left-[-10%] right-[-10%] h-8 bg-emerald-500 rounded-t-[100%] transition-transform duration-100"
+              style={{ transform: `translateX(${roadCurve * 1.1}px)` }}
+            />
+          </div>
 
-          {/* Zebra Vermelha e Branca Esquerda */}
-          <polygon
-            points={`
-              ${(50 + roadCurve * 0.9 - 14.5) * 10},0
-              ${(50 + roadCurve * 0.9 - 13) * 10},0
-              ${(50 - 38) * 10},1000
-              ${(50 - 41) * 10},1000
-            `}
-            fill="url(#curbRedWhite)"
-          />
+          {/* 2. GRAMADO VERDE LATERAL */}
+          <div className="absolute top-[22%] bottom-0 left-0 right-0 bg-emerald-600 overflow-hidden pointer-events-none z-0">
+            {/* Textura de grama */}
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-600 to-emerald-700 opacity-90" />
+          </div>
 
-          {/* Zebra Vermelha e Branca Direita */}
-          <polygon
-            points={`
-              ${(50 + roadCurve * 0.9 + 13) * 10},0
-              ${(50 + roadCurve * 0.9 + 14.5) * 10},0
-              ${(50 + 41) * 10},1000
-              ${(50 + 38) * 10},1000
-            `}
-            fill="url(#curbRedWhite)"
-          />
+          {/* 3. PISTA DE ASFALTO COM PERSPECTIVA REAL (POLÍGONO PERFEITAMENTE SINCRONIZADO) */}
+          <svg
+            viewBox="0 0 1000 1000"
+            preserveAspectRatio="none"
+            className="absolute top-[22%] bottom-0 left-0 w-full h-[78%] pointer-events-none z-1"
+          >
+            <defs>
+              <linearGradient id="asphaltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#1e293b" />
+                <stop offset="60%" stopColor="#0f172a" />
+                <stop offset="100%" stopColor="#090d16" />
+              </linearGradient>
+              <linearGradient id="curbRedWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#ef4444" />
+                <stop offset="50%" stopColor="#ffffff" />
+                <stop offset="100%" stopColor="#ef4444" />
+              </linearGradient>
+            </defs>
 
-          {/* Divisória de Faixa 1 (Entre Faixa 0 e 1) */}
-          <line
-            x1={(50 + roadCurve * 0.9 - 4.3) * 10}
-            y1={0}
-            x2={(50 - 12.6) * 10}
-            y2={1000}
-            stroke="#ffffff"
-            strokeWidth="5"
-            strokeDasharray="25,25"
-            strokeDashoffset={-dashOffset * 2}
-            opacity="0.85"
-          />
+            {/* Asfalto da Pista */}
+            <polygon
+              points={`
+                ${(50 + roadCurve * 0.85 - 13) * 10},0
+                ${(50 + roadCurve * 0.85 + 13) * 10},0
+                ${(50 + 38) * 10},1000
+                ${(50 - 38) * 10},1000
+              `}
+              fill="url(#asphaltGrad)"
+              stroke="#020617"
+              strokeWidth="4"
+            />
 
-          {/* Divisória de Faixa 2 (Entre Faixa 1 e 2) */}
-          <line
-            x1={(50 + roadCurve * 0.9 + 4.3) * 10}
-            y1={0}
-            x2={(50 + 12.6) * 10}
-            y2={1000}
-            stroke="#ffffff"
-            strokeWidth="5"
-            strokeDasharray="25,25"
-            strokeDashoffset={-dashOffset * 2}
-            opacity="0.85"
-          />
-        </svg>
+            {/* Zebra Vermelha e Branca Esquerda */}
+            <polygon
+              points={`
+                ${(50 + roadCurve * 0.85 - 15) * 10},0
+                ${(50 + roadCurve * 0.85 - 13) * 10},0
+                ${(50 - 38) * 10},1000
+                ${(50 - 41.5) * 10},1000
+              `}
+              fill="url(#curbRedWhite)"
+            />
+
+            {/* Zebra Vermelha e Branca Direita */}
+            <polygon
+              points={`
+                ${(50 + roadCurve * 0.85 + 13) * 10},0
+                ${(50 + roadCurve * 0.85 + 15) * 10},0
+                ${(50 + 41.5) * 10},1000
+                ${(50 + 38) * 10},1000
+              `}
+              fill="url(#curbRedWhite)"
+            />
+
+            {/* Divisória de Faixa 1 (Entre Faixa 0 e 1: Exatamente no centro geométrico) */}
+            <line
+              x1={(50 + roadCurve * 0.85 - 4.16) * 10}
+              y1={0}
+              x2={(50 - 12.16) * 10}
+              y2={1000}
+              stroke="#ffffff"
+              strokeWidth="5"
+              strokeDasharray="25,25"
+              strokeDashoffset={-dashOffset * 2}
+              opacity="0.85"
+            />
+
+            {/* Divisória de Faixa 2 (Entre Faixa 1 e 2: Exatamente no centro geométrico) */}
+            <line
+              x1={(50 + roadCurve * 0.85 + 4.16) * 10}
+              y1={0}
+              x2={(50 + 12.16) * 10}
+              y2={1000}
+              stroke="#ffffff"
+              strokeWidth="5"
+              strokeDasharray="25,25"
+              strokeDashoffset={-dashOffset * 2}
+              opacity="0.85"
+            />
+          </svg>
 
         {/* 4. ESPECTADORES NA BEIRA DA PISTA (Bichinhos e Árvores) */}
         {spectators.map((s) => (
@@ -618,16 +634,16 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           className="absolute z-25 pointer-events-none transition-transform duration-75"
           style={{
             left: `${carX}%`,
-            top: "80%", // Posição confortável no terço inferior da pista
+            top: "74%", // Posição confortável no terço inferior da pista, acima dos botões
             transform: `translate(-50%, -50%) rotate(${carTilt}deg) ${
-              isJumping ? "scale(1.3) translateY(-40px)" : "scale(1)"
+              isJumping ? "scale(1.35) translateY(-50px)" : "scale(1)"
             }`,
           }}
         >
           {/* Sombra Dinâmica no Asfalto */}
           <div
-            className={`w-16 sm:w-22 h-6 bg-black/45 rounded-full blur-[3px] mx-auto transition-transform ${
-              isJumping ? "scale-75 translate-y-10 opacity-30" : "scale-100"
+            className={`w-18 sm:w-26 h-6 bg-black/45 rounded-full blur-[3px] mx-auto transition-transform ${
+              isJumping ? "scale-75 translate-y-12 opacity-30" : "scale-100"
             }`}
           />
 
@@ -642,7 +658,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 1. JIPE DA ARCA DE NOÉ */}
           {vehicle === "safari" && (
-            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
+            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 {/* Rodas Robustas de Aço */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#0F172A" />
@@ -682,7 +698,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
           {vehicle === "chariot" && (
-            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
+            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#EA580C" />
                 <rect x="118" y="28" width="18" height="36" rx="6" fill="#EA580C" />
@@ -702,7 +718,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
           {vehicle === "fire" && (
-            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
+            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="6" y="30" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="118" y="30" width="16" height="34" rx="6" fill="#0F172A" />
@@ -724,7 +740,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 4. DINO DA CRIAÇÃO */}
           {vehicle === "dino" && (
-            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
+            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="2" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="116" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
@@ -803,5 +819,6 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }

@@ -215,7 +215,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
         </div>
 
         {/* ESTRUTURA VISUAL GIGANTE DA ARCA DE NOÉ */}
-        <div className="relative w-full max-w-2xl h-full max-h-[42vh] sm:max-h-[46vh] landscape:max-h-[38vh] flex items-center justify-center">
+        <div className="relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[45vh] sm:max-h-[52vh] flex items-center justify-center">
           {/* Ilustração SVG de alta fidelidade da Arca */}
           <svg
             viewBox="0 0 500 360"
@@ -356,18 +356,18 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
         )}
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: JOGO DA MEMÓRIA COM CARTAS GRANDES E SEM SOBREPOSIÇÃO */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-4 landscape:py-1 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
-        <div className="max-w-5xl mx-auto w-full flex flex-col gap-1 sm:gap-2">
-          <div className="flex items-center justify-center gap-1.5 landscape:hidden">
+      {/* DOCK INFERIOR: JOGO DA MEMÓRIA COM CARTAS GRANDES E PROPORCIONAIS */}
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-4 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+        <div className="max-w-3xl lg:max-w-4xl mx-auto w-full flex flex-col gap-1 sm:gap-2">
+          <div className="flex items-center justify-center gap-1.5">
             <span className="text-sm sm:text-xl">🧠</span>
             <span className="font-black text-xs sm:text-base text-amber-950">
               Toque nas cartas para encontrar os pares de bichinhos:
             </span>
           </div>
 
-          {/* Grade 4x2 com altura responsiva limpa (zero sobreposição no mobile) */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-4">
+          {/* Grade 4x2 com proporções reais de cartas (nunca mais vira tira achatada) */}
+          <div className="grid grid-cols-4 gap-2 sm:gap-3.5 md:gap-4">
             {cards.map((card) => {
               const isMatched = matchedSpecies.includes(card.speciesId);
               const isFlipped = flippedIds.includes(card.id) || isPeekingAll || isMatched;
@@ -377,20 +377,20 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
                   key={card.id}
                   onClick={() => handleCardClick(card)}
                   disabled={isMatched || isLocked}
-                  className={`kid-btn relative h-14 sm:h-28 md:h-32 landscape:h-12 rounded-xl sm:rounded-3xl border-2 sm:border-4 flex flex-col items-center justify-center transition-all duration-200 ${
+                  className={`kid-btn relative h-16 sm:h-24 md:h-28 lg:h-32 rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center transition-all duration-200 ${
                     isMatched
                       ? "bg-emerald-100 border-emerald-500 shadow-inner scale-95"
                       : isFlipped
                       ? "bg-kids-yellow border-amber-500 shadow-md ring-2 sm:ring-4 ring-yellow-400"
-                      : "bg-gradient-to-br from-amber-700 via-amber-800 to-amber-950 border-amber-950 shadow-kid-sm active:scale-95"
+                      : "bg-gradient-to-br from-amber-700 via-amber-800 to-amber-950 border-amber-950 shadow-kid-sm active:scale-95 hover:scale-[1.02]"
                   }`}
                 >
                   {isFlipped ? (
                     // FRENTE DA CARTA (REVELADA)
                     <div className="flex flex-col items-center justify-center animate-wiggle">
-                      <span className="text-2xl sm:text-6xl landscape:text-2xl drop-shadow">{card.emoji}</span>
+                      <span className="text-3xl sm:text-5xl md:text-6xl drop-shadow">{card.emoji}</span>
                       {isMatched && (
-                        <span className="text-[8px] sm:text-xs font-black text-emerald-900 bg-emerald-200 px-1.5 py-0.5 rounded-full mt-0.5 border border-emerald-400">
+                        <span className="text-[9px] sm:text-xs font-black text-emerald-900 bg-emerald-200 px-2 py-0.5 rounded-full mt-0.5 border border-emerald-400">
                           PAR! ✓
                         </span>
                       )}
@@ -398,8 +398,8 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
                   ) : (
                     // VERSO DA CARTA (VIRADA PARA BAIXO)
                     <div className="flex flex-col items-center justify-center text-amber-200/90">
-                      <span className="text-xl sm:text-5xl landscape:text-xl drop-shadow">🛳️</span>
-                      <span className="text-[10px] sm:text-sm font-black text-amber-300 tracking-wider">
+                      <span className="text-2xl sm:text-4xl md:text-5xl drop-shadow">🛳️</span>
+                      <span className="text-[10px] sm:text-xs font-black text-amber-300 tracking-wider">
                         ?
                       </span>
                     </div>

@@ -149,28 +149,28 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
         }
       />
       {/* PALCO CENTRAL FULL-SCREEN: Cenário com os Itens Gigantes para Contar */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 flex flex-col items-center justify-center overflow-hidden">
         {/* Nuvens suaves estáticas */}
         <div className="absolute top-16 left-8 text-5xl opacity-40 pointer-events-none landscape:hidden">☁️</div>
         <div className="absolute top-20 right-10 text-5xl opacity-40 pointer-events-none landscape:hidden">☁️</div>
 
         {!isSuccess ? (
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-5 max-w-4xl w-full z-10 max-h-full overflow-y-auto scrollbar-none py-1">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 max-w-4xl w-full z-10 max-h-full overflow-y-auto scrollbar-none py-2">
             {[...Array(current.count)].map((_, idx) => {
               const isTapped = tappedItems.includes(idx);
               return (
                 <button
                   key={idx}
                   onClick={() => handleTapItem(idx)}
-                  className={`kid-btn relative p-2 sm:p-6 landscape:p-1.5 rounded-2xl sm:rounded-4xl border-3 sm:border-4 transition-all duration-200 ${
+                  className={`kid-btn relative p-3 sm:p-6 rounded-3xl sm:rounded-4xl border-3 sm:border-4 transition-all duration-200 ${
                     isTapped
                       ? "bg-white border-kids-green scale-105 shadow-2xl ring-2 sm:ring-4 ring-green-300"
-                      : "bg-white/90 border-amber-400 shadow-kid-lg active:scale-95"
+                      : "bg-white/95 border-amber-400 shadow-kid-lg hover:scale-105 active:scale-95"
                   }`}
                 >
-                  <span className="text-3xl sm:text-7xl md:text-8xl landscape:text-3xl">{current.emoji}</span>
+                  <span className="text-5xl sm:text-7xl md:text-8xl drop-shadow select-none">{current.emoji}</span>
                   {isTapped && (
-                    <span className="absolute -top-2 -right-2 bg-kids-green text-white font-black text-xs sm:text-lg w-5 h-5 sm:w-9 sm:h-9 rounded-full border-2 border-white flex items-center justify-center shadow-md">
+                    <span className="absolute -top-3 -right-3 bg-kids-green text-white font-black text-sm sm:text-xl w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 border-white flex items-center justify-center shadow-md">
                       {idx + 1}
                     </span>
                   )}
@@ -199,10 +199,10 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
         )}
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: Opções de Números Gigantes (com Safe Area) */}
+      {/* DOCK INFERIOR: Opções de Números Gigantes e Proporcionais */}
       {!isSuccess && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] landscape:py-1 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
-          <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-5">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-5 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+          <div className="max-w-xl mx-auto w-full flex items-center justify-center gap-3 sm:gap-6">
             {current.options.map((num) => {
               const isWrong = wrongShakeNum === num;
 
@@ -210,10 +210,10 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
                 <button
                   key={num}
                   onClick={() => handleChooseNumber(num)}
-                  className={`kid-btn flex-1 py-1.5 sm:py-5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black text-2xl sm:text-5xl landscape:text-2xl transition-all ${
+                  className={`kid-btn flex-1 h-14 sm:h-20 md:h-24 max-w-[180px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
                     isWrong
                       ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
-                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95"
+                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95 hover:scale-105"
                   }`}
                 >
                   {num}

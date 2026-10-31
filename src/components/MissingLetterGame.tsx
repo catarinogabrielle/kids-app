@@ -347,10 +347,10 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
         )}
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: Letras Gigantes para Escolher (com Safe Area) */}
+      {/* DOCK INFERIOR: Letras Proporcionais */}
       {!isCompleted && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 pt-1.5 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] landscape:py-1 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
-          <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-5">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-5 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+          <div className="max-w-xl mx-auto w-full flex items-center justify-center gap-3 sm:gap-6">
             {current.options.map((letter) => {
               const isWrong = wrongShakeLetter === letter;
 
@@ -358,10 +358,10 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
                 <button
                   key={letter}
                   onClick={() => handlePickLetter(letter)}
-                  className={`kid-btn flex-1 py-1.5 sm:py-5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black text-2xl sm:text-5xl landscape:text-2xl transition-all ${
+                  className={`kid-btn flex-1 h-14 sm:h-20 md:h-24 max-w-[160px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
                     isWrong
                       ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
-                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95"
+                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95 hover:scale-105"
                   }`}
                 >
                   {letter}

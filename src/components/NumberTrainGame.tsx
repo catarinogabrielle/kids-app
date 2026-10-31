@@ -147,7 +147,7 @@ function SteamLocomotive({
 
       <svg
         viewBox="0 0 170 120"
-        className="w-32 h-24 sm:w-48 sm:h-36 landscape:w-28 landscape:h-20 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
+        className="w-32 h-24 sm:w-48 sm:h-36 md:w-56 md:h-42 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
       >
         <defs>
           <linearGradient id="boilerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -247,7 +247,7 @@ function FreightWagon({
 
       <svg
         viewBox="0 0 130 120"
-        className="w-28 h-24 sm:w-36 sm:h-32 landscape:w-20 landscape:h-16 drop-shadow-xl overflow-visible select-none"
+        className="w-24 h-20 sm:w-36 sm:h-30 md:w-40 md:h-34 drop-shadow-xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id={`wagonGrad-${wagon.num}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -483,9 +483,8 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
-      {/* PALCO FERROVIÁRIO FULL-SCREEN */}
-      <div className="relative flex-1 min-h-0 w-full flex flex-col justify-between items-center overflow-hidden">
-        <GameHeader
+      {/* 1. HEADER DO JOGO */}
+      <GameHeader
         onHome={onHome}
         title="Trem 123"
         icon="🚂"
@@ -537,32 +536,32 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
         }
       />
 
-        {/* CENÁRIO CENTRAL COM NUVENS, SOL E OS TRILHOS */}
-        <div className="relative w-full flex-1 flex flex-col justify-center items-center">
-          {/* Nuvens decorativas */}
-          <div className="absolute top-3 left-8 text-4xl opacity-50 pointer-events-none">☁️</div>
-          <div className="absolute top-6 right-10 text-4xl opacity-50 pointer-events-none">☁️</div>
-          <div className="absolute top-2 left-1/2 -translate-x-1/2 text-5xl opacity-85 pointer-events-none">☀️</div>
+      {/* 2. CENÁRIO CENTRAL COM NUVENS, SOL E OS TRILHOS (flex-1 min-h-0) */}
+      <div className="relative w-full flex-1 min-h-0 flex flex-col justify-center items-center overflow-hidden px-2">
+        {/* Nuvens decorativas */}
+        <div className="absolute top-2 left-8 text-4xl opacity-50 pointer-events-none">☁️</div>
+        <div className="absolute top-4 right-10 text-4xl opacity-50 pointer-events-none">☁️</div>
+        <div className="absolute top-1 left-1/2 -translate-x-1/2 text-4xl sm:text-5xl opacity-85 pointer-events-none">☀️</div>
 
-          {/* Banner de Instrução Inteligente */}
-          <div className="bg-white/90 backdrop-blur-sm px-3.5 py-0.5 sm:px-4 sm:py-1 rounded-full border-2 border-white shadow-sm mb-0.5 sm:mb-2 z-10">
-            <span className="font-black text-[11px] sm:text-base text-slate-800">
-              {mode === "missing"
-                ? "Detetive do Trem: Descubra qual vagão está faltando!"
-                : mode === "countdown"
-                ? "Trem voltando para a estação de Belém! Conte de trás para frente:"
-                : mode === "passengers"
-                ? `Quantos bichinhos da Bíblia sobem no vagão? (${expectedNumber || 1})`
-                : "Engate os vagões na ordem numérica certa!"}
-            </span>
-          </div>
+        {/* Banner de Instrução Inteligente */}
+        <div className="bg-white/95 backdrop-blur-sm px-3.5 py-0.5 sm:px-4 sm:py-1 rounded-full border-2 border-white shadow-sm mb-1 sm:mb-2 z-10">
+          <span className="font-black text-[11px] sm:text-base text-slate-800">
+            {mode === "missing"
+              ? "Detetive do Trem: Descubra qual vagão está faltando!"
+              : mode === "countdown"
+              ? "Trem voltando para a estação de Belém! Conte de trás para frente:"
+              : mode === "passengers"
+              ? `Quantos bichinhos da Bíblia sobem no vagão? (${expectedNumber || 1})`
+              : "Engate os vagões na ordem numérica certa!"}
+          </span>
+        </div>
 
-          {/* O Comboio Ferroviário Gigante */}
-          <div className="relative w-full flex flex-col items-center justify-center">
-            <div
-              ref={scrollContainerRef}
-              className="relative w-full overflow-x-auto pb-1 pt-14 sm:pt-20 landscape:pt-14 scrollbar-none flex items-end justify-start xl:justify-center px-4 sm:px-12"
-            >
+        {/* O Comboio Ferroviário Gigante */}
+        <div className="relative w-full flex flex-col items-center justify-center">
+          <div
+            ref={scrollContainerRef}
+            className="relative w-full overflow-x-auto pb-1 pt-6 sm:pt-12 scrollbar-none flex items-end justify-start xl:justify-center px-4 sm:px-12"
+          >
               <div
                 className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${
                   isTrainMoving ? "translate-x-full scale-105" : ""
@@ -603,7 +602,6 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
               ))}
             </div>
           </div>
-        </div>
 
         {/* VITÓRIA: O TREM PARTE COM APITO E FANFARRA */}
         {isTrainMoving && (
@@ -624,64 +622,64 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
             </button>
           </div>
         )}
-
-        {/* DOCK INFERIOR COM AS OPÇÕES DE NÚMEROS (COM SAFE AREA BOTTOM) */}
-        {!isTrainMoving && (
-          <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 pt-1 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] border-t-2 sm:border-t-4 border-kids-yellow shadow-md z-20 flex-shrink-0 landscape-dock-compact">
-            {/* Opções Modo Missing (3 opções grandonas de múltipla escolha) */}
-            {mode === "missing" ? (
-              <div className="max-w-md mx-auto w-full flex items-center justify-center gap-2 sm:gap-6 py-0.5 sm:py-1">
-                {missingOptions.map((opt) => {
-                  const isShaking = wrongShakeNum === opt;
-                  return (
-                    <button
-                      key={opt}
-                      onClick={() => handlePickNumber(opt)}
-                      className={`kid-btn flex-1 py-1.5 sm:py-5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
-                        isShaking
-                          ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
-                          : "bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-950 shadow-kid active:scale-95"
-                      }`}
-                    >
-                      <span className="text-2xl sm:text-5xl landscape:text-2xl leading-tight font-black">{opt}</span>
-                      <span className="text-[10px] sm:text-sm font-bold opacity-80 landscape:hidden">Número {opt}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              /* Opções Normais: Bandeja Completa dos 5 Vagões */
-              <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-1.5 sm:gap-4 py-0.5 sm:py-1">
-                {wagons.map((w) => {
-                  const isPlaced = placedNumbers.includes(w.num);
-                  const isExpected = w.num === expectedNumber;
-                  const isShaking = wrongShakeNum === w.num;
-
-                  return (
-                    <button
-                      key={w.num}
-                      onClick={() => handlePickNumber(w.num)}
-                      disabled={isPlaced}
-                      className={`kid-btn flex-1 py-1 sm:py-3.5 landscape:py-1 rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
-                        isPlaced
-                          ? "bg-slate-200 border-slate-300 text-slate-400 opacity-25 cursor-not-allowed scale-90"
-                          : isShaking
-                          ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
-                          : isExpected
-                          ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-2 sm:ring-4 ring-yellow-400"
-                          : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
-                      }`}
-                    >
-                      <span className="text-xl sm:text-4xl landscape:text-xl leading-tight font-black">{w.num}</span>
-                      <span className="text-sm sm:text-2xl landscape:text-base">{w.emoji}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
       </div>
+
+      {/* 3. DOCK INFERIOR COM AS OPÇÕES DE NÚMEROS (SEMPRE VISÍVEL, NUNCA CORTA!) */}
+      {!isTrainMoving && (
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3.5 border-t-2 sm:border-t-4 border-kids-yellow shadow-md z-20 flex-shrink-0">
+          {/* Opções Modo Missing (3 opções grandonas de múltipla escolha) */}
+          {mode === "missing" ? (
+            <div className="max-w-md mx-auto w-full flex items-center justify-center gap-3 sm:gap-6 py-0.5">
+              {missingOptions.map((opt) => {
+                const isShaking = wrongShakeNum === opt;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => handlePickNumber(opt)}
+                    className={`kid-btn flex-1 h-14 sm:h-20 md:h-24 max-w-[140px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black flex flex-col items-center justify-center transition-all ${
+                      isShaking
+                        ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
+                        : "bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-950 shadow-kid active:scale-95"
+                    }`}
+                  >
+                    <span className="text-2xl sm:text-4xl md:text-5xl leading-tight font-black">{opt}</span>
+                    <span className="text-[10px] sm:text-xs font-bold opacity-80">Número {opt}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            /* Opções Normais: Bandeja Completa dos 5 Vagões com Proporções Reais */
+            <div className="max-w-2xl md:max-w-3xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-4 py-0.5">
+              {wagons.map((w) => {
+                const isPlaced = placedNumbers.includes(w.num);
+                const isExpected = w.num === expectedNumber;
+                const isShaking = wrongShakeNum === w.num;
+
+                return (
+                  <button
+                    key={w.num}
+                    onClick={() => handlePickNumber(w.num)}
+                    disabled={isPlaced}
+                    className={`kid-btn flex-1 h-14 sm:h-20 md:h-24 max-w-[120px] rounded-xl sm:rounded-3xl border-2 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                      isPlaced
+                        ? "bg-slate-200 border-slate-300 text-slate-400 opacity-25 cursor-not-allowed scale-90"
+                        : isShaking
+                        ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
+                        : isExpected
+                        ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-2 sm:ring-4 ring-yellow-400"
+                        : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
+                    }`}
+                  >
+                    <span className="text-xl sm:text-3xl md:text-4xl leading-tight font-black">{w.num}</span>
+                    <span className="text-base sm:text-2xl md:text-3xl">{w.emoji}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

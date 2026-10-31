@@ -463,9 +463,9 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
         </div>
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE BLOCOS */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-3 landscape:py-1 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0 landscape-dock-compact">
-        <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-1.5 sm:gap-2 overflow-x-auto py-0.5">
+      {/* DOCK INFERIOR: BANDEJA DE BLOCOS */}
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+        <div className="max-w-4xl mx-auto w-full flex items-center justify-center gap-2 sm:gap-3 flex-wrap py-0.5">
           {BLOCK_TYPES.map((t) => (
             <button
               key={t.id}
@@ -473,14 +473,14 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
                 sounds.playPop();
                 setSelectedType(t);
               }}
-              className={`kid-btn px-2.5 py-1 sm:px-5 sm:py-2.5 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 transition-all flex items-center gap-1 sm:gap-1.5 flex-shrink-0 ${
+              className={`kid-btn px-3 py-1.5 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ${
                 selectedType.id === t.id
                   ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
                   : "bg-slate-50 border-slate-300 hover:bg-amber-50 shadow-sm"
               }`}
             >
-              <span className="text-xl sm:text-4xl landscape:text-xl">{t.emoji}</span>
-              <span className="hidden md:inline text-sm font-black text-amber-950">
+              <span className="text-2xl sm:text-4xl">{t.emoji}</span>
+              <span className="hidden sm:inline text-xs sm:text-sm font-black text-amber-950">
                 {t.name}
               </span>
             </button>
