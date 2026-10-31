@@ -3,54 +3,98 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
-import { Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { Zap, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import { GameHeader } from "@/components/TopBar";
 
 type VehicleId = "safari" | "chariot" | "fire" | "dino";
 
 interface TrackItem {
   id: number;
-  type: "star" | "scroll" | "dove" | "heart" | "turbo" | "ramp" | "puddle";
-  x: number; // 20 a 80
-  y: number; // -10 a 110
+  type: "star" | "animal" | "scroll" | "turbo" | "ramp" | "puddle";
+  lane: 0 | 1 | 2; // 0 = Esquerda, 1 = Centro, 2 = Direita
+  progress: number; // 0.0 (horizonte) a 1.05 (passou do carro)
+  emoji?: string;
+  name?: string;
 }
 
-interface RoadsideWatcher {
+interface Spectator {
   id: number;
   emoji: string;
   side: "left" | "right";
-  y: number;
-  name: string;
+  y: number; // 24% a 95%
+  isBouncing?: boolean;
 }
 
 export function CarTrackGame({ onHome }: { onHome?: () => void }) {
   const [vehicle, setVehicle] = useState<VehicleId>("safari");
-  const [carX, setCarX] = useState(50);
-  const [carTilt, setCarTilt] = useState(0);
-  const [score, setScore] = useState(0);
-  const [isTurboActive, setIsTurboActive] = useState(false);
-  const [isJumping, setIsJumping] = useState(false);
-  const [isSplashing, setIsSplashing] = useState(false);
-  const [roadCurve, setRoadCurve] = useState(0); // Curvatura da pista (-30 a 30)
-  const [steerDirection, setSteerDirection] = useState<"left" | "right" | null>(null);
+  const [carLane, setCarLane] = useState<0 | 1 | 2>(1); // Pista atual: Centro
+  const [carX, setCarX] = useState<number>(50); // Posição suave X (25 a 75)
+  const [carTilt, setCarTilt] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [rescuedAnimals, setRescuedAnimals] = useState<string[]>([]);
+  const [recentNotification, setRecentNotification] = useState<string | null>(null);
+
+  const [isTurboActive, setIsTurboActive] = useState<boolean>(false);
+  const [isJumping, setIsJumping] = useState<boolean>(false);
+  const [isSplashing, setIsSplashing] = useState<boolean>(false);
+  const [roadCurve, setRoadCurve] = useState<number>(0); // Curvatura da estrada (-20 a 20)
+  const [dashOffset, setDashOffset] = useState<number>(0); // Para animação contínua das faixas
 
   const [items, setItems] = useState<TrackItem[]>([]);
-  const [watchers, setWatchers] = useState<RoadsideWatcher[]>([]);
+  const [spectators, setSpectators] = useState<Spectator[]>([
+    { id: 1, emoji: "🦁", side: "left", y: 35 },
+    { id: 2, emoji: "🐑", side: "right", y: 48 },
+    { id: 3, emoji: "🦒", side: "left", y: 62 },
+    { id: 4, emoji: "🐪", side: "right", y: 75 },
+    { id: 5, emoji: "🐰", side: "left", y: 88 },
+  ]);
 
   const trackRef = useRef<HTMLDivElement | null>(null);
   const requestRef = useRef<number | null>(null);
   const lastSpawnRef = useRef<number>(0);
   const itemCounterRef = useRef<number>(0);
-  const isDraggingRef = useRef<boolean>(false);
   const carXRef = useRef<number>(50);
-  carXRef.current = carX;
+  const targetXRef = useRef<number>(50);
+  const isDraggingRef = useRef<boolean>(false);
 
   const vehicles = [
-    { id: "safari" as const, name: "Jipe da Arca", icon: "🚙", label: "Noé & Animais" },
+    { id: "safari" as const, name: "Jipe do Noé", icon: "🚙", label: "Noé & Leãozinho" },
     { id: "chariot" as const, name: "Carruagem de Fogo", icon: "🔥", label: "Profeta Elias" },
-    { id: "fire" as const, name: "Bombeiro Salvador", icon: "🚒", label: "Herói Bombeiro" },
-    { id: "dino" as const, name: "Dino da Criação", icon: "🦖", label: "T-Rex Amigo" },
+    { id: "fire" as const, name: "Bombeiro Herói", icon: "🚒", label: "Caminhão Salvador" },
+    { id: "dino" as const, name: "Dino Veloz", icon: "🦖", label: "T-Rex Piloto" },
   ];
+
+  // Coordenada X ideal de cada faixa (0, 1, 2) na altura do carro (progress = 0.85)
+  const getLaneXAtProgress = useCallback((lane: 0 | 1 | 2, p: number, curve: number) => {
+    // Curvatura suave que diminui conforme se aproxima do carro
+    const center = 50 + curve * Math.pow(1 - p, 1.8);
+    // Largura da pista varia de 26% no horizonte a 74% no rodapé
+    const roadWidth = 26 + p * 48;
+    // Espaçamento entre as 3 faixas
+    const laneSpacing = roadWidth * 0.31;
+    return center + (lane - 1) * laneSpacing;
+  }, []);
+
+  // Altera faixa pelo teclado ou botões
+  const switchLane = useCallback(
+    (newLane: 0 | 1 | 2) => {
+      setCarLane(newLane);
+      sounds.playPop();
+      const target = getLaneXAtProgress(newLane, 0.85, roadCurve);
+      targetXRef.current = target;
+      setCarTilt(newLane < carLane ? -12 : newLane > carLane ? 12 : 0);
+      setTimeout(() => setCarTilt(0), 220);
+    },
+    [carLane, getLaneXAtProgress, roadCurve]
+  );
+
+  const steerLeft = useCallback(() => {
+    if (carLane > 0) switchLane((carLane - 1) as 0 | 1 | 2);
+  }, [carLane, switchLane]);
+
+  const steerRight = useCallback(() => {
+    if (carLane < 2) switchLane((carLane + 1) as 0 | 1 | 2);
+  }, [carLane, switchLane]);
 
   // Ativa Turbo Nitro
   const triggerTurbo = useCallback(() => {
@@ -59,163 +103,179 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     setIsTurboActive(true);
     setTimeout(() => {
       setIsTurboActive(false);
-    }, 2800);
+    }, 3000);
   }, [isTurboActive]);
 
-  // Movimento contínuo por botões (pressionar e segurar)
+  // Buzina que faz a plateia de bichinhos pular alegremente
+  const triggerHonk = useCallback(() => {
+    sounds.playHonk();
+    setSpectators((prev) =>
+      prev.map((s) => ({ ...s, isBouncing: true }))
+    );
+    setTimeout(() => {
+      setSpectators((prev) =>
+        prev.map((s) => ({ ...s, isBouncing: false }))
+      );
+    }, 600);
+  }, []);
+
+  // Suporte a teclado (Setas, A/D, Espaço, H/B)
   useEffect(() => {
-    let steerInterval: NodeJS.Timeout | null = null;
-    if (steerDirection) {
-      steerInterval = setInterval(() => {
-        setCarX((prev) => {
-          const step = steerDirection === "left" ? -2.2 : 2.2;
-          const next = Math.max(18, Math.min(82, prev + step));
-          setCarTilt(steerDirection === "left" ? -14 : 14);
-          return next;
-        });
-      }, 25);
-    } else {
-      setCarTilt(0);
-    }
-
-    return () => {
-      if (steerInterval) clearInterval(steerInterval);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+        steerLeft();
+      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        steerRight();
+      } else if (e.key === " " || e.key === "ArrowUp" || e.key === "w" || e.key === "W") {
+        triggerTurbo();
+      } else if (e.key === "h" || e.key === "H" || e.key === "b" || e.key === "B") {
+        triggerHonk();
+      }
     };
-  }, [steerDirection]);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [steerLeft, steerRight, triggerTurbo, triggerHonk]);
 
-  // Loop de Animação e Física da Pista com Curvas
+  // Loop Principal de Física, Spawn e Animação
   useEffect(() => {
     let prevTime = performance.now();
 
     const updateGame = (time: number) => {
-      const delta = Math.min((time - prevTime) / 1000, 0.1);
+      const delta = Math.min((time - prevTime) / 1000, 0.08);
       prevTime = time;
 
-      // Curvatura oscilante suave da estrada (dá sensação de curvas fechadas e emocionantes)
-      const curvePhase = Math.sin(time / 1600) * 0.7 + Math.sin(time / 800) * 0.3;
-      const targetCurve = curvePhase * 24;
-      setRoadCurve(targetCurve);
+      // 1. Curvatura dinâmica da estrada estilo OutRun
+      const curvePhase = Math.sin(time / 2000) * 0.75 + Math.sin(time / 1100) * 0.25;
+      const currentCurve = curvePhase * 16;
+      setRoadCurve(currentCurve);
 
-      // Velocidade do jogo
-      const currentSpeedMultiplier = isTurboActive ? 2.2 : 1.0;
-      const gameSpeed = 44 * currentSpeedMultiplier;
+      // 2. Velocidade da pista
+      const speedMultiplier = isTurboActive ? 2.4 : 1.0;
+      const moveSpeed = 0.58 * speedMultiplier;
 
-      // Spawn de novos itens na pista
-      const spawnInterval = isTurboActive ? 750 : 1250;
+      // Animação contínua das linhas do asfalto
+      setDashOffset((prev) => (prev + delta * 120 * speedMultiplier) % 100);
+
+      // Suavização do movimento horizontal do carro (Lerp suave)
+      if (!isDraggingRef.current) {
+        const target = getLaneXAtProgress(carLane, 0.85, currentCurve);
+        targetXRef.current = target;
+      }
+      const dx = targetXRef.current - carXRef.current;
+      carXRef.current += dx * Math.min(delta * 14, 0.35);
+      setCarX(carXRef.current);
+
+      // 3. Spawn Inteligente de Itens Estritamente nas 3 Faixas
+      const spawnInterval = isTurboActive ? 750 : 1200;
       if (time - lastSpawnRef.current > spawnInterval) {
         lastSpawnRef.current = time;
         itemCounterRef.current += 1;
 
-        const possibleTypes: TrackItem["type"][] = [
-          "star",
-          "star",
-          "scroll",
-          "dove",
-          "heart",
-          "turbo",
-          "ramp",
-          "puddle",
+        // Distribuição temática de itens bíblicos
+        const itemPool: Array<{
+          type: TrackItem["type"];
+          emoji?: string;
+          name?: string;
+        }> = [
+          { type: "star" },
+          { type: "star" },
+          { type: "animal", emoji: "🦁", name: "Leãozinho" },
+          { type: "animal", emoji: "🐑", name: "Ovelhinha" },
+          { type: "animal", emoji: "🕊️", name: "Pombinha" },
+          { type: "animal", emoji: "🦒", name: "Girafinha" },
+          { type: "animal", emoji: "🐰", name: "Coelhinho" },
+          { type: "scroll", name: "Bíblia Sagrada" },
+          { type: "ramp" },
+          { type: "turbo" },
+          { type: "puddle" },
         ];
-        const chosenType = possibleTypes[Math.floor(Math.random() * possibleTypes.length)];
-        // Vias da pista acompanham ligeiramente a curva
-        const lanes = [24, 38, 52, 66, 78];
-        const randomLane = lanes[Math.floor(Math.random() * lanes.length)];
+
+        const chosen = itemPool[Math.floor(Math.random() * itemPool.length)];
+        const randomLane = (Math.floor(Math.random() * 3)) as 0 | 1 | 2;
 
         setItems((prev) => [
           ...prev,
           {
             id: itemCounterRef.current,
-            type: chosenType,
-            x: randomLane,
-            y: -12,
+            type: chosen.type,
+            lane: randomLane,
+            progress: 0.0, // Começa no horizonte
+            emoji: chosen.emoji,
+            name: chosen.name,
           },
         ]);
-
-        // Bichinhos espectadores na beira da estrada
-        if (Math.random() > 0.4) {
-          const watcherOptions = [
-            { emoji: "🦁", name: "Leãozinho" },
-            { emoji: "🐑", name: "Ovelhinha" },
-            { emoji: "🦒", name: "Girafa" },
-            { emoji: "🐫", name: "Camelo da Bíblia" },
-            { emoji: "🦕", name: "Braquiossauro" },
-            { emoji: "🕊️", name: "Pombinha" },
-          ];
-          const chosenWatcher = watcherOptions[Math.floor(Math.random() * watcherOptions.length)];
-          setWatchers((prev) => [
-            ...prev,
-            {
-              id: itemCounterRef.current + 5000,
-              emoji: chosenWatcher.emoji,
-              side: Math.random() > 0.5 ? "left" : "right",
-              y: -12,
-              name: chosenWatcher.name,
-            },
-          ]);
-        }
       }
 
-      // Atualiza posição dos itens e detecta colisão com o carrinho
+      // 4. Atualização dos Itens e Detecção de Colisão Precisa
       setItems((prev) => {
         const next: TrackItem[] = [];
-        const currentX = carXRef.current;
+        const currentCarX = carXRef.current;
 
         for (const item of prev) {
-          const newY = item.y + delta * gameSpeed;
+          const newProgress = item.progress + delta * moveSpeed;
 
-          // Detecção de colisão quando o item passa pela área do carrinho (Y entre 50% e 74%)
-          if (newY >= 50 && newY <= 74 && Math.abs(item.x - currentX) < 16) {
-            if (item.type === "star") {
-              sounds.playStar();
-              setScore((s) => {
-                const nextScore = s + 1;
-                if (nextScore % 10 === 0) {
-                  confetti({ particleCount: 70, spread: 80, origin: { y: 0.8 } });
-                  sounds.playSuccess();
+          // Área de colisão do carro: progress entre 0.74 e 0.94
+          if (newProgress >= 0.74 && newProgress <= 0.94) {
+            const itemX = getLaneXAtProgress(item.lane, newProgress, currentCurve);
+            // Tolerância de coleta ampla para crianças
+            const hitDistance = isTurboActive ? 18 : 13;
+
+            if (Math.abs(itemX - currentCarX) < hitDistance) {
+              // Efeitos de coleta
+              if (item.type === "star") {
+                sounds.playStar();
+                setScore((s) => {
+                  const nextS = s + 1;
+                  if (nextS % 10 === 0) {
+                    confetti({ particleCount: 70, spread: 80, origin: { y: 0.8 } });
+                    sounds.playSuccess();
+                  }
+                  return nextS;
+                });
+              } else if (item.type === "animal") {
+                // Resgate de animalzinho para a Arca de Noé
+                sounds.playChime(1174.66);
+                sounds.playStar();
+                setScore((s) => s + 3);
+                if (item.emoji) {
+                  setRescuedAnimals((arr) => [...arr.slice(-4), item.emoji!]);
                 }
-                return nextScore;
-              });
-            } else if (item.type === "scroll") {
-              // Pergaminho Sagrado da Bíblia: 2 estrelas + som de bênção
-              sounds.playChime(1046.5);
-              sounds.playStar();
-              setScore((s) => s + 2);
-              confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
-            } else if (item.type === "dove") {
-              // Pombinha da Paz de Noé: 3 estrelas!
-              sounds.playChime(1318.5);
-              sounds.playStar();
-              setScore((s) => s + 3);
-            } else if (item.type === "heart") {
-              sounds.playPop();
-              setScore((s) => s + 1);
-            } else if (item.type === "turbo") {
-              triggerTurbo();
-            } else if (item.type === "puddle") {
-              sounds.playSplash();
-              setIsSplashing(true);
-              setTimeout(() => setIsSplashing(false), 550);
-            } else if (item.type === "ramp") {
-              sounds.playBoing();
-              setIsJumping(true);
-              setTimeout(() => setIsJumping(false), 700);
+                setRecentNotification(`${item.emoji || "🐾"} ${item.name || "Bichinho"} a bordo!`);
+                setTimeout(() => setRecentNotification(null), 1800);
+                confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 } });
+              } else if (item.type === "scroll") {
+                // Pergaminho da Palavra de Deus
+                sounds.playChime(1046.5);
+                sounds.playStar();
+                setScore((s) => s + 5);
+                setRecentNotification("📜 Palavra de Deus: +5 Estrelas!");
+                setTimeout(() => setRecentNotification(null), 1800);
+                confetti({ particleCount: 40, spread: 70, origin: { y: 0.8 } });
+              } else if (item.type === "ramp") {
+                // Rampa de salto
+                sounds.playBoing();
+                setIsJumping(true);
+                setTimeout(() => setIsJumping(false), 750);
+                setScore((s) => s + 2);
+              } else if (item.type === "turbo") {
+                triggerTurbo();
+                setRecentNotification("⚡ SUPER TURBO NITRO!");
+                setTimeout(() => setRecentNotification(null), 1500);
+              } else if (item.type === "puddle") {
+                sounds.playSplash();
+                setIsSplashing(true);
+                setTimeout(() => setIsSplashing(false), 650);
+              }
+              continue; // Item coletado
             }
-            continue; // Item consumido
           }
 
-          if (newY < 112) {
-            next.push({ ...item, y: newY });
+          if (newProgress < 1.08) {
+            next.push({ ...item, progress: newProgress });
           }
         }
         return next;
       });
-
-      // Atualiza espectadores
-      setWatchers((prev) =>
-        prev
-          .map((w) => ({ ...w, y: w.y + delta * gameSpeed }))
-          .filter((w) => w.y < 112)
-      );
 
       requestRef.current = requestAnimationFrame(updateGame);
     };
@@ -224,39 +284,43 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     return () => {
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
     };
-  }, [isTurboActive, triggerTurbo]);
+  }, [carLane, isTurboActive, getLaneXAtProgress, triggerTurbo]);
 
-  // Controle por arrasto / toque direto na pista
-  const updateCarFromPointer = (clientX: number) => {
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    const relX = ((clientX - rect.left) / rect.width) * 100;
-    const clamped = Math.max(18, Math.min(82, relX));
-    const diff = clamped - carX;
-    setCarTilt(Math.max(-16, Math.min(16, diff * 1.8)));
-    setCarX(clamped);
-  };
-
+  // Toque / Arrastar direto na pista para crianças pequenas
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!trackRef.current) return;
     isDraggingRef.current = true;
     (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-    updateCarFromPointer(e.clientX);
+
+    const rect = trackRef.current.getBoundingClientRect();
+    const relX = ((e.clientX - rect.left) / rect.width) * 100;
+
+    // Detecta qual das 3 faixas a criança tocou
+    if (relX < 38) {
+      switchLane(0);
+    } else if (relX > 62) {
+      switchLane(2);
+    } else {
+      switchLane(1);
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (isDraggingRef.current) {
-      updateCarFromPointer(e.clientX);
-    }
+    if (!isDraggingRef.current || !trackRef.current) return;
+    const rect = trackRef.current.getBoundingClientRect();
+    const relX = ((e.clientX - rect.left) / rect.width) * 100;
+    // Permite deslizar o carrinho livremente dentro da pista asfaltada
+    const clamped = Math.max(26, Math.min(74, relX));
+    targetXRef.current = clamped;
   };
 
   const handlePointerUp = () => {
     isDraggingRef.current = false;
-    setCarTilt(0);
   };
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-slate-900">
-      {/* HEADER ÚNICO: INÍCIO + SELETOR DE VEÍCULO + ESTRELAS + SOM */}
+      {/* HEADER INTEGRADO COM TROCA DE VEÍCULO, ANIMAIS RESGATADOS E PONTOS */}
       <GameHeader
         onHome={onHome}
         title="Pista do Noé"
@@ -276,7 +340,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
                     ? "bg-kids-yellow border-amber-600 scale-105 shadow-sm ring-1 ring-yellow-400"
                     : "bg-slate-50 border-slate-200"
                 }`}
-                title={v.name}
+                title={v.label}
               >
                 <span className="text-base sm:text-2xl landscape:text-base">{v.icon}</span>
               </button>
@@ -284,270 +348,352 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1 bg-amber-400 border-2 border-amber-600 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
-            <span className="text-base sm:text-xl">⭐</span>
-            <span className="text-sm sm:text-xl font-black text-amber-950">{score}</span>
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Bichinhos Salvos na Arca */}
+            <div className="flex items-center gap-1 bg-white/95 border-2 border-emerald-500 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
+              <span className="text-base sm:text-lg">🐾</span>
+              <span className="text-xs sm:text-base font-black text-emerald-900">
+                {rescuedAnimals.length}
+              </span>
+            </div>
+
+            {/* Estrelas */}
+            <div className="flex items-center gap-1 bg-amber-400 border-2 border-amber-600 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
+              <span className="text-base sm:text-xl">⭐</span>
+              <span className="text-xs sm:text-base font-black text-amber-950">{score}</span>
+            </div>
           </div>
         }
       />
 
-      {/* PALCO DA PISTA COM PERSPECTIVA E CURVAS DINÂMICAS */}
+      {/* PALCO PRINCIPAL DA PISTA */}
       <div
         ref={trackRef}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative flex-1 min-h-0 w-full overflow-hidden touch-none cursor-grab active:cursor-grabbing select-none"
+        className="relative flex-1 min-h-0 w-full overflow-hidden touch-none select-none cursor-pointer"
       >
-        {/* CÉU COM SOL BÍBLICO E MONTANHAS AO FUNDO */}
-        <div className="absolute top-0 left-0 right-0 h-[28%] landscape:h-[20%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-200 overflow-hidden pointer-events-none z-0">
-          {/* Sol da Criação */}
-          <div className="absolute top-3 left-10 text-5xl animate-pulse">☀️</div>
-          {/* Nuvens Flutuantes */}
-          <div className="absolute top-4 left-1/3 text-4xl opacity-75">☁️</div>
-          <div className="absolute top-7 right-16 text-3xl opacity-80">☁️</div>
-          {/* Pombinha voando no céu */}
-          <div className="absolute top-6 right-1/3 text-3xl animate-bounce">🕊️</div>
+        {/* 1. CÉU BÍBLICO ENSOLARADO COM NUVENS E COLINAS */}
+        <div className="absolute top-0 left-0 right-0 h-[22%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-100 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-2 left-6 text-4xl animate-pulse">☀️</div>
+          <div className="absolute top-3 left-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
+          <div className="absolute top-4 right-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
+          <div className="absolute top-3 right-8 text-2xl animate-bounce">🕊️</div>
 
-          {/* Colinas ao fundo que se deslocam suavemente com a curva */}
+          {/* Colinas ao horizonte que balançam com a curva */}
           <div
-            className="absolute bottom-0 left-[-20%] right-[-20%] h-14 bg-emerald-600 rounded-t-[100%] transition-transform duration-200 opacity-90"
-            style={{ transform: `translateX(${roadCurve * 1.2}px)` }}
+            className="absolute -bottom-2 left-[-15%] right-[-15%] h-12 bg-emerald-600 rounded-t-[100%] transition-transform duration-100"
+            style={{ transform: `translateX(${roadCurve * 1.8}px)` }}
           />
           <div
-            className="absolute bottom-0 left-[-15%] right-[-15%] h-10 bg-emerald-500 rounded-t-[100%] transition-transform duration-200"
-            style={{ transform: `translateX(${roadCurve * 0.8}px)` }}
+            className="absolute -bottom-1 left-[-10%] right-[-10%] h-8 bg-emerald-500 rounded-t-[100%] transition-transform duration-100"
+            style={{ transform: `translateX(${roadCurve * 1.1}px)` }}
           />
         </div>
 
-        {/* ESTRADA COM CURVA DINÂMICA */}
-        <div
-          className="absolute top-[26%] landscape:top-[18%] bottom-0 left-0 right-0 transition-transform duration-100 ease-out overflow-hidden"
-          style={{
-            transform: `perspective(600px) rotateX(15deg) translateX(${roadCurve * 1.5}px)`,
-          }}
+        {/* 2. GRAMADO VERDE LATERAL */}
+        <div className="absolute top-[22%] bottom-0 left-0 right-0 bg-emerald-600 overflow-hidden pointer-events-none z-0">
+          {/* Textura de grama */}
+          <div className="absolute inset-0 bg-gradient-to-b from-emerald-600 to-emerald-700 opacity-90" />
+        </div>
+
+        {/* 3. PISTA DE ASFALTO COM PERSPECTIVA REAL (POLÍGONO TRAPEZOIDAL) */}
+        <svg
+          viewBox="0 0 1000 1000"
+          preserveAspectRatio="none"
+          className="absolute top-[22%] bottom-0 left-0 w-full h-[78%] pointer-events-none z-1"
         >
+          <defs>
+            <linearGradient id="asphaltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#1e293b" />
+              <stop offset="60%" stopColor="#0f172a" />
+              <stop offset="100%" stopColor="#090d16" />
+            </linearGradient>
+            <linearGradient id="curbRedWhite" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#ef4444" />
+              <stop offset="50%" stopColor="#ffffff" />
+              <stop offset="100%" stopColor="#ef4444" />
+            </linearGradient>
+          </defs>
+
           {/* Asfalto da Pista */}
-          <div className="absolute inset-0 bg-slate-800">
-            {/* Gramado Lateral Esquerdo com Textura */}
-            <div className="absolute left-0 top-0 bottom-0 w-[14%] bg-gradient-to-r from-emerald-700 to-emerald-500 border-r-4 border-dashed border-white/60 flex flex-col justify-around items-center">
-              <span className="text-3xl sm:text-5xl opacity-90 drop-shadow">🌳</span>
-              <span className="text-3xl sm:text-4xl opacity-90 drop-shadow">🌸</span>
-              <span className="text-3xl sm:text-5xl opacity-90 drop-shadow">🌴</span>
-              <span className="text-3xl sm:text-4xl opacity-90 drop-shadow">🌺</span>
-            </div>
+          <polygon
+            points={`
+              ${(50 + roadCurve * 0.9 - 13) * 10},0
+              ${(50 + roadCurve * 0.9 + 13) * 10},0
+              ${(50 + 38) * 10},1000
+              ${(50 - 38) * 10},1000
+            `}
+            fill="url(#asphaltGrad)"
+            stroke="#020617"
+            strokeWidth="4"
+          />
 
-            {/* Gramado Lateral Direito com Textura */}
-            <div className="absolute right-0 top-0 bottom-0 w-[14%] bg-gradient-to-l from-emerald-700 to-emerald-500 border-l-4 border-dashed border-white/60 flex flex-col justify-around items-center">
-              <span className="text-3xl sm:text-5xl opacity-90 drop-shadow">🌴</span>
-              <span className="text-3xl sm:text-4xl opacity-90 drop-shadow">🌻</span>
-              <span className="text-3xl sm:text-5xl opacity-90 drop-shadow">🌳</span>
-              <span className="text-3xl sm:text-4xl opacity-90 drop-shadow">🌼</span>
-            </div>
+          {/* Zebra Vermelha e Branca Esquerda */}
+          <polygon
+            points={`
+              ${(50 + roadCurve * 0.9 - 14.5) * 10},0
+              ${(50 + roadCurve * 0.9 - 13) * 10},0
+              ${(50 - 38) * 10},1000
+              ${(50 - 41) * 10},1000
+            `}
+            fill="url(#curbRedWhite)"
+          />
 
-            {/* Zebras Coloridas nas Bordas da Pista (Guarda-corpos de Corrida) */}
-            <div className="absolute left-[14%] top-0 bottom-0 w-3 bg-stripes-yellow-red" />
-            <div className="absolute right-[14%] top-0 bottom-0 w-3 bg-stripes-yellow-red" />
+          {/* Zebra Vermelha e Branca Direita */}
+          <polygon
+            points={`
+              ${(50 + roadCurve * 0.9 + 13) * 10},0
+              ${(50 + roadCurve * 0.9 + 14.5) * 10},0
+              ${(50 + 41) * 10},1000
+              ${(50 + 38) * 10},1000
+            `}
+            fill="url(#curbRedWhite)"
+          />
 
-            {/* Linhas Pontilhadas Centrais da Pista que Aceleram no Turbo */}
-            <div className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-4 flex flex-col justify-around opacity-90 pointer-events-none">
-              {[...Array(10)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-full h-14 bg-kids-yellow rounded-full my-2 shadow-[0_0_8px_rgba(251,191,36,0.6)] ${
-                    isTurboActive ? "animate-pulse" : ""
-                  }`}
-                />
-              ))}
-            </div>
+          {/* Divisória de Faixa 1 (Entre Faixa 0 e 1) */}
+          <line
+            x1={(50 + roadCurve * 0.9 - 4.3) * 10}
+            y1={0}
+            x2={(50 - 12.6) * 10}
+            y2={1000}
+            stroke="#ffffff"
+            strokeWidth="5"
+            strokeDasharray="25,25"
+            strokeDashoffset={-dashOffset * 2}
+            opacity="0.85"
+          />
 
-            {/* Linhas Laterais de Pista Dupla */}
-            <div className="absolute left-[34%] top-0 bottom-0 w-1 border-r-2 border-dashed border-white/40 pointer-events-none" />
-            <div className="absolute right-[34%] top-0 bottom-0 w-1 border-l-2 border-dashed border-white/40 pointer-events-none" />
+          {/* Divisória de Faixa 2 (Entre Faixa 1 e 2) */}
+          <line
+            x1={(50 + roadCurve * 0.9 + 4.3) * 10}
+            y1={0}
+            x2={(50 + 12.6) * 10}
+            y2={1000}
+            stroke="#ffffff"
+            strokeWidth="5"
+            strokeDasharray="25,25"
+            strokeDashoffset={-dashOffset * 2}
+            opacity="0.85"
+          />
+        </svg>
+
+        {/* 4. ESPECTADORES NA BEIRA DA PISTA (Bichinhos e Árvores) */}
+        {spectators.map((s) => (
+          <div
+            key={s.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              triggerHonk();
+            }}
+            className={`absolute z-10 text-3xl sm:text-5xl pointer-events-auto cursor-pointer transition-transform duration-150 ${
+              s.isBouncing ? "scale-140 -translate-y-4" : "hover:scale-115"
+            }`}
+            style={{
+              left: s.side === "left" ? "3%" : "89%",
+              top: `${s.y}%`,
+            }}
+            title="Clique para cumprimentar!"
+          >
+            {s.emoji}
           </div>
-        </div>
+        ))}
 
-        {/* EFEITO DE VELOCIDADE TURBO / NITRO: LINHAS DE VENTO */}
+        {/* 5. LINHAS DE VENTO DO TURBO NITRO */}
         {isTurboActive && (
           <div className="absolute inset-0 pointer-events-none z-20 overflow-hidden">
-            <div className="absolute inset-0 bg-blue-500/10 animate-pulse" />
-            {[...Array(12)].map((_, i) => (
+            <div className="absolute inset-0 bg-cyan-400/10 animate-pulse" />
+            {[...Array(14)].map((_, i) => (
               <div
                 key={i}
-                className="absolute w-1 bg-gradient-to-b from-transparent via-cyan-300 to-white rounded-full animate-ping opacity-70"
+                className="absolute w-1 bg-gradient-to-b from-transparent via-cyan-200 to-white rounded-full animate-ping opacity-80"
                 style={{
-                  left: `${8 + i * 8}%`,
+                  left: `${6 + i * 7}%`,
                   top: `${Math.random() * 80}%`,
-                  height: `${60 + Math.random() * 100}px`,
-                  animationDuration: "0.35s",
+                  height: `${70 + Math.random() * 120}px`,
+                  animationDuration: "0.28s",
                 }}
               />
             ))}
           </div>
         )}
 
-        {/* BICHINHOS ESPECTADORES NAS MARGENS DA PISTA */}
-        {watchers.map((w) => (
-          <div
-            key={w.id}
-            onClick={(e) => {
-              e.stopPropagation();
-              sounds.playPop();
-            }}
-            className="absolute z-20 text-4xl sm:text-6xl transition-transform hover:scale-130 active:scale-150 animate-wiggle drop-shadow-lg cursor-pointer"
-            style={{
-              left: w.side === "left" ? "2.5%" : "87.5%",
-              top: `${w.y}%`,
-            }}
-            title={w.name}
-          >
-            {w.emoji}
-          </div>
-        ))}
+        {/* 6. ITENS COLETÁVEIS NA PISTA (Escala e Posição 100% Dentro das Faixas) */}
+        {items.map((item) => {
+          // Calcula a posição física X e Y exata da faixa com perspectiva
+          const itemX = getLaneXAtProgress(item.lane, item.progress, roadCurve);
+          // Y mapeado de 22% (horizonte) até 94% (rodapé)
+          const itemY = 22 + item.progress * 68;
+          // Escala cresce suavemente de 0.35 (longe) para 1.05 (perto do carro)
+          const itemScale = 0.35 + item.progress * 0.7;
 
-        {/* ITENS COLETÁVEIS E OBSTÁCULOS NA PISTA */}
-        {items.map((item) => (
-          <div
-            key={item.id}
-            className="absolute -translate-x-1/2 -translate-y-1/2 z-15 pointer-events-none"
-            style={{
-              left: `${item.x}%`,
-              top: `${item.y}%`,
-            }}
-          >
-            {/* 1. Estrela Dourada */}
-            {item.type === "star" && (
-              <div className="text-4xl sm:text-6xl drop-shadow-[0_4px_10px_rgba(251,191,36,0.8)] animate-spin" style={{ animationDuration: "2.5s" }}>
-                ⭐
-              </div>
-            )}
+          return (
+            <div
+              key={item.id}
+              className="absolute pointer-events-none z-15 flex flex-col items-center justify-center transition-transform duration-75"
+              style={{
+                left: `${itemX}%`,
+                top: `${itemY}%`,
+                transform: `translate(-50%, -50%) scale(${itemScale})`,
+              }}
+            >
+              {/* Estrela da Fé */}
+              {item.type === "star" && (
+                <div className="text-4xl sm:text-5xl drop-shadow-[0_4px_12px_rgba(251,191,36,0.9)] animate-spin" style={{ animationDuration: "2s" }}>
+                  ⭐
+                </div>
+              )}
 
-            {/* 2. Pergaminho Bíblico Sagrado */}
-            {item.type === "scroll" && (
-              <div className="flex flex-col items-center bg-amber-100/90 border-2 border-amber-500 rounded-2xl px-2 py-1 shadow-lg animate-bounce">
-                <span className="text-3xl sm:text-5xl">📜</span>
-                <span className="text-[10px] sm:text-xs font-black text-amber-900 bg-amber-300 px-1.5 rounded-full">
-                  BÍBLIA
-                </span>
-              </div>
-            )}
+              {/* Bichinho Bíblico Perdido precisando de carona */}
+              {item.type === "animal" && (
+                <div className="flex flex-col items-center animate-bounce">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/90 border-2 border-emerald-500 shadow-lg flex items-center justify-center text-3xl sm:text-4xl">
+                    {item.emoji}
+                  </div>
+                  <span className="text-[10px] font-black text-emerald-950 bg-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-600 shadow-sm mt-0.5 whitespace-nowrap">
+                    SALVE!
+                  </span>
+                </div>
+              )}
 
-            {/* 3. Pombinha da Paz da Arca */}
-            {item.type === "dove" && (
-              <div className="text-4xl sm:text-6xl drop-shadow-lg animate-wiggle">
-                🕊️
-              </div>
-            )}
+              {/* Pergaminho Sagrado da Bíblia */}
+              {item.type === "scroll" && (
+                <div className="flex flex-col items-center animate-wiggle">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-100 border-2 border-amber-600 shadow-lg flex items-center justify-center text-3xl sm:text-4xl">
+                    📜
+                  </div>
+                  <span className="text-[10px] font-black text-amber-950 bg-kids-yellow px-1.5 py-0.5 rounded-full border border-amber-600 shadow-sm mt-0.5 whitespace-nowrap">
+                    BÍBLIA
+                  </span>
+                </div>
+              )}
 
-            {/* 4. Coraçãozinho de Amor */}
-            {item.type === "heart" && (
-              <div className="text-4xl sm:text-6xl drop-shadow-lg animate-pulse">
-                ❤️
-              </div>
-            )}
+              {/* Rampa Dourada de Salto */}
+              {item.type === "ramp" && (
+                <div className="bg-gradient-to-t from-amber-500 to-yellow-300 border-3 border-white rounded-xl px-3 py-1 text-center font-black text-amber-950 shadow-2xl flex items-center gap-1 animate-pulse">
+                  <span className="text-xl">🔺</span>
+                  <span className="text-xs tracking-wider">PULA!</span>
+                </div>
+              )}
 
-            {/* 5. Pad de Turbo Nitro */}
-            {item.type === "turbo" && (
-              <div className="bg-gradient-to-r from-amber-400 to-cyan-400 border-3 border-white rounded-2xl px-3 py-1.5 flex items-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.8)] animate-pulse">
-                <span className="text-2xl sm:text-4xl">⚡</span>
-                <span className="font-black text-xs sm:text-sm text-slate-900">TURBO!</span>
-              </div>
-            )}
+              {/* Pad de Turbo Nitro */}
+              {item.type === "turbo" && (
+                <div className="bg-gradient-to-r from-cyan-400 to-emerald-400 border-3 border-white rounded-xl px-2.5 py-1 flex items-center gap-1 shadow-[0_0_15px_rgba(56,189,248,0.9)] animate-pulse">
+                  <span className="text-xl">⚡</span>
+                  <span className="font-black text-xs text-slate-900">TURBO</span>
+                </div>
+              )}
 
-            {/* 6. Poça d'água */}
-            {item.type === "puddle" && (
-              <div className="bg-sky-400/90 border-3 border-white/80 rounded-full w-20 h-12 sm:w-28 sm:h-16 flex items-center justify-center text-2xl sm:text-3xl shadow-lg">
-                💦
-              </div>
-            )}
+              {/* Poça d'água */}
+              {item.type === "puddle" && (
+                <div className="bg-sky-400/80 border-2 border-white rounded-full w-14 h-8 flex items-center justify-center text-xl shadow-md">
+                  💦
+                </div>
+              )}
+            </div>
+          );
+        })}
 
-            {/* 7. Rampa de Salto */}
-            {item.type === "ramp" && (
-              <div className="bg-gradient-to-b from-amber-400 to-orange-500 border-3 border-yellow-200 rounded-xl px-4 py-2 text-center font-black text-white shadow-2xl flex items-center gap-1">
-                <span className="text-xl sm:text-2xl">🔺</span>
-                <span className="text-xs sm:text-base tracking-wider">PULA!</span>
-              </div>
-            )}
-          </div>
-        ))}
-
-        {/* EFEITO VISUAL DE SPLASH */}
+        {/* 7. EFEITO DE RESPINGO NA TELA (SPLASH) */}
         {isSplashing && (
-          <div
-            className="absolute z-30 text-8xl animate-ping pointer-events-none -translate-x-1/2"
-            style={{ left: `${carX}%`, top: "68%" }}
-          >
-            💦
+          <div className="absolute inset-0 z-30 pointer-events-none flex items-center justify-center bg-sky-400/20 backdrop-blur-[1px] animate-ping">
+            <span className="text-8xl">💦</span>
           </div>
         )}
 
-        {/* VEÍCULO DO JOGADOR COM TILT DINÂMICO E ANIMAÇÃO */}
+        {/* 8. NOTIFICAÇÃO FLUTUANTE DE RESGATE DE ANIMAIS / ITENS ESPECIAIS */}
+        {recentNotification && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-40 bg-white/95 border-2 border-emerald-500 px-4 py-1.5 rounded-full shadow-kid flex items-center gap-1.5 pointer-events-none animate-bounce">
+            <Sparkles size={16} className="text-amber-500" />
+            <span className="font-black text-xs sm:text-sm text-slate-900">
+              {recentNotification}
+            </span>
+          </div>
+        )}
+
+        {/* 9. VEÍCULO DO JOGADOR: POSICIONADO NO PONTO IDEAL DO RODAPÉ (NÃO FICA LA EM CIMA!) */}
         <div
-          className={`absolute z-25 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-transform duration-100 ease-out top-[64%] landscape:top-[48%] ${
-            isJumping ? "scale-125 -translate-y-16" : "scale-100"
-          }`}
+          className="absolute z-25 pointer-events-none transition-transform duration-75"
           style={{
             left: `${carX}%`,
-            transform: `translateX(-50%) translateY(-50%) rotate(${carTilt}deg) ${isJumping ? "scale(1.25) translateY(-30px)" : ""}`,
+            top: "80%", // Posição confortável no terço inferior da pista
+            transform: `translate(-50%, -50%) rotate(${carTilt}deg) ${
+              isJumping ? "scale(1.3) translateY(-40px)" : "scale(1)"
+            }`,
           }}
         >
-          {/* Efeito de Fogo / Chama no Turbo */}
+          {/* Sombra Dinâmica no Asfalto */}
+          <div
+            className={`w-16 sm:w-22 h-6 bg-black/45 rounded-full blur-[3px] mx-auto transition-transform ${
+              isJumping ? "scale-75 translate-y-10 opacity-30" : "scale-100"
+            }`}
+          />
+
+          {/* Chamas de Fogo no Escape quando Turbo Ativo */}
           {isTurboActive && (
-            <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 pointer-events-none">
-              <span className="text-3xl sm:text-4xl animate-bounce">🔥</span>
-              <span className="text-4xl sm:text-5xl animate-pulse">🔥</span>
-              <span className="text-3xl sm:text-4xl animate-bounce">🔥</span>
+            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1 pointer-events-none">
+              <span className="text-2xl sm:text-3xl animate-bounce">🔥</span>
+              <span className="text-3xl sm:text-4xl animate-pulse">🔥</span>
+              <span className="text-2xl sm:text-3xl animate-bounce">🔥</span>
             </div>
           )}
 
-          {/* 1. JIPE DA ARCA DE NOÉ (Safari Bíblico) */}
+          {/* 1. JIPE DA ARCA DE NOÉ */}
           {vehicle === "safari" && (
-            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
-                {/* Rodas Robustas */}
+                {/* Rodas Robustas de Aço */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#0F172A" />
                 <rect x="118" y="28" width="18" height="36" rx="6" fill="#0F172A" />
                 <rect x="4" y="138" width="18" height="36" rx="6" fill="#0F172A" />
                 <rect x="118" y="138" width="18" height="36" rx="6" fill="#0F172A" />
-                {/* Chassi Jipe Laranja/Madeira */}
+
+                {/* Chassi Jipe Laranja/Madeira da Arca */}
                 <rect x="18" y="16" width="104" height="168" rx="20" fill="#D97706" stroke="#78350F" strokeWidth="5" />
-                <rect x="30" y="22" width="80" height="40" rx="8" fill="#B45309" />
+                <rect x="28" y="24" width="84" height="38" rx="8" fill="#B45309" />
+
                 {/* Para-brisa com Noé e Leãozinho */}
-                <rect x="26" y="65" width="88" height="32" rx="8" fill="#E0F2FE" stroke="#78350F" strokeWidth="3" />
-                <text x="36" y="90" fontSize="22">🧔</text>
-                <text x="80" y="90" fontSize="22">🦁</text>
-                {/* Roda Sobressalente na Traseira com Cruz Dourada */}
-                <circle cx="70" cy="162" r="22" fill="#0F172A" stroke="#334155" strokeWidth="4" />
-                <circle cx="70" cy="162" r="9" fill="#F59E0B" />
-                {/* Bagageiro e Faróis */}
-                <rect x="24" y="10" width="92" height="10" rx="4" fill="#94A3B8" stroke="#475569" strokeWidth="2" />
-                <circle cx="36" cy="15" r="7" fill="#FEF08A" />
-                <circle cx="104" cy="15" r="7" fill="#FEF08A" />
+                <rect x="26" y="65" width="88" height="34" rx="8" fill="#E0F2FE" stroke="#78350F" strokeWidth="3" />
+                <text x="34" y="91" fontSize="22">🧔</text>
+                <text x="80" y="91" fontSize="22">🦁</text>
+
+                {/* Bichinhos Salvos na Traseira */}
+                {rescuedAnimals.length > 0 && (
+                  <g>
+                    <rect x="30" y="112" width="80" height="28" rx="6" fill="#FDE68A" stroke="#B45309" strokeWidth="2" />
+                    <text x="34" y="132" fontSize="16">
+                      {rescuedAnimals.slice(-3).join("")}
+                    </text>
+                  </g>
+                )}
+
+                {/* Estepe com Cruz Dourada */}
+                <circle cx="70" cy="162" r="20" fill="#0F172A" stroke="#334155" strokeWidth="3" />
+                <circle cx="70" cy="162" r="8" fill="#F59E0B" />
+
+                {/* Faróis Dianteiros com Brilho Amarelo */}
+                <circle cx="36" cy="18" r="7" fill="#FEF08A" stroke="#D97706" strokeWidth="2" />
+                <circle cx="104" cy="18" r="7" fill="#FEF08A" stroke="#D97706" strokeWidth="2" />
               </svg>
             </div>
           )}
 
           {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
           {vehicle === "chariot" && (
-            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
-                {/* Rodas Flamejantes de Fogo */}
                 <rect x="4" y="28" width="18" height="36" rx="6" fill="#EA580C" />
                 <rect x="118" y="28" width="18" height="36" rx="6" fill="#EA580C" />
                 <rect x="4" y="138" width="18" height="36" rx="6" fill="#EA580C" />
                 <rect x="118" y="138" width="18" height="36" rx="6" fill="#EA580C" />
-                {/* Corpo Dourado Reluzente da Carruagem */}
                 <rect x="18" y="16" width="104" height="168" rx="22" fill="#FBBF24" stroke="#B45309" strokeWidth="5" />
-                <path d="M 28 35 L 70 12 L 112 35 L 102 165 L 38 165 Z" fill="#F59E0B" opacity="0.6" />
-                {/* Para-brisa com Chama Celestial */}
                 <rect x="28" y="65" width="84" height="32" rx="8" fill="#FEF08A" stroke="#B45309" strokeWidth="3" />
-                <text x="46" y="90" fontSize="26">👑</text>
-                <text x="76" y="90" fontSize="24">🔥</text>
-                {/* Labaredas Laterais */}
+                <text x="46" y="90" fontSize="24">👑</text>
+                <text x="76" y="90" fontSize="22">🔥</text>
                 <polygon points="26,110 14,130 26,150" fill="#EF4444" />
                 <polygon points="114,110 126,130 114,150" fill="#EF4444" />
-                {/* Faróis Dourados */}
                 <circle cx="36" cy="18" r="8" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="2" />
                 <circle cx="104" cy="18" r="8" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="2" />
               </svg>
@@ -556,22 +702,18 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
           {vehicle === "fire" && (
-            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="6" y="30" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="118" y="30" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="6" y="140" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="118" y="140" width="16" height="34" rx="6" fill="#0F172A" />
                 <rect x="18" y="15" width="104" height="170" rx="18" fill="#DC2626" stroke="#7F1D1D" strokeWidth="5" />
-                <rect x="18" y="90" width="104" height="18" fill="#FFFFFF" />
-                <text x="48" y="104" fontSize="13" fontWeight="900" fill="#DC2626">SALVADOR</text>
-                <path d="M 28 35 Q 70 26 112 35 L 112 70 Q 70 65 28 70 Z" fill="#BAE6FD" stroke="#38BDF8" strokeWidth="3" />
-                <circle cx="70" cy="50" r="14" fill="#FED7AA" />
-                <rect x="58" y="34" width="24" height="10" rx="4" fill="#F59E0B" />
-                {/* Giroflex Duplo */}
+                <rect x="28" y="35" width="84" height="35" rx="8" fill="#BAE6FD" stroke="#38BDF8" strokeWidth="3" />
+                <circle cx="70" cy="52" r="13" fill="#FED7AA" />
+                <rect x="58" y="36" width="24" height="10" rx="4" fill="#F59E0B" />
                 <rect x="44" y="18" width="22" height="8" rx="3" fill="#38BDF8" className="animate-ping" />
                 <rect x="74" y="18" width="22" height="8" rx="3" fill="#EF4444" className="animate-ping" />
-                {/* Escada na Traseira */}
                 <rect x="42" y="115" width="56" height="60" rx="6" fill="#E2E8F0" stroke="#64748B" strokeWidth="3" />
                 <line x1="42" y1="130" x2="98" y2="130" stroke="#64748B" strokeWidth="3" />
                 <line x1="42" y1="145" x2="98" y2="145" stroke="#64748B" strokeWidth="3" />
@@ -582,19 +724,17 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           {/* 4. DINO DA CRIAÇÃO */}
           {vehicle === "dino" && (
-            <div className="w-16 h-24 sm:w-20 sm:h-30 landscape:w-12 landscape:h-18 drop-shadow-2xl">
+            <div className="w-18 h-26 sm:w-24 sm:h-34 drop-shadow-2xl relative -mt-3">
               <svg viewBox="0 0 140 200" className="w-full h-full">
                 <rect x="2" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="116" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="2" y="135" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <rect x="116" y="135" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
                 <path d="M 22 45 Q 70 10 118 45 L 118 170 Q 70 185 22 170 Z" fill="#15803D" stroke="#14532D" strokeWidth="5" />
-                {/* Olhos Amigáveis */}
                 <circle cx="44" cy="55" r="10" fill="#FACC15" stroke="#713F12" strokeWidth="3" />
                 <circle cx="44" cy="55" r="4" fill="#000000" />
                 <circle cx="96" cy="55" r="10" fill="#FACC15" stroke="#713F12" strokeWidth="3" />
                 <circle cx="96" cy="55" r="4" fill="#000000" />
-                {/* Espinhos de Dino */}
                 <polygon points="62,90 70,72 78,90" fill="#EAB308" />
                 <polygon points="62,120 70,102 78,120" fill="#EAB308" />
                 <polygon points="62,150 70,132 78,150" fill="#EAB308" />
@@ -603,50 +743,42 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           )}
         </div>
 
-        {/* CONTROLES TÁTEIS MOBILE INTELIGENTES (PERFEITOS PARA LANDSCAPE & PORTRAIT) */}
+        {/* 10. CONTROLES TÁTEIS: CANTOS INFERIORES (CENTRO DA PISTA 100% LIVRE) */}
         <div className="absolute bottom-2 sm:bottom-4 landscape:bottom-1.5 left-2 right-2 sm:left-4 sm:right-4 z-30 flex items-center justify-between pointer-events-none pb-[max(4px,env(safe-area-inset-bottom))]">
-          {/* Controles da Esquerda: Virar Esquerda / Direita */}
-          <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+          {/* Canto Esquerdo: Setas de Direção (< e >) */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 pointer-events-auto">
             <button
-              onPointerDown={(e) => {
+              onClick={(e) => {
                 e.stopPropagation();
-                setSteerDirection("left");
-                sounds.playPop();
+                steerLeft();
               }}
-              onPointerUp={() => setSteerDirection(null)}
-              onPointerCancel={() => setSteerDirection(null)}
-              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-10 landscape:h-10 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
-              aria-label="Virar para a Esquerda"
+              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-11 landscape:h-11 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
+              aria-label="Faixa da Esquerda"
             >
               <ChevronLeft className="w-7 h-7 sm:w-10 sm:h-10 landscape:w-6 landscape:h-6 stroke-[3]" />
             </button>
 
             <button
-              onPointerDown={(e) => {
+              onClick={(e) => {
                 e.stopPropagation();
-                setSteerDirection("right");
-                sounds.playPop();
+                steerRight();
               }}
-              onPointerUp={() => setSteerDirection(null)}
-              onPointerCancel={() => setSteerDirection(null)}
-              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-10 landscape:h-10 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
-              aria-label="Virar para a Direita"
+              className="kid-btn w-12 h-12 sm:w-16 sm:h-16 landscape:w-11 landscape:h-11 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-sky-800 shadow-kid-lg flex items-center justify-center active:scale-90"
+              aria-label="Faixa da Direita"
             >
               <ChevronRight className="w-7 h-7 sm:w-10 sm:h-10 landscape:w-6 landscape:h-6 stroke-[3]" />
             </button>
           </div>
 
-          {/* O CENTRO DA PISTA FICA 100% LIVRE - VISÃO COMPLETA DA PISTA E DO CARRO */}
-
-          {/* Controles da Direita: Buzina BI-BI! + Turbo Nitro 🚀 */}
+          {/* Canto Direito: Buzina "BI-BI!" + Turbo Nitro */}
           <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                sounds.playHonk();
+                triggerHonk();
               }}
-              className="kid-btn px-3 sm:px-5 py-2 sm:py-2.5 landscape:px-2.5 landscape:py-1.5 bg-kids-coral hover:bg-rose-500 text-white font-black text-xs sm:text-base rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-rose-800 shadow-kid active:scale-90 flex items-center gap-1"
-              title="Buzinar"
+              className="kid-btn px-3 sm:px-5 py-2 sm:py-2.5 landscape:px-2.5 landscape:py-1.5 bg-rose-500 hover:bg-rose-600 text-white font-black text-xs sm:text-base rounded-2xl sm:rounded-3xl border-2 sm:border-4 border-rose-800 shadow-kid active:scale-90 flex items-center gap-1"
+              title="Tocar Buzina"
             >
               <span className="text-base sm:text-xl">📢</span>
               <span className="tracking-wide">BI-BI!</span>
