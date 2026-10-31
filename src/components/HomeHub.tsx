@@ -123,7 +123,7 @@ export function HomeHub({ onSelectGame, onOpenParents }: HomeHubProps) {
       {/* 2. GRADE DOS 10 JOGOS: ASPECTO REAL EQUILIBRADO NO DESKTOP E FULLSCREEN NO MOBILE */}
       <div className="w-full flex-1 min-h-0 flex items-center justify-center p-1 sm:p-2 lg:p-4">
         <div className="w-full max-w-7xl 2xl:max-w-[1440px] h-full flex flex-col justify-center">
-          <div className="w-full h-full max-h-[84vh] landscape:max-h-[82vh] sm:max-h-[75vh] sm:h-auto sm:aspect-[5/2.25] grid grid-cols-2 grid-rows-5 landscape:grid-cols-5 landscape:grid-rows-2 sm:grid-cols-5 sm:grid-rows-2 gap-2 sm:gap-3 lg:gap-4">
+          <div className="w-full h-full max-h-[84vh] landscape:max-h-[74vh] sm:max-h-[75vh] sm:h-auto sm:aspect-[5/2.25] grid grid-cols-2 grid-rows-5 landscape:grid-cols-5 landscape:grid-rows-2 sm:grid-cols-5 sm:grid-rows-2 gap-2 sm:gap-3 lg:gap-4">
             {allActivities.map((act) => (
               <button
                 key={act.id}

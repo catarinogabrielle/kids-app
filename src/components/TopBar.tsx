@@ -120,14 +120,14 @@ export function GameHeader({
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full pt-[max(8px,env(safe-area-inset-top))] pb-2 sm:py-3.5 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/85 backdrop-blur-md border-b-2 sm:border-b-3 border-white/70 shadow-sm">
+    <header className="w-full pt-[max(4px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-0.5 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/90 backdrop-blur-md border-b sm:border-b-2 border-white/70 shadow-sm h-11 sm:h-14 landscape:h-10">
       {/* Lado Esquerdo: Botão Início + Título + Controles Primários do Jogo */}
-      <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
         <HomeButton onHome={onHome} />
 
         {title && (
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/95 px-2 py-0.5 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border border-slate-200 shadow-sm flex-shrink-0">
-            {icon && <span className="text-sm sm:text-xl">{icon}</span>}
+          <div className="hidden sm:flex md:flex items-center gap-1 sm:gap-2 bg-white/95 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-slate-200 shadow-sm flex-shrink-0">
+            {icon && <span className="text-sm sm:text-base">{icon}</span>}
             <span className="font-extrabold text-[11px] sm:text-sm text-slate-800 tracking-wide whitespace-nowrap">
               {title}
             </span>
@@ -138,7 +138,7 @@ export function GameHeader({
       </div>
 
       {/* Lado Direito: Ações do Jogo + Som */}
-      <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
         {rightControls}
         <SoundButton />
       </div>
@@ -156,7 +156,7 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
 
   return (
     <>
-      <header className="w-full pt-[max(10px,env(safe-area-inset-top))] pb-2 sm:py-4 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0">
+      <header className="w-full pt-[max(6px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-0.5 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0">
         {/* Lado Esquerdo: Marca & Subtítulo (NUNCA TRUNCA COM RETICÊNCIAS) */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0">
           <span className="text-xl sm:text-3xl drop-shadow select-none">☀️</span>
@@ -167,7 +167,8 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
               </h1>
               <span className="text-sm sm:text-xl drop-shadow select-none">🌈</span>
             </div>
-            <span className="hidden sm:inline-block text-[10px] sm:text-xs font-black text-amber-950 bg-kids-yellow px-2 py-0.5 rounded-full border border-amber-500 shadow-sm uppercase tracking-wider w-fit">
+            {/* Oculta em telas de mobile horizontal para não empurrar os cards */}
+            <span className="hidden md:inline-block text-[10px] sm:text-xs font-black text-amber-950 bg-kids-yellow px-2 py-0.5 rounded-full border border-amber-500 shadow-sm uppercase tracking-wider w-fit">
               <Sparkles size={11} className="inline mr-1 text-amber-700" />
               Jogos Bíblicos & Educativos
             </span>
@@ -180,7 +181,7 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
           {!isInstalled && (
             <button
               onClick={triggerInstall}
-              className="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-1 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-emerald-700 shadow-kid flex items-center gap-1 font-black text-xs sm:text-sm animate-pulse-gentle active:scale-95"
+              className="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border-2 sm:border-3 border-emerald-700 shadow-kid flex items-center gap-1 font-black text-xs sm:text-sm animate-pulse-gentle active:scale-95"
               title="Instalar Aplicativo Mundinho Mágico"
             >
               <Download size={14} className="sm:w-5 sm:h-5 stroke-[2.5]" />
@@ -204,7 +205,7 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
                 sounds.playPop();
                 onOpenParents();
               }}
-              className="kid-btn bg-white/95 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100 flex-shrink-0 active:scale-95"
+              className="kid-btn bg-white/95 text-slate-700 p-1.5 sm:p-2 rounded-xl border-2 sm:border-3 border-slate-300 shadow-kid hover:bg-slate-100 flex-shrink-0 active:scale-95"
               title="Cantinho dos Pais"
               aria-label="Cantinho dos Pais"
             >

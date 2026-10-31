@@ -67,11 +67,11 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
   // Coordenada X ideal de cada faixa (0, 1, 2) perfeitamente alinhada com as faixas do asfalto
   const getLaneXAtProgress = useCallback((lane: 0 | 1 | 2, p: number, curve: number) => {
     // Curvatura linear idêntica à do SVG da pista (nunca deixa itens saírem da estrada!)
-    const center = 50 + (curve * 0.85) * (1 - p);
-    // Largura da pista varia de 26% no horizonte a 76% no rodapé
-    const roadWidth = 26 + p * 50;
-    // Espaçamento de 32% garante alinhamento exato no centro de cada uma das 3 faixas
-    const laneSpacing = roadWidth * 0.32;
+    const center = 50 + (curve * 0.75) * (1 - p);
+    // Largura da pista: vai de 17% no horizonte até 88% no rodapé (perspectiva 3D real!)
+    const roadWidth = 17 + p * 71;
+    // Espaçamento de 30% garante alinhamento exato no centro de cada uma das 3 faixas
+    const laneSpacing = roadWidth * 0.30;
     return center + (lane - 1) * laneSpacing;
   }, []);
 
@@ -310,7 +310,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     const rect = trackRef.current.getBoundingClientRect();
     const relX = ((e.clientX - rect.left) / rect.width) * 100;
     // Permite deslizar o carrinho livremente dentro da pista asfaltada
-    const clamped = Math.max(26, Math.min(74, relX));
+    const clamped = Math.max(22, Math.min(78, relX));
     targetXRef.current = clamped;
   };
 
@@ -434,13 +434,13 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
               </linearGradient>
             </defs>
 
-            {/* Asfalto da Pista */}
+            {/* Asfalto da Pista com Perspectiva 3D Real (de 17% a 88%) */}
             <polygon
               points={`
-                ${(50 + roadCurve * 0.85 - 13) * 10},0
-                ${(50 + roadCurve * 0.85 + 13) * 10},0
-                ${(50 + 38) * 10},1000
-                ${(50 - 38) * 10},1000
+                ${(50 + roadCurve * 0.75 - 8.5) * 10},0
+                ${(50 + roadCurve * 0.75 + 8.5) * 10},0
+                ${(50 + 44) * 10},1000
+                ${(50 - 44) * 10},1000
               `}
               fill="url(#asphaltGrad)"
               stroke="#020617"
@@ -450,10 +450,10 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
             {/* Zebra Vermelha e Branca Esquerda */}
             <polygon
               points={`
-                ${(50 + roadCurve * 0.85 - 15) * 10},0
-                ${(50 + roadCurve * 0.85 - 13) * 10},0
-                ${(50 - 38) * 10},1000
-                ${(50 - 41.5) * 10},1000
+                ${(50 + roadCurve * 0.75 - 11) * 10},0
+                ${(50 + roadCurve * 0.75 - 8.5) * 10},0
+                ${(50 - 44) * 10},1000
+                ${(50 - 48) * 10},1000
               `}
               fill="url(#curbRedWhite)"
             />
@@ -461,19 +461,19 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
             {/* Zebra Vermelha e Branca Direita */}
             <polygon
               points={`
-                ${(50 + roadCurve * 0.85 + 13) * 10},0
-                ${(50 + roadCurve * 0.85 + 15) * 10},0
-                ${(50 + 41.5) * 10},1000
-                ${(50 + 38) * 10},1000
+                ${(50 + roadCurve * 0.75 + 8.5) * 10},0
+                ${(50 + roadCurve * 0.75 + 11) * 10},0
+                ${(50 + 48) * 10},1000
+                ${(50 + 44) * 10},1000
               `}
               fill="url(#curbRedWhite)"
             />
 
             {/* Divisória de Faixa 1 (Entre Faixa 0 e 1: Exatamente no centro geométrico) */}
             <line
-              x1={(50 + roadCurve * 0.85 - 4.16) * 10}
+              x1={(50 + roadCurve * 0.75 - 2.55) * 10}
               y1={0}
-              x2={(50 - 12.16) * 10}
+              x2={(50 - 13.2) * 10}
               y2={1000}
               stroke="#ffffff"
               strokeWidth="5"
@@ -484,9 +484,9 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
             {/* Divisória de Faixa 2 (Entre Faixa 1 e 2: Exatamente no centro geométrico) */}
             <line
-              x1={(50 + roadCurve * 0.85 + 4.16) * 10}
+              x1={(50 + roadCurve * 0.75 + 2.55) * 10}
               y1={0}
-              x2={(50 + 12.16) * 10}
+              x2={(50 + 13.2) * 10}
               y2={1000}
               stroke="#ffffff"
               strokeWidth="5"
@@ -629,131 +629,128 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           </div>
         )}
 
-        {/* 9. VEÍCULO DO JOGADOR: POSICIONADO NO PONTO IDEAL DO RODAPÉ (NÃO FICA LA EM CIMA!) */}
+        {/* 9. VEÍCULO DO JOGADOR: PROPORCIONAL, TÁTIL E ELEGANTE (NÃO É UM BLOCO GIGANTE!) */}
         <div
           className="absolute z-25 pointer-events-none transition-transform duration-75"
           style={{
             left: `${carX}%`,
-            top: "74%", // Posição confortável no terço inferior da pista, acima dos botões
+            top: "75%", // Posição confortável no terço inferior da pista, acima dos botões
             transform: `translate(-50%, -50%) rotate(${carTilt}deg) ${
-              isJumping ? "scale(1.35) translateY(-50px)" : "scale(1)"
+              isJumping ? "scale(1.35) translateY(-45px)" : "scale(1)"
             }`,
           }}
         >
           {/* Sombra Dinâmica no Asfalto */}
           <div
-            className={`w-18 sm:w-26 h-6 bg-black/45 rounded-full blur-[3px] mx-auto transition-transform ${
-              isJumping ? "scale-75 translate-y-12 opacity-30" : "scale-100"
+            className={`w-14 sm:w-18 h-4 bg-black/40 rounded-full blur-[2px] mx-auto transition-transform ${
+              isJumping ? "scale-75 translate-y-10 opacity-30" : "scale-100"
             }`}
           />
 
           {/* Chamas de Fogo no Escape quando Turbo Ativo */}
           {isTurboActive && (
-            <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1 pointer-events-none">
-              <span className="text-2xl sm:text-3xl animate-bounce">🔥</span>
-              <span className="text-3xl sm:text-4xl animate-pulse">🔥</span>
-              <span className="text-2xl sm:text-3xl animate-bounce">🔥</span>
+            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 pointer-events-none">
+              <span className="text-xl sm:text-2xl animate-bounce">🔥</span>
+              <span className="text-2xl sm:text-3xl animate-pulse">🔥</span>
+              <span className="text-xl sm:text-2xl animate-bounce">🔥</span>
             </div>
           )}
 
-          {/* 1. JIPE DA ARCA DE NOÉ */}
+          {/* 1. JIPE DA ARCA DE NOÉ (PROPORÇÃO BONITINHA E CHUNKY) */}
           {vehicle === "safari" && (
-            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
-              <svg viewBox="0 0 140 200" className="w-full h-full">
-                {/* Rodas Robustas de Aço */}
-                <rect x="4" y="28" width="18" height="36" rx="6" fill="#0F172A" />
-                <rect x="118" y="28" width="18" height="36" rx="6" fill="#0F172A" />
-                <rect x="4" y="138" width="18" height="36" rx="6" fill="#0F172A" />
-                <rect x="118" y="138" width="18" height="36" rx="6" fill="#0F172A" />
+            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
+              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
+                {/* 4 Rodas Off-road com calotas prateadas */}
+                <rect x="2" y="14" width="12" height="26" rx="4" fill="#0F172A" />
+                <rect x="86" y="14" width="12" height="26" rx="4" fill="#0F172A" />
+                <rect x="2" y="94" width="12" height="28" rx="4" fill="#0F172A" />
+                <rect x="86" y="94" width="12" height="28" rx="4" fill="#0F172A" />
 
                 {/* Chassi Jipe Laranja/Madeira da Arca */}
-                <rect x="18" y="16" width="104" height="168" rx="20" fill="#D97706" stroke="#78350F" strokeWidth="5" />
-                <rect x="28" y="24" width="84" height="38" rx="8" fill="#B45309" />
+                <rect x="12" y="8" width="76" height="122" rx="16" fill="#D97706" stroke="#78350F" strokeWidth="3.5" />
+                <rect x="20" y="14" width="60" height="30" rx="8" fill="#B45309" />
 
                 {/* Para-brisa com Noé e Leãozinho */}
-                <rect x="26" y="65" width="88" height="34" rx="8" fill="#E0F2FE" stroke="#78350F" strokeWidth="3" />
-                <text x="34" y="91" fontSize="22">🧔</text>
-                <text x="80" y="91" fontSize="22">🦁</text>
+                <rect x="18" y="48" width="64" height="26" rx="6" fill="#BAE6FD" stroke="#0284C7" strokeWidth="2" />
+                <text x="23" y="68" fontSize="16">🧔</text>
+                <text x="55" y="68" fontSize="16">🦁</text>
 
                 {/* Bichinhos Salvos na Traseira */}
                 {rescuedAnimals.length > 0 && (
                   <g>
-                    <rect x="30" y="112" width="80" height="28" rx="6" fill="#FDE68A" stroke="#B45309" strokeWidth="2" />
-                    <text x="34" y="132" fontSize="16">
+                    <rect x="18" y="78" width="64" height="26" rx="5" fill="#FDE68A" stroke="#B45309" strokeWidth="1.5" />
+                    <text x="21" y="96" fontSize="13">
                       {rescuedAnimals.slice(-3).join("")}
                     </text>
                   </g>
                 )}
 
                 {/* Estepe com Cruz Dourada */}
-                <circle cx="70" cy="162" r="20" fill="#0F172A" stroke="#334155" strokeWidth="3" />
-                <circle cx="70" cy="162" r="8" fill="#F59E0B" />
+                <circle cx="50" cy="116" r="14" fill="#0F172A" stroke="#334155" strokeWidth="2" />
+                <circle cx="50" cy="116" r="5" fill="#F59E0B" />
 
-                {/* Faróis Dianteiros com Brilho Amarelo */}
-                <circle cx="36" cy="18" r="7" fill="#FEF08A" stroke="#D97706" strokeWidth="2" />
-                <circle cx="104" cy="18" r="7" fill="#FEF08A" stroke="#D97706" strokeWidth="2" />
+                {/* Faróis Dianteiros Brilhantes */}
+                <circle cx="26" cy="12" r="5.5" fill="#FEF08A" stroke="#D97706" strokeWidth="1.5" />
+                <circle cx="74" cy="12" r="5.5" fill="#FEF08A" stroke="#D97706" strokeWidth="1.5" />
               </svg>
             </div>
           )}
 
           {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
           {vehicle === "chariot" && (
-            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
-              <svg viewBox="0 0 140 200" className="w-full h-full">
-                <rect x="4" y="28" width="18" height="36" rx="6" fill="#EA580C" />
-                <rect x="118" y="28" width="18" height="36" rx="6" fill="#EA580C" />
-                <rect x="4" y="138" width="18" height="36" rx="6" fill="#EA580C" />
-                <rect x="118" y="138" width="18" height="36" rx="6" fill="#EA580C" />
-                <rect x="18" y="16" width="104" height="168" rx="22" fill="#FBBF24" stroke="#B45309" strokeWidth="5" />
-                <rect x="28" y="65" width="84" height="32" rx="8" fill="#FEF08A" stroke="#B45309" strokeWidth="3" />
-                <text x="46" y="90" fontSize="24">👑</text>
-                <text x="76" y="90" fontSize="22">🔥</text>
-                <polygon points="26,110 14,130 26,150" fill="#EF4444" />
-                <polygon points="114,110 126,130 114,150" fill="#EF4444" />
-                <circle cx="36" cy="18" r="8" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="2" />
-                <circle cx="104" cy="18" r="8" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="2" />
+            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
+              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
+                <rect x="2" y="14" width="12" height="26" rx="4" fill="#EA580C" />
+                <rect x="86" y="14" width="12" height="26" rx="4" fill="#EA580C" />
+                <rect x="2" y="94" width="12" height="28" rx="4" fill="#EA580C" />
+                <rect x="86" y="94" width="12" height="28" rx="4" fill="#EA580C" />
+                <rect x="12" y="8" width="76" height="122" rx="16" fill="#FBBF24" stroke="#B45309" strokeWidth="3.5" />
+                <rect x="18" y="48" width="64" height="26" rx="6" fill="#FEF08A" stroke="#B45309" strokeWidth="2" />
+                <text x="32" y="68" fontSize="18">👑</text>
+                <text x="56" y="68" fontSize="16">🔥</text>
+                <polygon points="18,82 8,98 18,114" fill="#EF4444" />
+                <polygon points="82,82 92,98 82,114" fill="#EF4444" />
+                <circle cx="26" cy="12" r="6" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="1.5" />
+                <circle cx="74" cy="12" r="6" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="1.5" />
               </svg>
             </div>
           )}
 
           {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
           {vehicle === "fire" && (
-            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
-              <svg viewBox="0 0 140 200" className="w-full h-full">
-                <rect x="6" y="30" width="16" height="34" rx="6" fill="#0F172A" />
-                <rect x="118" y="30" width="16" height="34" rx="6" fill="#0F172A" />
-                <rect x="6" y="140" width="16" height="34" rx="6" fill="#0F172A" />
-                <rect x="118" y="140" width="16" height="34" rx="6" fill="#0F172A" />
-                <rect x="18" y="15" width="104" height="170" rx="18" fill="#DC2626" stroke="#7F1D1D" strokeWidth="5" />
-                <rect x="28" y="35" width="84" height="35" rx="8" fill="#BAE6FD" stroke="#38BDF8" strokeWidth="3" />
-                <circle cx="70" cy="52" r="13" fill="#FED7AA" />
-                <rect x="58" y="36" width="24" height="10" rx="4" fill="#F59E0B" />
-                <rect x="44" y="18" width="22" height="8" rx="3" fill="#38BDF8" className="animate-ping" />
-                <rect x="74" y="18" width="22" height="8" rx="3" fill="#EF4444" className="animate-ping" />
-                <rect x="42" y="115" width="56" height="60" rx="6" fill="#E2E8F0" stroke="#64748B" strokeWidth="3" />
-                <line x1="42" y1="130" x2="98" y2="130" stroke="#64748B" strokeWidth="3" />
-                <line x1="42" y1="145" x2="98" y2="145" stroke="#64748B" strokeWidth="3" />
-                <line x1="42" y1="160" x2="98" y2="160" stroke="#64748B" strokeWidth="3" />
+            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
+              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
+                <rect x="3" y="16" width="11" height="26" rx="4" fill="#0F172A" />
+                <rect x="86" y="16" width="11" height="26" rx="4" fill="#0F172A" />
+                <rect x="3" y="94" width="11" height="28" rx="4" fill="#0F172A" />
+                <rect x="86" y="94" width="11" height="28" rx="4" fill="#0F172A" />
+                <rect x="12" y="8" width="76" height="124" rx="14" fill="#DC2626" stroke="#7F1D1D" strokeWidth="3.5" />
+                <rect x="18" y="24" width="64" height="26" rx="6" fill="#BAE6FD" stroke="#38BDF8" strokeWidth="2" />
+                <rect x="30" y="10" width="16" height="6" rx="2" fill="#38BDF8" className="animate-ping" />
+                <rect x="54" y="10" width="16" height="6" rx="2" fill="#EF4444" className="animate-ping" />
+                <rect x="28" y="82" width="44" height="42" rx="4" fill="#E2E8F0" stroke="#64748B" strokeWidth="2" />
+                <line x1="28" y1="94" x2="72" y2="94" stroke="#64748B" strokeWidth="2" />
+                <line x1="28" y1="106" x2="72" y2="106" stroke="#64748B" strokeWidth="2" />
               </svg>
             </div>
           )}
 
           {/* 4. DINO DA CRIAÇÃO */}
           {vehicle === "dino" && (
-            <div className="w-22 h-30 sm:w-28 sm:h-38 md:w-32 md:h-44 drop-shadow-2xl relative -mt-3">
-              <svg viewBox="0 0 140 200" className="w-full h-full">
-                <rect x="2" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
-                <rect x="116" y="25" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
-                <rect x="2" y="135" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
-                <rect x="116" y="135" width="22" height="40" rx="8" fill="#14532D" stroke="#052E16" strokeWidth="3" />
-                <path d="M 22 45 Q 70 10 118 45 L 118 170 Q 70 185 22 170 Z" fill="#15803D" stroke="#14532D" strokeWidth="5" />
-                <circle cx="44" cy="55" r="10" fill="#FACC15" stroke="#713F12" strokeWidth="3" />
-                <circle cx="44" cy="55" r="4" fill="#000000" />
-                <circle cx="96" cy="55" r="10" fill="#FACC15" stroke="#713F12" strokeWidth="3" />
-                <circle cx="96" cy="55" r="4" fill="#000000" />
-                <polygon points="62,90 70,72 78,90" fill="#EAB308" />
-                <polygon points="62,120 70,102 78,120" fill="#EAB308" />
-                <polygon points="62,150 70,132 78,150" fill="#EAB308" />
+            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
+              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
+                <rect x="1" y="14" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <rect x="85" y="14" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <rect x="1" y="94" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <rect x="85" y="94" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <path d="M 14 30 Q 50 6 86 30 L 86 122 Q 50 134 14 122 Z" fill="#15803D" stroke="#14532D" strokeWidth="3.5" />
+                <circle cx="34" cy="38" r="7" fill="#FACC15" stroke="#713F12" strokeWidth="2" />
+                <circle cx="34" cy="38" r="3" fill="#000000" />
+                <circle cx="66" cy="38" r="7" fill="#FACC15" stroke="#713F12" strokeWidth="2" />
+                <circle cx="66" cy="38" r="3" fill="#000000" />
+                <polygon points="45,62 50,50 55,62" fill="#EAB308" />
+                <polygon points="45,84 50,72 55,84" fill="#EAB308" />
+                <polygon points="45,106 50,94 55,106" fill="#EAB308" />
               </svg>
             </div>
           )}
