@@ -1,16 +1,24 @@
 "use client";
 
 import React from "react";
-import { X, Smartphone, Share2, PlusSquare, MoreVertical, Download, Sparkles, CheckCircle2 } from "lucide-react";
+import { X, Smartphone, Share2, PlusSquare, Download, Sparkles, CheckCircle2, Monitor } from "lucide-react";
 import { sounds } from "@/utils/soundEngine";
 
 interface PWAInstallModalProps {
   isOpen: boolean;
   onClose: () => void;
   isIOS: boolean;
+  canPrompt?: boolean;
+  onNativeInstall?: () => void;
 }
 
-export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps) {
+export function PWAInstallModal({
+  isOpen,
+  onClose,
+  isIOS,
+  canPrompt,
+  onNativeInstall,
+}: PWAInstallModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -44,15 +52,31 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
         </h2>
 
         <p className="text-xs sm:text-sm font-bold text-slate-600 mt-1 mb-4">
-          Jogue em <span className="text-kids-teal font-black">tela cheia</span> sem barras de navegador, mais rápido e direto da tela do seu celular!
+          Jogue em <span className="text-kids-teal font-black">tela cheia</span> direto do seu aparelho, mais rápido e sem barras de navegador!
         </p>
 
-        {/* Instruções Específicas por Sistema */}
+        {/* Se o prompt nativo puder ser chamado diretamente */}
+        {canPrompt && onNativeInstall ? (
+          <div className="w-full mb-4">
+            <button
+              onClick={() => {
+                onNativeInstall();
+                onClose();
+              }}
+              className="kid-btn w-full bg-emerald-500 hover:bg-emerald-600 text-white font-black text-base sm:text-lg py-3 rounded-2xl border-3 border-emerald-700 shadow-kid active:scale-95 flex items-center justify-center gap-2 animate-pulse-gentle"
+            >
+              <Download size={22} className="stroke-[2.5]" />
+              <span>INSTALAR AGORA NO DISPOSITIVO</span>
+            </button>
+          </div>
+        ) : null}
+
+        {/* Instruções por Sistema */}
         {isIOS ? (
           <div className="w-full bg-sky-50 border-2 border-sky-300 rounded-2xl p-3 sm:p-4 text-left flex flex-col gap-2.5 mb-4">
             <div className="flex items-center gap-2 text-sky-950 font-black text-xs sm:text-sm">
               <Smartphone size={18} className="text-sky-600 flex-shrink-0" />
-              <span>Como instalar no iPhone / iPad:</span>
+              <span>Como instalar no iPhone / iPad (Safari):</span>
             </div>
 
             <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
@@ -70,7 +94,7 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
                 2
               </span>
               <p>
-                Role as opções para baixo e toque em{" "}
+                Role para baixo e toque em{" "}
                 <strong className="text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-300 inline-flex items-center gap-1">
                   <PlusSquare size={14} /> Adicionar à Tela de Início
                 </strong>
@@ -90,8 +114,8 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
         ) : (
           <div className="w-full bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 sm:p-4 text-left flex flex-col gap-2.5 mb-4">
             <div className="flex items-center gap-2 text-amber-950 font-black text-xs sm:text-sm">
-              <Smartphone size={18} className="text-amber-600 flex-shrink-0" />
-              <span>Como instalar no Android / Navegador:</span>
+              <Monitor size={18} className="text-amber-600 flex-shrink-0" />
+              <span>No Chrome / Celular Android / Computador:</span>
             </div>
 
             <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
@@ -99,8 +123,7 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
                 1
               </span>
               <p>
-                Toque no menu de <strong>3 pontinhos</strong>{" "}
-                <MoreVertical size={16} className="inline text-amber-700 stroke-[2.5]" /> no canto do navegador.
+                No Computador: Clique no ícone de instalação <Download size={15} className="inline text-emerald-600 stroke-[2.5]" /> na barra de endereço (onde fica o link do site).
               </p>
             </div>
 
@@ -109,20 +132,7 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
                 2
               </span>
               <p>
-                Selecione{" "}
-                <strong className="text-slate-900 bg-white px-1.5 py-0.5 rounded border border-slate-300 inline-flex items-center gap-1">
-                  <Download size={14} /> Instalar aplicativo
-                </strong>{" "}
-                ou <strong>Adicionar à tela inicial</strong>.
-              </p>
-            </div>
-
-            <div className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-700">
-              <span className="w-6 h-6 rounded-full bg-amber-500 text-white font-black flex items-center justify-center flex-shrink-0 text-xs shadow-sm">
-                3
-              </span>
-              <p>
-                Confirme em <strong>Instalar</strong>. O ícone aparecerá na tela do seu celular! ⭐
+                No Celular Android: Toque nos <strong>3 pontinhos (⋮)</strong> no canto superior do Chrome e escolha <strong>&quot;Instalar aplicativo&quot;</strong> ou <strong>&quot;Adicionar à tela inicial&quot;</strong>.
               </p>
             </div>
           </div>
@@ -137,7 +147,7 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
             <CheckCircle2 size={16} className="text-emerald-500" /> Sem Anúncios
           </span>
           <span className="flex items-center gap-1">
-            <CheckCircle2 size={16} className="text-emerald-500" /> Jogue Offline
+            <CheckCircle2 size={16} className="text-emerald-500" /> Funciona Offline
           </span>
         </div>
 
@@ -147,10 +157,10 @@ export function PWAInstallModal({ isOpen, onClose, isIOS }: PWAInstallModalProps
             sounds.playPop();
             onClose();
           }}
-          className="kid-btn w-full bg-kids-green hover:bg-emerald-500 text-white font-black text-base sm:text-lg py-2.5 sm:py-3 rounded-2xl border-3 border-emerald-700 shadow-kid active:scale-95 flex items-center justify-center gap-2"
+          className="kid-btn w-full bg-kids-teal hover:bg-teal-500 text-white font-black text-base sm:text-lg py-2.5 sm:py-3 rounded-2xl border-3 border-teal-700 shadow-kid active:scale-95 flex items-center justify-center gap-2"
         >
           <Sparkles size={20} />
-          <span>ENTENDI, VAMOS LÁ!</span>
+          <span>ENTENDI, VAMOS JOGAR!</span>
         </button>
       </div>
     </div>

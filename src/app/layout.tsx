@@ -48,6 +48,22 @@ export default function RootLayout({
       <head>
         <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.__pwaPrompt = null;
+              window.addEventListener('beforeinstallprompt', function(e) {
+                e.preventDefault();
+                window.__pwaPrompt = e;
+                window.dispatchEvent(new CustomEvent('pwa-prompt-ready'));
+              });
+              window.addEventListener('appinstalled', function() {
+                window.__pwaPrompt = null;
+                window.dispatchEvent(new CustomEvent('pwa-installed'));
+              });
+            `,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning

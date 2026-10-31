@@ -1,11 +1,26 @@
 // Service Worker com Estratégia Network-First:
 // Sempre busca a versão mais nova do servidor quando há internet (sem precisar dar Clear Site Data!)
 // E mantém o cache atualizado automaticamente para funcionar offline quando necessário.
-const CACHE_NAME = "mundinho-magico-v4";
+const CACHE_NAME = "mundinho-magico-v5";
 
-self.addEventListener("install", () => {
-  // Assume o controle imediatamente sem ficar preso esperando fechar abas
+const PRECACHE_ASSETS = [
+  "/",
+  "/manifest.json",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/icon.svg"
+];
+
+self.addEventListener("install", (event) => {
+  // Assume o controle imediatamente e faz pre-cache dos recursos essenciais para passar no teste PWA
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(PRECACHE_ASSETS).catch((err) => {
+        console.log("Pre-cache warning:", err);
+      });
+    })
+  );
 });
 
 self.addEventListener("activate", (event) => {

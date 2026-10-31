@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Sparkles } from "lucide-react";
 
 interface WordChallenge {
@@ -218,7 +219,7 @@ const wordChallenges: WordChallenge[] = [
   },
 ];
 
-export function MissingLetterGame() {
+export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const [wrongShakeLetter, setWrongShakeLetter] = useState<string | null>(null);
@@ -254,26 +255,30 @@ export function MissingLetterGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-300 via-sky-100 to-amber-100">
-      {/* PALCO CENTRAL FULL-SCREEN: CARTÃO GIGANTE DE ILUSTRAÇÃO E PALAVRA */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col landscape:flex-row items-center justify-evenly landscape:justify-center landscape:gap-6 overflow-hidden">
-        {/* HUD Flutuante no Topo */}
-        <div className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-30 landscape-compact-topbar">
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-coral px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg">
-            <span className="text-xl sm:text-3xl">🔤</span>
-            <span className="text-xs sm:text-2xl font-black text-rose-950">
+      <GameHeader
+        onHome={onHome}
+        title="Letrinha Mágica"
+        icon="🔤"
+        leftControls={
+          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 rounded-xl border border-kids-coral shadow-sm">
+            <span className="text-base sm:text-xl">🔤</span>
+            <span className="text-xs sm:text-sm font-black text-rose-950">
               Palavra: {currentIdx + 1} / {wordChallenges.length}
             </span>
           </div>
-
+        }
+        rightControls={
           <button
             onClick={handleReset}
-            className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
             title="Recomeçar"
           >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <RotateCcw size={16} />
           </button>
-        </div>
-
+        }
+      />
+      {/* PALCO CENTRAL FULL-SCREEN: CARTÃO GIGANTE DE ILUSTRAÇÃO E PALAVRA */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col landscape:flex-row items-center justify-evenly landscape:justify-center landscape:gap-6 overflow-hidden">
         {/* Cartão Gigante de Exibição do Ícone */}
         <div
           className={`relative w-44 h-44 sm:w-80 sm:h-80 landscape:w-36 landscape:h-36 max-h-[42vh] landscape:max-h-[55vh] aspect-square rounded-3xl sm:rounded-4xl border-4 sm:border-8 ${

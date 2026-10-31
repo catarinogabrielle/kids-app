@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Checkpoint {
@@ -310,7 +311,7 @@ const BIBLICAL_ALPHABET: LetterData[] = [
   },
 ];
 
-export function LetterTracingGame() {
+export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isDrawing, setIsDrawing] = useState(false);
   const [passedCheckpoints, setPassedCheckpoints] = useState<number[]>([]);
@@ -506,55 +507,58 @@ export function LetterTracingGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-indigo-100 via-purple-100 to-pink-100">
-      {/* BARRA SUPERIOR: FAIXA ROLÁVEL COM TODO O ALFABETO BÍBLICO */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1.5 sm:py-2.5 landscape:py-1 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
-        <button
-          onClick={prevLetter}
-          className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm flex-shrink-0"
-          title="Letra Anterior"
-        >
-          <ChevronLeft size={20} className="sm:w-6 sm:h-6 stroke-[3]" />
-        </button>
-
-        <div className="flex items-center gap-1 sm:gap-2.5 overflow-x-auto py-0.5 scrollbar-none">
-          {BIBLICAL_ALPHABET.map((item, idx) => (
+      <GameHeader
+        onHome={onHome}
+        title="Traçar Letras"
+        icon="✍️"
+        leftControls={
+          <div className="flex items-center gap-1">
             <button
-              key={item.letter}
-              onClick={() => {
-                sounds.playPop();
-                setCurrentIdx(idx);
-              }}
-              className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-2 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 font-black transition-all flex-shrink-0 ${
-                currentIdx === idx
-                  ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
-                  : "bg-slate-50 border-slate-200 hover:bg-amber-50"
-              }`}
+              onClick={prevLetter}
+              className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 rounded-lg border border-slate-300 shadow-sm"
+              title="Letra Anterior"
             >
-              <span className="text-lg sm:text-3xl landscape:text-lg font-black" style={{ color: item.themeColor }}>
-                {item.letter}
-              </span>
+              <ChevronLeft size={16} />
             </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-          <button
-            onClick={nextLetter}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
-            title="Próxima Letra"
-          >
-            <ChevronRight size={20} className="sm:w-6 sm:h-6 stroke-[3]" />
-          </button>
-
+            <div className="flex items-center gap-1 max-w-[200px] sm:max-w-md overflow-x-auto py-0.5 scrollbar-none">
+              {BIBLICAL_ALPHABET.map((item, idx) => (
+                <button
+                  key={item.letter}
+                  onClick={() => {
+                    sounds.playPop();
+                    setCurrentIdx(idx);
+                  }}
+                  className={`kid-btn px-1.5 py-0.5 rounded-lg border font-black transition-all flex-shrink-0 ${
+                    currentIdx === idx
+                      ? "bg-kids-yellow border-amber-500 scale-105 shadow-sm ring-1 ring-yellow-400"
+                      : "bg-slate-50 border-slate-200"
+                  }`}
+                >
+                  <span className="text-sm sm:text-base font-black" style={{ color: item.themeColor }}>
+                    {item.letter}
+                  </span>
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={nextLetter}
+              className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 rounded-lg border border-slate-300 shadow-sm"
+              title="Próxima Letra"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        }
+        rightControls={
           <button
             onClick={handleReset}
-            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-2 landscape:p-1 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
+            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
             title="Recomeçar Desenho"
           >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+            <RotateCcw size={16} />
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* ÁREA CENTRAL: PALCO QUADRADO PROPORCIONAL COM PRECISÃO 1:1 */}
       <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">

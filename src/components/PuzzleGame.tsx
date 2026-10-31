@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Check, Sparkles } from "lucide-react";
 
 interface PuzzleDefinition {
@@ -203,7 +204,7 @@ const PUZZLES: PuzzleDefinition[] = [
   },
 ];
 
-export function PuzzleGame() {
+export function PuzzleGame({ onHome }: { onHome?: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [placedPieces, setPlacedPieces] = useState<number[]>([]);
 
@@ -388,45 +389,48 @@ export function PuzzleGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden touch-none bg-gradient-to-b from-amber-100 via-sky-100 to-emerald-100">
-      {/* BARRA SUPERIOR FULL-WIDTH: Seletor de Quebra-Cabeças e Reiniciar */}
-      <div className="w-full flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 sm:px-6 py-1 sm:py-2.5 landscape:py-1 border-b-4 border-kids-purple shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
-        <div className="flex items-center gap-1.5 sm:gap-3">
-          {PUZZLES.map((p, idx) => (
+      <GameHeader
+        onHome={onHome}
+        title="Quebra-Cabeça"
+        icon="🧩"
+        leftControls={
+          <div className="flex items-center gap-1">
+            {PUZZLES.map((p, idx) => (
+              <button
+                key={p.id}
+                onClick={() => {
+                  sounds.playPop();
+                  setCurrentIdx(idx);
+                  setPlacedPieces([]);
+                  setDraggingPieceId(null);
+                }}
+                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border transition-all ${
+                  currentIdx === idx
+                    ? "bg-kids-yellow border-amber-500 scale-105 shadow-sm ring-1 ring-yellow-400"
+                    : "bg-slate-50 border-slate-200"
+                }`}
+                title={p.title}
+              >
+                <span className="text-base sm:text-xl">{p.icon}</span>
+              </button>
+            ))}
+          </div>
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
+            <span className="text-xs font-black text-purple-900 bg-purple-100 px-2 py-0.5 rounded-xl border border-purple-300">
+              {placedPieces.length} / 4
+            </span>
             <button
-              key={p.id}
-              onClick={() => {
-                sounds.playPop();
-                setCurrentIdx(idx);
-                setPlacedPieces([]);
-                setDraggingPieceId(null);
-              }}
-              className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-2 landscape:px-2 landscape:py-0.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 transition-all flex items-center gap-1 sm:gap-1.5 ${
-                currentIdx === idx
-                  ? "bg-kids-yellow border-amber-500 scale-105 shadow-kid-sm ring-2 sm:ring-4 ring-yellow-300"
-                  : "bg-slate-50 border-slate-200 hover:bg-amber-50"
-              }`}
+              onClick={handleReset}
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              title="Recomeçar"
             >
-              <span className="text-xl sm:text-4xl landscape:text-xl">{p.icon}</span>
-              <span className="hidden md:inline text-sm font-black text-amber-950">
-                {p.title}
-              </span>
+              <RotateCcw size={16} />
             </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <span className="text-xs sm:text-base font-black text-purple-900 bg-purple-100 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border-2 border-purple-300">
-            Peças: {placedPieces.length} / 4
-          </span>
-          <button
-            onClick={handleReset}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid-sm"
-            title="Recomeçar"
-          >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-          </button>
-        </div>
-      </div>
+          </div>
+        }
+      />
 
       {/* ÁREA CENTRAL GIGANTE: O TABULEIRO DO QUEBRA-CABEÇA OCUPANDO O PALCO */}
       <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-5 landscape:p-1 flex items-center justify-center overflow-hidden">

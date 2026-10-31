@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Sparkles } from "lucide-react";
 
 type TrainMode = "sequence" | "missing" | "countdown" | "passengers";
@@ -355,7 +356,7 @@ function FreightWagon({
   );
 }
 
-export function NumberTrainGame() {
+export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
   const [mode, setMode] = useState<TrainMode>("sequence");
   const [level, setLevel] = useState<"1-5" | "6-10">("1-5");
   const [placedNumbers, setPlacedNumbers] = useState<number[]>([]);
@@ -484,91 +485,57 @@ export function NumberTrainGame() {
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
       {/* PALCO FERROVIÁRIO FULL-SCREEN */}
       <div className="relative flex-1 min-h-0 w-full flex flex-col justify-between items-center overflow-hidden">
-        {/* HUD SUPERIOR: SELETOR DE MODOS INTELIGENTES + APITO */}
-        <div className="w-full px-2 sm:px-4 pt-1 sm:pt-2 landscape:pt-0.5 z-30 flex items-center justify-between gap-1.5 sm:gap-3 flex-shrink-0 landscape-compact-topbar">
-          {/* Seletor dos 4 Modos Inteligentes */}
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-teal shadow-md overflow-x-auto scrollbar-none">
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setMode("sequence");
-              }}
-              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
-                mode === "sequence"
-                  ? "bg-kids-teal text-white border-2 border-teal-700 shadow-sm"
-                  : "text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              <span>🚂</span>
-              <span>Na Ordem</span>
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setMode("missing");
-              }}
-              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
-                mode === "missing"
-                  ? "bg-amber-500 text-white border-2 border-amber-700 shadow-sm ring-2 ring-yellow-300"
-                  : "text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              <span>❓</span>
-              <span>Qual Falta?</span>
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setMode("countdown");
-              }}
-              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
-                mode === "countdown"
-                  ? "bg-purple-600 text-white border-2 border-purple-800 shadow-sm"
-                  : "text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              <span>⏱️</span>
-              <span>Regressiva</span>
-            </button>
-
-            <button
-              onClick={() => {
-                sounds.playPop();
-                setMode("passengers");
-              }}
-              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
-                mode === "passengers"
-                  ? "bg-kids-coral text-white border-2 border-rose-800 shadow-sm"
-                  : "text-slate-700 hover:bg-slate-100"
-              }`}
-            >
-              <span>🐑</span>
-              <span>Passageiros</span>
-            </button>
+        <GameHeader
+        onHome={onHome}
+        title="Trem 123"
+        icon="🚂"
+        leftControls={
+          <div className="flex items-center gap-1 bg-white/95 p-0.5 sm:p-1 rounded-xl border border-kids-teal shadow-sm overflow-x-auto scrollbar-none">
+            {[
+              { id: "sequence", icon: "🚂", label: "Na Ordem" },
+              { id: "missing", icon: "❓", label: "Qual Falta?" },
+              { id: "countdown", icon: "⏱️", label: "Regressiva" },
+              { id: "passengers", icon: "🐑", label: "Passageiros" },
+            ].map((m) => (
+              <button
+                key={m.id}
+                onClick={() => {
+                  sounds.playPop();
+                  setMode(m.id as TrainMode);
+                }}
+                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-xs font-black flex items-center gap-1 transition-all ${
+                  mode === m.id
+                    ? "bg-kids-teal text-white border border-teal-700 shadow-sm"
+                    : "text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                <span>{m.icon}</span>
+                <span className="hidden sm:inline">{m.label}</span>
+              </button>
+            ))}
           </div>
-
-          {/* Botão de Apito PIUÍ! e Recomeçar */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
             <button
               onClick={() => sounds.playWhistle()}
-              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-amber-600 shadow-md font-black text-xs sm:text-sm flex items-center gap-1"
+              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-2 py-1 sm:px-3 sm:py-1 rounded-xl border border-amber-600 shadow-sm font-black text-xs flex items-center gap-1"
               title="Tocar Apito"
             >
               <span>📢</span>
-              <span>PIUÍ!</span>
+              <span className="hidden sm:inline">PIUÍ!</span>
             </button>
 
             <button
               onClick={() => initGameForMode(mode)}
-              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Recomeçar"
             >
-              <RotateCcw size={18} className="stroke-[2.5]" />
+              <RotateCcw size={16} />
             </button>
           </div>
-        </div>
+        }
+      />
 
         {/* CENÁRIO CENTRAL COM NUVENS, SOL E OS TRILHOS */}
         <div className="relative w-full flex-1 flex flex-col justify-center items-center">

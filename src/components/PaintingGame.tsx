@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { Paintbrush, PaintBucket, Camera, RotateCcw, Sparkles, Eraser } from "lucide-react";
 
 type ColorTemplate = "ark" | "dino" | "fire" | "daniel" | "blank";
@@ -15,7 +16,7 @@ interface Stamp {
   y: number;
 }
 
-export function PaintingGame() {
+export function PaintingGame({ onHome }: { onHome?: () => void }) {
   const [template, setTemplate] = useState<ColorTemplate>("daniel");
   const [selectedColor, setSelectedColor] = useState("#F59E0B");
   const [toolMode, setToolMode] = useState<ToolMode>("bucket");
@@ -207,56 +208,59 @@ export function PaintingGame() {
 
   return (
     <div className="flex flex-col justify-between w-full h-full select-none overflow-hidden bg-white">
-      {/* HUD Superior do Estúdio: Seleção de Desenhos + Foto/Limpar */}
-      <div className="w-full flex items-center justify-between gap-1 sm:gap-3 bg-gradient-to-r from-sky-500 via-blue-500 to-indigo-500 px-2 sm:px-4 py-1 sm:py-2 landscape:py-0.5 border-b-2 sm:border-b-4 border-blue-700 shadow-md z-20 flex-shrink-0 landscape-compact-topbar">
-        {/* 5 Modelos de Desenho Grandes */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          {[
-            { id: "daniel", emoji: "🦁", label: "Rei Leão" },
-            { id: "ark", emoji: "🛳️", label: "Arca" },
-            { id: "dino", emoji: "🦖", label: "Dino" },
-            { id: "fire", emoji: "🚒", label: "Bombeiro" },
-            { id: "blank", emoji: "📄", label: "Livre" },
-          ].map((t) => (
+      <GameHeader
+        onHome={onHome}
+        title="Atelier Bíblico"
+        icon="🎨"
+        leftControls={
+          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
+            {[
+              { id: "daniel", emoji: "🦁", label: "Rei Leão" },
+              { id: "ark", emoji: "🛳️", label: "Arca" },
+              { id: "dino", emoji: "🦖", label: "Dino" },
+              { id: "fire", emoji: "🚒", label: "Bombeiro" },
+              { id: "blank", emoji: "📄", label: "Livre" },
+            ].map((t) => (
+              <button
+                key={t.id}
+                onClick={() => {
+                  sounds.playPop();
+                  setTemplate(t.id as ColorTemplate);
+                }}
+                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border transition-all ${
+                  template === t.id
+                    ? "bg-kids-yellow border-amber-600 scale-105 shadow-sm ring-1 ring-yellow-400 text-amber-950"
+                    : "bg-white/90 border-white text-slate-700 hover:bg-white"
+                }`}
+              >
+                <span className="text-base sm:text-xl">{t.emoji}</span>
+                <span className="hidden sm:inline font-black text-xs">{t.label}</span>
+              </button>
+            ))}
+          </div>
+        }
+        rightControls={
+          <div className="flex items-center gap-1 sm:gap-1.5">
             <button
-              key={t.id}
-              onClick={() => {
-                sounds.playPop();
-                setTemplate(t.id as ColorTemplate);
-              }}
-              className={`kid-btn px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 flex items-center gap-1.5 transition-all ${
-                template === t.id
-                  ? "bg-kids-yellow border-amber-600 scale-105 shadow-kid ring-2 ring-yellow-200 text-amber-950"
-                  : "bg-white/90 border-white text-slate-700 hover:bg-white"
-              }`}
+              onClick={handleSaveArtwork}
+              className="kid-btn bg-kids-coral hover:bg-rose-500 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-xl border sm:border-2 border-rose-800 shadow-sm flex items-center gap-1 font-black text-xs"
+              title="Salvar Foto"
             >
-              <span className="text-xl sm:text-2xl">{t.emoji}</span>
-              <span className="hidden md:inline font-black text-xs sm:text-sm">{t.label}</span>
+              <Camera size={15} />
+              <span className="hidden sm:inline">FOTO</span>
             </button>
-          ))}
-        </div>
 
-        {/* Ações Rápidas: Foto e Limpar */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          <button
-            onClick={handleSaveArtwork}
-            className="kid-btn bg-kids-coral hover:bg-rose-500 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-rose-800 shadow-kid flex items-center gap-1.5"
-            title="Salvar Foto!"
-          >
-            <Camera size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-            <span className="hidden sm:inline font-black text-xs sm:text-sm">FOTO</span>
-          </button>
-
-          <button
-            onClick={handleClearAll}
-            className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-800 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-kid flex items-center gap-1"
-            title="Limpar"
-          >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-            <span className="hidden sm:inline font-black text-xs sm:text-sm">LIMPAR</span>
-          </button>
-        </div>
-      </div>
+            <button
+              onClick={handleClearAll}
+              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-800 p-1 sm:px-2 sm:py-1 rounded-xl border border-slate-300 shadow-sm flex items-center gap-1 font-black text-xs"
+              title="Limpar"
+            >
+              <RotateCcw size={15} />
+              <span className="hidden sm:inline">LIMPAR</span>
+            </button>
+          </div>
+        }
+      />
 
       {/* PRANCHA DE PINTURA TELA CHEIA (Ilustrações Vetoriais de Livro de Colorir Profissional) */}
       <div

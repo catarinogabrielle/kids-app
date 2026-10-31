@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { Trash2, Bomb } from "lucide-react";
 
 interface BlockType {
@@ -95,7 +96,7 @@ const BLOCK_TYPES: BlockType[] = [
 const BLOCK_HEIGHT = 60;
 const TABLE_HEIGHT = 50;
 
-export function BlocksGame() {
+export function BlocksGame({ onHome }: { onHome?: () => void }) {
   const [stackedBlocks, setStackedBlocks] = useState<PlacedBlock[]>([]);
   const [selectedType, setSelectedType] = useState<BlockType>(BLOCK_TYPES[0]);
   const [isDemolishing, setIsDemolishing] = useState(false);
@@ -312,6 +313,43 @@ export function BlocksGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden">
+      <GameHeader
+        onHome={onHome}
+        title="Torre da Fé"
+        icon="🧱"
+        leftControls={
+          <div className="flex items-center gap-1 bg-white/95 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-kids-orange shadow-sm">
+            <span className="text-base sm:text-xl">🧱</span>
+            <span className="text-xs sm:text-sm font-black text-amber-950">
+              Torre: {stackedBlocks.length}
+            </span>
+          </div>
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
+            <button
+              onClick={handleDemolish}
+              disabled={stackedBlocks.length === 0 || isDemolishing}
+              className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-1 rounded-xl border font-black text-xs sm:text-sm flex items-center gap-1 ${
+                stackedBlocks.length > 0 && !isDemolishing
+                  ? "bg-kids-coral text-white border-rose-700 shadow-sm active:scale-90 animate-pulse-gentle"
+                  : "bg-white/80 text-gray-400 border-gray-300 opacity-60 cursor-not-allowed"
+              }`}
+            >
+              <Bomb size={16} />
+              <span>BUM! 💥</span>
+            </button>
+
+            <button
+              onClick={handleClear}
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              title="Limpar Torre"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        }
+      />
       {/* ÁREA DE GRAVIDADE FULL-SCREEN COM CÂMERA DINÂMICA E HUD FLUTUANTE */}
       <div
         ref={containerRef}
@@ -320,42 +358,6 @@ export function BlocksGame() {
           isScreenShaking ? "animate-wiggle" : ""
         }`}
       >
-        {/* HUD Flutuante no Topo */}
-        <div
-          onPointerDown={(e) => e.stopPropagation()}
-          className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-40 pointer-events-none landscape-compact-topbar"
-        >
-          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-orange px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg">
-            <span className="text-xl sm:text-3xl">🧱</span>
-            <span className="text-xs sm:text-2xl font-black text-amber-950">
-              Torre: {stackedBlocks.length}
-            </span>
-          </div>
-
-          <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
-            <button
-              onClick={handleDemolish}
-              disabled={stackedBlocks.length === 0 || isDemolishing}
-              className={`kid-btn px-3 sm:px-6 py-1 sm:py-2.5 landscape:py-1 rounded-xl sm:rounded-2xl border-2 sm:border-4 font-black text-xs sm:text-lg flex items-center gap-1 transition-all ${
-                stackedBlocks.length > 0 && !isDemolishing
-                  ? "bg-kids-coral text-white border-rose-700 shadow-lg active:scale-90 animate-pulse-gentle"
-                  : "bg-white/80 text-gray-400 border-gray-300 opacity-60 cursor-not-allowed"
-              }`}
-            >
-              <Bomb size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-              <span>BUM! 💥</span>
-            </button>
-
-            <button
-              onClick={handleClear}
-              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
-              title="Limpar Torre"
-            >
-              <Trash2 size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-            </button>
-          </div>
-        </div>
-
         {/* Nuvens e Sol */}
         <div className="absolute top-16 left-8 text-6xl opacity-40 animate-float pointer-events-none">
           ☁️

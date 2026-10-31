@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Sparkles } from "lucide-react";
 
 interface ColorMission {
@@ -83,7 +84,7 @@ interface BalloonItem {
   sizePx: number;
 }
 
-export function BalloonPopGame() {
+export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
   const [missionIdx, setMissionIdx] = useState(0);
   const [targetCount, setTargetCount] = useState(0);
   const [isVictory, setIsVictory] = useState(false);
@@ -190,65 +191,40 @@ export function BalloonPopGame() {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="relative flex flex-col w-full h-full bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-200 select-none overflow-hidden touch-none"
-    >
-      {/* HUD Flutuante no Topo: Placar de Missão de Cores */}
-      <div className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 bg-white/95 backdrop-blur-md px-2.5 py-1 sm:p-3 landscape:py-0.5 rounded-xl sm:rounded-3xl border-2 sm:border-4 border-kids-pink shadow-lg z-30 landscape-compact-topbar">
-        <div
-          className={`flex items-center gap-1.5 sm:gap-2 px-2.5 py-0.5 sm:px-4 sm:py-1.5 rounded-lg sm:rounded-2xl border-2 shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}
-        >
-          <span className="text-xl sm:text-4xl landscape:text-xl">
-            {currentMission.emoji}
-          </span>
-          <div className="flex flex-col">
-            <span className="text-[10px] sm:text-xs font-black uppercase text-slate-500 tracking-wider hidden sm:block">
-              Missão de Cores
-            </span>
-            <span className={`text-xs sm:text-2xl font-black ${currentMission.textColor} whitespace-nowrap`}>
-              <span className="hidden sm:inline">Pegue 10 </span>{currentMission.name}!
+    <div className="flex flex-col w-full h-full select-none overflow-hidden">
+      <GameHeader
+        onHome={onHome}
+        title="Balões de Luz"
+        icon="🎈"
+        leftControls={
+          <div className={`flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}>
+            <span className="text-base sm:text-xl">{currentMission.emoji}</span>
+            <span className={`text-xs sm:text-sm font-black ${currentMission.textColor} whitespace-nowrap`}>
+              Pegue 10 {currentMission.name}!
             </span>
           </div>
-        </div>
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 bg-amber-100 border border-amber-400 px-2 py-0.5 rounded-xl font-black text-xs text-amber-950 shadow-sm">
+              <span>🎈</span>
+              <span>{targetCount}/{GOAL}</span>
+            </div>
 
-        {/* Bloco da Direita: Contador e Botão de Reset */}
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-          {/* Marcadores de Progresso (10 Balões Miniatura - Tablets e Telas Maiores) */}
-          <div className="hidden md:flex items-center gap-1 bg-slate-100 px-3 py-1.5 rounded-2xl border-2 border-slate-300">
-            {[...Array(GOAL)].map((_, idx) => (
-              <span
-                key={idx}
-                className={`text-base sm:text-lg transition-all duration-200 ${
-                  idx < targetCount
-                    ? "scale-110 opacity-100"
-                    : "scale-90 opacity-20 grayscale"
-                }`}
-              >
-                🎈
-              </span>
-            ))}
-            <span className="text-sm sm:text-base font-black text-slate-700 ml-2">
-              {targetCount}/{GOAL}
-            </span>
+            <button
+              onClick={handleReset}
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              title="Recomeçar"
+            >
+              <RotateCcw size={16} />
+            </button>
           </div>
-
-          {/* Versão Compacta Mobile/Tablet do Contador */}
-          <div className="flex md:hidden items-center gap-1 bg-amber-100 border-2 border-amber-400 px-2.5 py-1 rounded-xl font-black text-xs sm:text-sm text-amber-950 shadow-sm">
-            <span>🎈</span>
-            <span>{targetCount}/{GOAL}</span>
-          </div>
-
-          <button
-            onClick={handleReset}
-            className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-kid-sm flex-shrink-0"
-            title="Recomeçar"
-          >
-            <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
-          </button>
-        </div>
-      </div>
-
+        }
+      />
+      <div
+        ref={containerRef}
+        className="relative flex-1 min-h-0 w-full h-full bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-200 select-none overflow-hidden touch-none"
+      >
       {/* Nuvens decorativas no Céu */}
       <div className="absolute top-20 left-8 text-6xl opacity-40 animate-float pointer-events-none">
         ☁️
@@ -366,6 +342,7 @@ export function BalloonPopGame() {
         <span className="text-[11px] sm:text-base font-black text-slate-800">
           Estoure os balões {currentMission.name.toLowerCase()} {currentMission.emoji}!
         </span>
+      </div>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight } from "lucide-react";
 
 interface ItemType {
@@ -73,7 +74,7 @@ function generateRandomChallenge(prevEmoji?: string, prevCount?: number): CountC
   };
 }
 
-export function CountingGame() {
+export function CountingGame({ onHome }: { onHome?: () => void }) {
   const [current, setCurrent] = useState<CountChallenge>(() => generateRandomChallenge());
   const [tappedItems, setTappedItems] = useState<number[]>([]);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -120,32 +121,35 @@ export function CountingGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-100 to-emerald-300">
-      {/* PALCO CENTRAL FULL-SCREEN: Cenário com os Itens Gigantes para Contar */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col items-center justify-center overflow-hidden">
-        {/* HUD Flutuante no Topo */}
-        <div className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-30 landscape-compact-topbar">
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-orange px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg">
-            <span className="text-xl sm:text-3xl">🔢</span>
-            <span className="text-xs sm:text-2xl font-black text-amber-950">
-              Contados: {tappedItems.length} de {current.count} {current.name}
+      <GameHeader
+        onHome={onHome}
+        title="Contar Criação"
+        icon="🔢"
+        leftControls={
+          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-kids-orange shadow-sm">
+            <span className="text-base sm:text-xl">🔢</span>
+            <span className="text-xs sm:text-sm font-black text-amber-950">
+              Contados: {tappedItems.length} de {current.count}
             </span>
           </div>
-
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="bg-white/95 backdrop-blur-md border-2 sm:border-4 border-emerald-500 px-2.5 py-1 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl text-emerald-950 font-black text-xs sm:text-xl shadow-lg">
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
+            <div className="bg-white/95 border border-emerald-500 px-2 py-0.5 rounded-xl text-emerald-950 font-black text-xs shadow-sm">
               ⭐ {score}
             </div>
-
             <button
               onClick={handleReset}
-              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Sortear outro"
             >
-              <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+              <RotateCcw size={16} />
             </button>
           </div>
-        </div>
-
+        }
+      />
+      {/* PALCO CENTRAL FULL-SCREEN: Cenário com os Itens Gigantes para Contar */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-6 pt-12 sm:pt-20 landscape:pt-11 landscape:pb-1 flex flex-col items-center justify-center overflow-hidden">
         {/* Nuvens suaves estáticas */}
         <div className="absolute top-16 left-8 text-5xl opacity-40 pointer-events-none landscape:hidden">☁️</div>
         <div className="absolute top-20 right-10 text-5xl opacity-40 pointer-events-none landscape:hidden">☁️</div>

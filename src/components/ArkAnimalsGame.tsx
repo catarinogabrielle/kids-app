@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
+import { GameHeader } from "@/components/TopBar";
 import { RotateCcw, ArrowRight, Eye } from "lucide-react";
 
 interface AnimalPair {
@@ -26,7 +27,7 @@ interface MemoryCard {
   name: string;
 }
 
-export function ArkAnimalsGame() {
+export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
   const [cards, setCards] = useState<MemoryCard[]>([]);
   const [flippedIds, setFlippedIds] = useState<number[]>([]);
   const [matchedSpecies, setMatchedSpecies] = useState<string[]>([]);
@@ -167,42 +168,44 @@ export function ArkAnimalsGame() {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
-      {/* PALCO SUPERIOR FULL-SCREEN: A GRANDE ARCA DE NOÉ COM HUD FLUTUANTE */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 landscape:p-1 flex flex-col items-center justify-end overflow-hidden">
-        {/* HUD Flutuante no Topo */}
-        <div className="absolute top-1.5 sm:top-2.5 left-2 sm:left-2.5 right-2 sm:right-2.5 flex items-center justify-between gap-2 z-30 landscape-compact-topbar">
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/95 backdrop-blur-md border-2 sm:border-4 border-kids-teal px-2.5 py-1 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl shadow-lg whitespace-nowrap">
-            <span className="text-xl sm:text-3xl">🛳️</span>
-            <span className="text-xs sm:text-2xl font-black text-teal-950">
+      <GameHeader
+        onHome={onHome}
+        title="Arca de Noé"
+        icon="🛳️"
+        leftControls={
+          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-amber-400 shadow-sm">
+            <span className="text-base sm:text-xl">🛳️</span>
+            <span className="text-xs sm:text-sm font-black text-amber-950">
               Pares: {matchedSpecies.length} / {PAIRS_CONFIG.length}
             </span>
           </div>
-
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Botão de Espiar as cartas */}
+        }
+        rightControls={
+          <div className="flex items-center gap-1">
             <button
               onClick={handlePeek}
               disabled={isPeekingAll || isAllBoarded}
-              className="kid-btn bg-yellow-300 hover:bg-yellow-400 text-amber-950 px-2.5 py-1 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-amber-500 shadow-lg font-black text-xs sm:text-base flex items-center gap-1"
+              className="kid-btn bg-yellow-300 hover:bg-yellow-400 text-amber-950 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl border border-amber-500 shadow-sm font-black text-xs flex items-center gap-1"
               title="Espiar cartas"
             >
-              <Eye size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+              <Eye size={16} />
               <span className="hidden sm:inline">ESPIAR</span>
             </button>
-
             <button
               onClick={() => {
                 sounds.playBoing();
                 startNewGame();
               }}
-              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2.5 rounded-xl sm:rounded-2xl border-2 sm:border-4 border-slate-300 shadow-lg"
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Recomeçar"
             >
-              <RotateCcw size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+              <RotateCcw size={16} />
             </button>
           </div>
-        </div>
-
+        }
+      />
+      {/* PALCO SUPERIOR FULL-SCREEN: A GRANDE ARCA DE NOÉ COM HUD FLUTUANTE */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 landscape:p-1 flex flex-col items-center justify-end overflow-hidden">
         {/* Arco-íris de Deus e Pombinha */}
         <div className="absolute top-10 sm:top-12 left-1/2 -translate-x-1/2 text-4xl sm:text-7xl opacity-85 pointer-events-none landscape:hidden">
           🌈

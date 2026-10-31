@@ -8,19 +8,44 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+declare global {
+  interface Window {
+    __pwaPrompt?: BeforeInstallPromptEvent | null;
+  }
+}
+
 let globalDeferredPrompt: BeforeInstallPromptEvent | null = null;
 const subscribers = new Set<() => void>();
 
 if (typeof window !== "undefined") {
-  // Captura o evento nativo de instalação do navegador imediatamente
+  // Inicializa caso o script do <head> já tenha capturado
+  if (window.__pwaPrompt) {
+    globalDeferredPrompt = window.__pwaPrompt;
+  }
+
+  window.addEventListener("pwa-prompt-ready", () => {
+    if (window.__pwaPrompt) {
+      globalDeferredPrompt = window.__pwaPrompt;
+      subscribers.forEach((fn) => fn());
+    }
+  });
+
   window.addEventListener("beforeinstallprompt", (e: Event) => {
     e.preventDefault();
     globalDeferredPrompt = e as BeforeInstallPromptEvent;
+    window.__pwaPrompt = globalDeferredPrompt;
     subscribers.forEach((fn) => fn());
   });
 
   window.addEventListener("appinstalled", () => {
     globalDeferredPrompt = null;
+    window.__pwaPrompt = null;
+    subscribers.forEach((fn) => fn());
+  });
+
+  window.addEventListener("pwa-installed", () => {
+    globalDeferredPrompt = null;
+    window.__pwaPrompt = null;
     subscribers.forEach((fn) => fn());
   });
 }
@@ -41,6 +66,11 @@ export function usePWAInstall() {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    const promptObj = globalDeferredPrompt || window.__pwaPrompt || null;
+    if (promptObj) {
+      globalDeferredPrompt = promptObj;
+    }
+
     setIsInstalled(isAppInstalled());
     setCanPrompt(!!globalDeferredPrompt);
 
@@ -49,6 +79,8 @@ export function usePWAInstall() {
     setIsIOS(isApple);
 
     const update = () => {
+      const p = globalDeferredPrompt || window.__pwaPrompt || null;
+      if (p) globalDeferredPrompt = p;
       setIsInstalled(isAppInstalled());
       setCanPrompt(!!globalDeferredPrompt);
     };
@@ -61,18 +93,21 @@ export function usePWAInstall() {
 
   const triggerInstall = async () => {
     sounds.playStar();
-    if (globalDeferredPrompt) {
+    const promptToUse = globalDeferredPrompt || window.__pwaPrompt;
+
+    if (promptToUse) {
       try {
-        await globalDeferredPrompt.prompt();
-        const choice = await globalDeferredPrompt.userChoice;
+        await promptToUse.prompt();
+        const choice = await promptToUse.userChoice;
         if (choice && choice.outcome === "accepted") {
           sounds.playSuccess();
           setIsInstalled(true);
         }
         globalDeferredPrompt = null;
+        window.__pwaPrompt = null;
         setCanPrompt(false);
       } catch (err) {
-        console.log("Erro ao acionar prompt de instalação:", err);
+        console.log("Erro ao acionar prompt nativo:", err);
         setShowModal(true);
       }
     } else {

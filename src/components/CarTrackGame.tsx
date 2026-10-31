@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { Zap, ChevronLeft, ChevronRight } from "lucide-react";
+import { GameHeader } from "@/components/TopBar";
 
 type VehicleId = "safari" | "chariot" | "fire" | "dino";
 
@@ -22,7 +23,7 @@ interface RoadsideWatcher {
   name: string;
 }
 
-export function CarTrackGame() {
+export function CarTrackGame({ onHome }: { onHome?: () => void }) {
   const [vehicle, setVehicle] = useState<VehicleId>("safari");
   const [carX, setCarX] = useState(50);
   const [carTilt, setCarTilt] = useState(0);
@@ -254,7 +255,42 @@ export function CarTrackGame() {
   };
 
   return (
-    <div className="relative w-full h-full flex-1 select-none overflow-hidden bg-slate-900">
+    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-slate-900">
+      {/* HEADER ÚNICO: INÍCIO + SELETOR DE VEÍCULO + ESTRELAS + SOM */}
+      <GameHeader
+        onHome={onHome}
+        title="Pista do Noé"
+        icon="🚙"
+        leftControls={
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-kids-yellow shadow-sm">
+            {vehicles.map((v) => (
+              <button
+                key={v.id}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  sounds.playPop();
+                  setVehicle(v.id);
+                }}
+                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all ${
+                  vehicle === v.id
+                    ? "bg-kids-yellow border-amber-600 scale-105 shadow-sm ring-1 ring-yellow-400"
+                    : "bg-slate-50 border-slate-200"
+                }`}
+                title={v.name}
+              >
+                <span className="text-base sm:text-2xl landscape:text-base">{v.icon}</span>
+              </button>
+            ))}
+          </div>
+        }
+        rightControls={
+          <div className="flex items-center gap-1 bg-amber-400 border-2 border-amber-600 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
+            <span className="text-base sm:text-xl">⭐</span>
+            <span className="text-sm sm:text-xl font-black text-amber-950">{score}</span>
+          </div>
+        }
+      />
+
       {/* PALCO DA PISTA COM PERSPECTIVA E CURVAS DINÂMICAS */}
       <div
         ref={trackRef}
@@ -262,7 +298,7 @@ export function CarTrackGame() {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-full h-full overflow-hidden touch-none cursor-grab active:cursor-grabbing select-none"
+        className="relative flex-1 min-h-0 w-full overflow-hidden touch-none cursor-grab active:cursor-grabbing select-none"
       >
         {/* CÉU COM SOL BÍBLICO E MONTANHAS AO FUNDO */}
         <div className="absolute top-0 left-0 right-0 h-[28%] landscape:h-[20%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-200 overflow-hidden pointer-events-none z-0">
@@ -565,39 +601,6 @@ export function CarTrackGame() {
               </svg>
             </div>
           )}
-        </div>
-
-        {/* HUD SUPERIOR: SELEÇÃO DE VEÍCULO + VELOCÍMETRO + ESTRELAS */}
-        <div className="absolute top-1 sm:top-2 landscape:top-1 left-2 right-2 z-30 flex items-center justify-between pointer-events-none">
-          {/* Seletor de Veículos */}
-          <div className="flex items-center gap-1 sm:gap-2 bg-white/90 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-yellow shadow-kid pointer-events-auto">
-            {vehicles.map((v) => (
-              <button
-                key={v.id}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  sounds.playPop();
-                  setVehicle(v.id);
-                }}
-                className={`kid-btn px-2 py-0.5 sm:px-3 sm:py-1.5 landscape:px-1.5 landscape:py-0.5 rounded-xl border-2 transition-all ${
-                  vehicle === v.id
-                    ? "bg-kids-yellow border-amber-600 scale-105 shadow-md ring-2 ring-yellow-300"
-                    : "bg-slate-50 border-slate-200"
-                }`}
-                title={v.name}
-              >
-                <span className="text-base sm:text-3xl landscape:text-base">{v.icon}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Contador de Estrelas Bíblicas */}
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-amber-400 border-2 sm:border-3 border-amber-600 px-2.5 py-1 sm:px-5 sm:py-2 landscape:px-2 landscape:py-0.5 rounded-2xl shadow-kid pointer-events-auto">
-            <span className="text-lg sm:text-3xl">⭐</span>
-            <span className="text-sm sm:text-3xl landscape:text-sm font-black text-amber-950">
-              {score}
-            </span>
-          </div>
         </div>
 
         {/* CONTROLES TÁTEIS MOBILE INTELIGENTES (PERFEITOS PARA LANDSCAPE & PORTRAIT) */}

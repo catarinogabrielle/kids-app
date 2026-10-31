@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { TopBar } from "@/components/TopBar";
 import { HomeHub, GameKey } from "@/components/HomeHub";
 import { CarTrackGame } from "@/components/CarTrackGame";
 import { PaintingGame } from "@/components/PaintingGame";
@@ -22,34 +21,7 @@ export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<ScreenMode>("hub");
   const [isParentalOpen, setIsParentalOpen] = useState(false);
 
-  const getScreenDetails = () => {
-    switch (currentScreen) {
-      case "car":
-        return { title: "Pista do Noé", icon: "🚙" };
-      case "paint":
-        return { title: "Atelier Bíblico", icon: "🎨" };
-      case "puzzle":
-        return { title: "Quebra-Cabeça Mágico", icon: "🧩" };
-      case "blocks":
-        return { title: "Torre da Fé", icon: "🧱" };
-      case "balloons":
-        return { title: "Balões de Luz", icon: "🎈" };
-      case "ark":
-        return { title: "Arca de Noé", icon: "🛳️" };
-      case "counting":
-        return { title: "Contar Criação", icon: "🔢" };
-      case "train":
-        return { title: "Trem dos Números", icon: "🚂" };
-      case "tracing":
-        return { title: "Traçar o Alfabeto", icon: "✍️" };
-      case "missingLetter":
-        return { title: "Letrinha Mágica", icon: "🔤" };
-      default:
-        return { title: "", icon: "" };
-    }
-  };
-
-  const { title, icon } = getScreenDetails();
+  const handleHome = () => setCurrentScreen("hub");
 
   return (
     <main
@@ -58,31 +30,25 @@ export default function Home() {
     >
       <PWARegistration />
 
-      {/* HUD Superior Global estilo App Infantil de Mercado */}
-      <TopBar
-        title={title}
-        icon={icon}
-        showHome={currentScreen !== "hub"}
-        onHome={() => setCurrentScreen("hub")}
-        onOpenParents={() => setIsParentalOpen(true)}
-      />
-
-      {/* Palco Tela Cheia (100% da largura e altura disponíveis, sem margens que encolham o jogo) */}
+      {/* Palco Principal do App: Tela Cheia com Header Único Integrado em cada Tela */}
       <div className="flex-1 min-h-0 w-full h-full flex flex-col overflow-hidden">
         {currentScreen === "hub" && (
-          <HomeHub onSelectGame={(game) => setCurrentScreen(game)} />
+          <HomeHub
+            onSelectGame={(game) => setCurrentScreen(game)}
+            onOpenParents={() => setIsParentalOpen(true)}
+          />
         )}
 
-        {currentScreen === "car" && <CarTrackGame />}
-        {currentScreen === "paint" && <PaintingGame />}
-        {currentScreen === "puzzle" && <PuzzleGame />}
-        {currentScreen === "blocks" && <BlocksGame />}
-        {currentScreen === "balloons" && <BalloonPopGame />}
-        {currentScreen === "ark" && <ArkAnimalsGame />}
-        {currentScreen === "counting" && <CountingGame />}
-        {currentScreen === "train" && <NumberTrainGame />}
-        {currentScreen === "tracing" && <LetterTracingGame />}
-        {currentScreen === "missingLetter" && <MissingLetterGame />}
+        {currentScreen === "car" && <CarTrackGame onHome={handleHome} />}
+        {currentScreen === "paint" && <PaintingGame onHome={handleHome} />}
+        {currentScreen === "puzzle" && <PuzzleGame onHome={handleHome} />}
+        {currentScreen === "blocks" && <BlocksGame onHome={handleHome} />}
+        {currentScreen === "balloons" && <BalloonPopGame onHome={handleHome} />}
+        {currentScreen === "ark" && <ArkAnimalsGame onHome={handleHome} />}
+        {currentScreen === "counting" && <CountingGame onHome={handleHome} />}
+        {currentScreen === "train" && <NumberTrainGame onHome={handleHome} />}
+        {currentScreen === "tracing" && <LetterTracingGame onHome={handleHome} />}
+        {currentScreen === "missingLetter" && <MissingLetterGame onHome={handleHome} />}
       </div>
 
       {/* Modal Parental / Galeria do Israel */}
