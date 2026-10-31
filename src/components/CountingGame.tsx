@@ -195,9 +195,9 @@ export function CountingGame() {
         )}
       </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: Opções de Números Gigantes */}
+      {/* DOCK INFERIOR FULL-WIDTH: Opções de Números Gigantes (com Safe Area) */}
       {!isSuccess && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-2 pb-[max(12px,env(safe-area-inset-bottom))] border-t-4 border-kids-blue shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
           <div className="max-w-4xl mx-auto w-full flex items-center justify-around gap-3 sm:gap-5">
             {current.options.map((num) => {
               const isWrong = wrongShakeNum === num;

@@ -36,12 +36,20 @@ export function TopBar({
     setIsMuted(next);
   };
 
-  const handleToggleFullscreen = () => {
+  const handleToggleFullscreen = async () => {
     sounds.playPop();
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else {
-      document.exitFullscreen().catch(() => {});
+    try {
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          await document.documentElement.requestFullscreen({ navigationUI: "hide" } as FullscreenOptions);
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        }
+      }
+    } catch {
+      // Ignora silenciosamente se o navegador restringir modo de tela cheia
     }
   };
 

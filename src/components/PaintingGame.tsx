@@ -3,9 +3,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
-import { Paintbrush, PaintBucket, Camera, RotateCcw, Sparkles } from "lucide-react";
+import { Paintbrush, PaintBucket, Camera, RotateCcw, Sparkles, Eraser } from "lucide-react";
 
 type ColorTemplate = "ark" | "dino" | "fire" | "daniel" | "blank";
+type ToolMode = "bucket" | "brush" | "eraser" | "stamp";
 
 interface Stamp {
   id: number;
@@ -17,10 +18,11 @@ interface Stamp {
 export function PaintingGame() {
   const [template, setTemplate] = useState<ColorTemplate>("daniel");
   const [selectedColor, setSelectedColor] = useState("#F59E0B");
-  const [toolMode, setToolMode] = useState<"bucket" | "brush" | "stamp">("bucket");
+  const [toolMode, setToolMode] = useState<ToolMode>("bucket");
   const [selectedStamp, setSelectedStamp] = useState("⭐");
   const [stamps, setStamps] = useState<Stamp[]>([]);
   const [brushSize, setBrushSize] = useState(16);
+  const [eraserSize, setEraserSize] = useState(32);
   const [isDrawing, setIsDrawing] = useState(false);
   const [partColors, setPartColors] = useState<Record<string, string>>({});
 
@@ -73,6 +75,12 @@ export function PaintingGame() {
         ...prev,
         [partId]: selectedColor,
       }));
+    } else if (toolMode === "eraser") {
+      sounds.playEraser();
+      setPartColors((prev) => ({
+        ...prev,
+        [partId]: "#FFFFFF",
+      }));
     }
   };
 
@@ -101,9 +109,22 @@ export function PaintingGame() {
       return;
     }
 
+    if (toolMode === "eraser") {
+      sounds.playEraser();
+      setIsDrawing(true);
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.lineWidth = eraserSize * scaleX;
+      return;
+    }
+
     if (toolMode === "brush") {
       sounds.playPop();
       setIsDrawing(true);
+      ctx.globalCompositeOperation = "source-over";
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.lineCap = "round";
@@ -114,7 +135,7 @@ export function PaintingGame() {
   };
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || toolMode !== "brush") return;
+    if (!isDrawing || (toolMode !== "brush" && toolMode !== "eraser")) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -127,6 +148,14 @@ export function PaintingGame() {
     const scaleY = canvas.height / (rect.height || 1);
     const x = (clientX - rect.left) * scaleX;
     const y = (clientY - rect.top) * scaleY;
+
+    if (toolMode === "eraser") {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = eraserSize * scaleX;
+    } else {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.lineWidth = brushSize * scaleX;
+    }
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -1416,7 +1445,7 @@ export function PaintingGame() {
           onTouchMove={draw}
           onTouchEnd={stopDrawing}
           className={`absolute inset-0 w-full h-full z-10 ${
-            toolMode === "brush" || toolMode === "stamp"
+            toolMode === "brush" || toolMode === "stamp" || toolMode === "eraser"
               ? "cursor-crosshair pointer-events-auto"
               : "pointer-events-none"
           }`}
@@ -1426,16 +1455,27 @@ export function PaintingGame() {
         {stamps.map((s) => (
           <div
             key={s.id}
-            className="absolute z-20 text-5xl sm:text-6xl pointer-events-none -translate-x-1/2 -translate-y-1/2 animate-wiggle"
+            onClick={() => {
+              if (toolMode === "eraser") {
+                sounds.playEraser();
+                setStamps((prev) => prev.filter((st) => st.id !== s.id));
+              }
+            }}
+            className={`absolute z-20 text-5xl sm:text-6xl -translate-x-1/2 -translate-y-1/2 animate-wiggle ${
+              toolMode === "eraser"
+                ? "cursor-pointer pointer-events-auto hover:opacity-50 ring-2 ring-rose-400 rounded-full"
+                : "pointer-events-none"
+            }`}
             style={{ left: s.x, top: s.y }}
+            title={toolMode === "eraser" ? "Clique para apagar carimbo" : undefined}
           >
             {s.emoji}
           </div>
         ))}
       </div>
 
-      {/* DOCK INFERIOR DE ESTÚDIO: FERRAMENTAS + CORES (100% LARGURA) */}
-      <div className="w-full flex flex-col bg-slate-100/95 backdrop-blur-md border-t-4 border-kids-coral px-2 sm:px-4 py-1.5 sm:py-2 gap-1.5 z-20 flex-shrink-0">
+      {/* DOCK INFERIOR DE ESTÚDIO: FERRAMENTAS + CORES (100% LARGURA COM SAFE AREA) */}
+      <div className="w-full flex flex-col bg-slate-100/95 backdrop-blur-md border-t-4 border-kids-coral px-2 sm:px-4 pt-1.5 sm:pt-2 pb-[max(10px,env(safe-area-inset-bottom))] gap-1.5 z-20 flex-shrink-0">
         {/* Sub-barra Dinâmica: Carimbos Emojis */}
         {toolMode === "stamp" && (
           <div className="w-full flex items-center justify-around bg-pink-100 py-1 px-2 rounded-xl border-2 border-pink-300 shadow-sm">
@@ -1453,6 +1493,36 @@ export function PaintingGame() {
                 }`}
               >
                 {st}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Sub-barra Dinâmica: Espessura da Borracha */}
+        {toolMode === "eraser" && (
+          <div className="w-full flex items-center justify-center gap-4 sm:gap-8 bg-rose-100/90 py-1 px-3 rounded-xl border-2 border-rose-300 shadow-sm">
+            <span className="font-black text-xs sm:text-sm text-rose-900 flex items-center gap-1">
+              <Eraser size={16} /> Borracha:
+            </span>
+            {[
+              { size: 20, label: "Fina", dot: "w-3 h-3 sm:w-4 sm:h-4" },
+              { size: 38, label: "Média", dot: "w-5 h-5 sm:w-6 sm:h-6" },
+              { size: 60, label: "Grossa", dot: "w-7 h-7 sm:w-8 sm:h-8" },
+            ].map((er) => (
+              <button
+                key={er.size}
+                onClick={() => {
+                  sounds.playPop();
+                  setEraserSize(er.size);
+                }}
+                className={`kid-btn px-2.5 py-1 rounded-xl border-2 flex items-center gap-1.5 transition-transform ${
+                  eraserSize === er.size
+                    ? "bg-rose-500 text-white border-rose-800 scale-110 shadow-md ring-2 ring-rose-300"
+                    : "bg-white text-slate-700 border-rose-200 hover:bg-rose-50"
+                }`}
+              >
+                <div className={`${er.dot} rounded-full bg-current`} />
+                <span className="text-[11px] sm:text-xs font-black">{er.label}</span>
               </button>
             ))}
           </div>
@@ -1489,14 +1559,14 @@ export function PaintingGame() {
 
         {/* Linha de Ferramentas + Paleta de Cores Integrada */}
         <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-4">
-          {/* 3 Ferramentas Táteis */}
-          <div className="w-full sm:w-auto flex items-center justify-center gap-2 flex-shrink-0">
+          {/* 4 Ferramentas Táteis: Balde, Pincel, Borracha, Carimbos */}
+          <div className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
               onClick={() => {
                 sounds.playPop();
                 setToolMode("bucket");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "bucket"
                   ? "bg-kids-teal text-white border-teal-700 shadow-kid scale-105"
                   : "bg-white text-slate-700 border-slate-300"
@@ -1511,7 +1581,7 @@ export function PaintingGame() {
                 sounds.playPop();
                 setToolMode("brush");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "brush"
                   ? "bg-kids-purple text-white border-purple-700 shadow-kid scale-105"
                   : "bg-white text-slate-700 border-slate-300"
@@ -1524,9 +1594,24 @@ export function PaintingGame() {
             <button
               onClick={() => {
                 sounds.playPop();
+                setToolMode("eraser");
+              }}
+              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+                toolMode === "eraser"
+                  ? "bg-rose-500 text-white border-rose-800 shadow-kid scale-105 ring-2 ring-rose-300"
+                  : "bg-white text-slate-700 border-slate-300 hover:bg-rose-50"
+              }`}
+            >
+              <Eraser size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
+              <span className="font-extrabold text-xs sm:text-sm">Borracha</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
                 setToolMode("stamp");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "stamp"
                   ? "bg-kids-pink text-white border-pink-700 shadow-kid scale-105"
                   : "bg-white text-slate-700 border-slate-300"

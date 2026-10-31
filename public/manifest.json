@@ -1,7 +1,7 @@
 {
-  "name": "As Aventuras do Israel",
-  "short_name": "Israel",
-  "description": "Jogos infantis divertidos para o Israel: carrinhos, quebra-cabeças, pintura e blocos!",
+  "name": "Mundinho Mágico",
+  "short_name": "Mundinho Mágico",
+  "description": "Mundinho Mágico: Jogos bíblicos e educativos infantis para aprender e se divertir! Pista de corrida, arca de Noé, atelier de pintura, trem dos números e alfabetização.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#38BDF8",

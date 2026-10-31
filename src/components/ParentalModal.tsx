@@ -136,7 +136,7 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
             <div>
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                  <ImageIcon className="text-kids-blue" /> Obras de Arte do Israel ({savedPaintings.length})
+                  <ImageIcon className="text-kids-blue" /> Galeria do Mundinho Mágico ({savedPaintings.length})
                 </h3>
               </div>
 
@@ -183,7 +183,7 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
               )}
 
               <div className="mt-8 pt-4 border-t text-center text-sm text-gray-500 flex items-center justify-center gap-1">
-                Feito com <Heart size={16} className="text-red-500 fill-red-500" /> para o Israel se divertir e aprender!
+                Feito com <Heart size={16} className="text-red-500 fill-red-500" /> para o Israel e todas as crianças no Mundinho Mágico!
               </div>
             </div>
           )}

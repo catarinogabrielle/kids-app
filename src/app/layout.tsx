@@ -9,16 +9,22 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "As Aventuras do Israel 🚗 🦖 🦁",
-  description: "Jogos divertidos e educativos para o Israel: carrinhos, quebra-cabeças, pintura e blocos!",
+  title: "Mundinho Mágico ✨ Jogos Bíblicos & Educativos Infantis",
+  description:
+    "Mundinho Mágico: Jogos bíblicos e educativos cheios de amor, alegria e aprendizado para crianças! Arca de Noé, pista de corrida, atelier de pintura com borracha, trem dos números inteligente e alfabetização.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Israel App",
+    title: "Mundinho Mágico",
   },
   icons: {
-    icon: "/icons/icon-192.png",
+    icon: [
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/icons/icon.svg",
     apple: "/icons/icon-192.png",
   },
 };
@@ -29,7 +35,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#FFD166",
+  themeColor: "#38BDF8",
 };
 
 export default function RootLayout({
@@ -40,6 +46,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body

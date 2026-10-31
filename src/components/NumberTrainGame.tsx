@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { RotateCcw, ArrowRight, Sparkles } from "lucide-react";
+
+type TrainMode = "sequence" | "missing" | "countdown" | "passengers";
 
 interface WagonConfig {
   num: number;
@@ -19,7 +21,7 @@ interface WagonConfig {
 const WAGONS_1_5: WagonConfig[] = [
   {
     num: 1,
-    label: "1 Leão",
+    label: "1 Leão de Judá",
     items: ["🦁"],
     emoji: "🦁",
     topColor: "#FBBF24",
@@ -29,7 +31,7 @@ const WAGONS_1_5: WagonConfig[] = [
   },
   {
     num: 2,
-    label: "2 Dinos",
+    label: "2 Dinos da Criação",
     items: ["🦖", "🦖"],
     emoji: "🦖",
     topColor: "#34D399",
@@ -39,7 +41,7 @@ const WAGONS_1_5: WagonConfig[] = [
   },
   {
     num: 3,
-    label: "3 Ovelhas",
+    label: "3 Ovelhas do Pastor",
     items: ["🐑", "🐑", "🐑"],
     emoji: "🐑",
     topColor: "#38BDF8",
@@ -49,9 +51,9 @@ const WAGONS_1_5: WagonConfig[] = [
   },
   {
     num: 4,
-    label: "4 Carros",
-    items: ["🚗", "🚗", "🚗", "🚗"],
-    emoji: "🚗",
+    label: "4 Pombas da Paz",
+    items: ["🕊️", "🕊️", "🕊️", "🕊️"],
+    emoji: "🕊️",
     topColor: "#FB7185",
     bottomColor: "#E11D48",
     strokeColor: "#BE123C",
@@ -59,7 +61,7 @@ const WAGONS_1_5: WagonConfig[] = [
   },
   {
     num: 5,
-    label: "5 Coroas",
+    label: "5 Coroas do Rei",
     items: ["👑", "👑", "👑", "👑", "👑"],
     emoji: "👑",
     topColor: "#C084FC",
@@ -72,7 +74,7 @@ const WAGONS_1_5: WagonConfig[] = [
 const WAGONS_6_10: WagonConfig[] = [
   {
     num: 6,
-    label: "6 Balões",
+    label: "6 Balões Alegres",
     items: ["🎈", "🎈", "🎈", "🎈", "🎈", "🎈"],
     emoji: "🎈",
     topColor: "#F472B6",
@@ -82,7 +84,7 @@ const WAGONS_6_10: WagonConfig[] = [
   },
   {
     num: 7,
-    label: "7 Estrelas",
+    label: "7 Estrelas da Promessa",
     items: ["⭐", "⭐", "⭐", "⭐", "⭐", "⭐", "⭐"],
     emoji: "⭐",
     topColor: "#FDE047",
@@ -92,7 +94,7 @@ const WAGONS_6_10: WagonConfig[] = [
   },
   {
     num: 8,
-    label: "8 Maçãs",
+    label: "8 Maçãs do Éden",
     items: ["🍎", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎", "🍎"],
     emoji: "🍎",
     topColor: "#F87171",
@@ -102,7 +104,7 @@ const WAGONS_6_10: WagonConfig[] = [
   },
   {
     num: 9,
-    label: "9 Peixes",
+    label: "9 Peixinhos de Jonas",
     items: ["🐟", "🐟", "🐟", "🐟", "🐟", "🐟", "🐟", "🐟", "🐟"],
     emoji: "🐟",
     topColor: "#2DD4BF",
@@ -112,7 +114,7 @@ const WAGONS_6_10: WagonConfig[] = [
   },
   {
     num: 10,
-    label: "10 Corações",
+    label: "10 Corações de Amor",
     items: ["❤️", "❤️", "❤️", "❤️", "❤️", "❤️", "❤️", "❤️", "❤️", "❤️"],
     emoji: "❤️",
     topColor: "#818CF8",
@@ -122,19 +124,29 @@ const WAGONS_6_10: WagonConfig[] = [
   },
 ];
 
-/* 1. LOCOMOTIVA CLÁSSICA A VAPOR EM SVG */
-function SteamLocomotive({ isMoving }: { isMoving: boolean }) {
+/* LOCOMOTIVA CLÁSSICA A VAPOR */
+function SteamLocomotive({
+  isMoving,
+  onWhistle,
+}: {
+  isMoving: boolean;
+  onWhistle: () => void;
+}) {
   return (
-    <div className="relative flex-shrink-0 flex flex-col items-center">
-      {/* Vapor saindo da chaminé */}
-      <div className="absolute -top-6 left-6 flex items-center gap-1 pointer-events-none opacity-80">
-        <span className="text-xl sm:text-2xl">💨</span>
-        <span className="text-sm sm:text-base opacity-60">💨</span>
+    <div
+      onClick={onWhistle}
+      className="relative flex-shrink-0 flex flex-col items-center cursor-pointer group"
+      title="Clique para tocar o apito!"
+    >
+      {/* Vapor saindo da chaminé com animação de sopro */}
+      <div className="absolute -top-7 left-7 flex items-center gap-1 pointer-events-none opacity-85">
+        <span className="text-xl sm:text-3xl animate-bounce">💨</span>
+        <span className="text-sm sm:text-xl opacity-60 animate-ping">💨</span>
       </div>
 
       <svg
         viewBox="0 0 170 120"
-        className="w-44 h-32 sm:w-64 sm:h-48 drop-shadow-2xl overflow-visible select-none"
+        className="w-40 h-28 sm:w-60 sm:h-44 drop-shadow-2xl overflow-visible select-none group-active:scale-95 transition-transform"
       >
         <defs>
           <linearGradient id="boilerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -148,110 +160,85 @@ function SteamLocomotive({ isMoving }: { isMoving: boolean }) {
           </linearGradient>
           <linearGradient id="goldBrass" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#fef08a" />
-            <stop offset="50%" stopColor="#fbbf24" />
-            <stop offset="100%" stopColor="#d97706" />
+            <stop offset="100%" stopColor="#ca8a04" />
           </linearGradient>
         </defs>
 
-        {/* Engate traseiro para o primeiro vagão */}
-        <path d="M 160 84 L 172 84 L 172 80" stroke="#334155" strokeWidth="5" strokeLinecap="round" fill="none" />
+        {/* Chaminé */}
+        <polygon points="36,44 48,16 58,16 52,44" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
+        <ellipse cx="53" cy="16" rx="8" ry="3.5" fill="url(#goldBrass)" stroke="#854d0e" strokeWidth="1" />
 
-        {/* Chassi de aço escuro */}
-        <rect x="14" y="78" width="150" height="12" rx="3" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
+        {/* Sino Dourado */}
+        <ellipse cx="80" cy="38" rx="5" ry="4" fill="url(#goldBrass)" stroke="#854d0e" strokeWidth="1" />
 
-        {/* Limpa-trilhos (Cowcatcher dianteiro na esquerda) */}
-        <polygon points="2,90 16,74 16,90" fill="#dc2626" stroke="#991b1b" strokeWidth="2" />
-        <line x1="6" y1="88" x2="16" y2="78" stroke="#fecaca" strokeWidth="1.5" />
-        <line x1="10" y1="90" x2="16" y2="84" stroke="#fecaca" strokeWidth="1.5" />
+        {/* Caldeira */}
+        <rect x="24" y="44" width="76" height="42" rx="10" fill="url(#boilerGrad)" stroke="#7f1d1d" strokeWidth="3" />
+        <line x1="48" y1="44" x2="48" y2="86" stroke="url(#goldBrass)" strokeWidth="3.5" />
+        <line x1="74" y1="44" x2="74" y2="86" stroke="url(#goldBrass)" strokeWidth="3.5" />
 
-        {/* Farol dianteiro aceso com feixe de luz */}
-        <polygon points="6,57 0,50 0,72 6,65" fill="#fef08a" opacity="0.4" />
-        <rect x="6" y="55" width="12" height="12" rx="3" fill="url(#goldBrass)" stroke="#b45309" strokeWidth="1.5" />
-        <circle cx="8" cy="61" r="4" fill="#fef9c3" />
+        {/* Farol Dianteiro com Luz */}
+        <polygon points="12,50 24,56 24,70 12,76" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
+        <ellipse cx="12" cy="63" rx="4" ry="12" fill="#fef08a" />
 
-        {/* Caldeira Horizontal Cilíndrica */}
-        <rect x="16" y="38" width="82" height="42" rx="8" fill="url(#boilerGrad)" stroke="#7f1d1d" strokeWidth="2.5" />
+        {/* Cabine do Maquinista */}
+        <rect x="94" y="22" width="60" height="64" rx="6" fill="url(#cabGrad)" stroke="#7f1d1d" strokeWidth="3" />
+        <path d="M 90 22 L 158 22 L 154 14 L 94 14 Z" fill="#0f172a" stroke="#000000" strokeWidth="1.5" />
 
-        {/* Cintas douradas de latão da caldeira */}
-        <rect x="38" y="38" width="4" height="42" fill="url(#goldBrass)" />
-        <rect x="66" y="38" width="4" height="42" fill="url(#goldBrass)" />
+        {/* Janela com Maquinista Amigo */}
+        <rect x="104" y="30" width="30" height="26" rx="5" fill="#bae6fd" stroke="#0284c7" strokeWidth="2.5" />
+        <text x="111" y="50" fontSize="18">🤠</text>
 
-        {/* Chaminé cônica com anel dourado */}
-        <polygon points="26,14 44,14 40,38 30,38" fill="#1e293b" stroke="#0f172a" strokeWidth="2" />
-        <ellipse cx="35" cy="14" rx="10" ry="3.5" fill="url(#goldBrass)" stroke="#b45309" strokeWidth="1.5" />
+        {/* Chassi e Limpa-Trilhos */}
+        <rect x="10" y="84" width="148" height="12" rx="3" fill="#0f172a" />
+        <polygon points="4,96 14,84 26,84 22,96" fill="#dc2626" stroke="#991b1b" strokeWidth="1.5" />
 
-        {/* Domo de vapor de latão dourado */}
-        <path d="M 60 38 C 60 22 74 22 74 38 Z" fill="url(#goldBrass)" stroke="#b45309" strokeWidth="2" />
-        <circle cx="67" cy="22" r="3" fill="#fde047" />
-
-        {/* Cabine alta do maquinista na traseira */}
-        <rect x="94" y="16" width="68" height="64" rx="6" fill="url(#cabGrad)" stroke="#7f1d1d" strokeWidth="2.5" />
-
-        {/* Teto curvo da cabine com beiral */}
-        <path d="M 90 16 Q 128 6 166 16" stroke="#0f172a" strokeWidth="6" strokeLinecap="round" fill="none" />
-
-        {/* Janela arqueada da cabine */}
-        <rect x="104" y="24" width="46" height="30" rx="8" fill="#e0f2fe" stroke="#0284c7" strokeWidth="2.5" />
-
-        {/* Maquinista Israel com a coroa */}
-        <text x="127" y="46" fontSize="20" textAnchor="middle" dominantBaseline="middle">🧔</text>
-        <text x="127" y="30" fontSize="13" textAnchor="middle" dominantBaseline="middle">👑</text>
-
-        {/* Placa dourada com o nome ISRAEL */}
-        <rect x="104" y="60" width="48" height="13" rx="3" fill="url(#goldBrass)" stroke="#b45309" strokeWidth="1.5" />
-        <text x="128" y="70" fontSize="9" fontWeight="900" fill="#78350f" textAnchor="middle">ISRAEL</text>
-
-        {/* Rodas dianteiras menores */}
-        <g className={isMoving ? "animate-spin origin-[34px_92px]" : ""}>
-          <circle cx="34" cy="92" r="12" fill="#0f172a" stroke="#cbd5e1" strokeWidth="2.5" />
-          <circle cx="34" cy="92" r="4" fill="#dc2626" />
+        {/* Rodas com Engrenagens */}
+        <g className={isMoving ? "animate-spin origin-[42px_96px]" : ""}>
+          <circle cx="42" cy="96" r="14" fill="#0f172a" stroke="#94a3b8" strokeWidth="3" />
+          <circle cx="42" cy="96" r="5" fill="url(#goldBrass)" />
         </g>
-
-        {/* Roda motriz traseira 1 com raios */}
-        <g className={isMoving ? "animate-spin origin-[88px_90px]" : ""}>
-          <circle cx="88" cy="90" r="16" fill="#0f172a" stroke="#cbd5e1" strokeWidth="3" />
-          <circle cx="88" cy="90" r="6" fill="#dc2626" />
-          <line x1="88" y1="74" x2="88" y2="106" stroke="#94a3b8" strokeWidth="1.5" />
-          <line x1="72" y1="90" x2="104" y2="90" stroke="#94a3b8" strokeWidth="1.5" />
+        <g className={isMoving ? "animate-spin origin-[78px_96px]" : ""}>
+          <circle cx="78" cy="96" r="14" fill="#0f172a" stroke="#94a3b8" strokeWidth="3" />
+          <circle cx="78" cy="96" r="5" fill="url(#goldBrass)" />
         </g>
-
-        {/* Roda motriz traseira 2 com raios */}
-        <g className={isMoving ? "animate-spin origin-[134px_90px]" : ""}>
-          <circle cx="134" cy="90" r="16" fill="#0f172a" stroke="#cbd5e1" strokeWidth="3" />
-          <circle cx="134" cy="90" r="6" fill="#dc2626" />
-          <line x1="134" y1="74" x2="134" y2="106" stroke="#94a3b8" strokeWidth="1.5" />
-          <line x1="118" y1="90" x2="150" y2="90" stroke="#94a3b8" strokeWidth="1.5" />
+        <g className={isMoving ? "animate-spin origin-[124px_96px]" : ""}>
+          <circle cx="124" cy="96" r="17" fill="#0f172a" stroke="url(#goldBrass)" strokeWidth="3.5" />
+          <circle cx="124" cy="96" r="6" fill="#ef4444" />
         </g>
-
-        {/* Biela motriz de aço ligando as rodas */}
-        <line x1="88" y1="90" x2="134" y2="90" stroke="#e2e8f0" strokeWidth="4" strokeLinecap="round" />
-        <circle cx="88" cy="90" r="3.5" fill="#f59e0b" />
-        <circle cx="134" cy="90" r="3.5" fill="#f59e0b" />
       </svg>
     </div>
   );
 }
 
-/* 2. VAGÃO DE CARGA EM SVG COM BICHINHOS */
+/* VAGÃO DE CARGA COM PROPRIEDADES VISUAIS */
 function FreightWagon({
   wagon,
   isPlaced,
   isNext,
+  isMystery,
   isMoving,
+  onClick,
 }: {
   wagon: WagonConfig;
   isPlaced: boolean;
   isNext: boolean;
+  isMystery?: boolean;
   isMoving: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <div className="relative flex-shrink-0 flex flex-col items-center">
-      {/* Indicador suave sobre o próximo vagão */}
+    <div
+      onClick={onClick}
+      className={`relative flex-shrink-0 flex flex-col items-center ${
+        onClick ? "cursor-pointer active:scale-95" : ""
+      }`}
+    >
+      {/* Indicador no Vagão da Vez */}
       {isNext && (
-        <div className="absolute -top-11 z-20 flex flex-col items-center pointer-events-none">
+        <div className="absolute -top-11 z-20 flex flex-col items-center pointer-events-none animate-bounce">
           <span className="bg-kids-yellow text-amber-950 text-xs sm:text-sm font-black px-3 py-0.5 rounded-full border-2 border-amber-500 shadow-md whitespace-nowrap flex items-center gap-1">
             <Sparkles size={13} className="text-amber-600" />
-            Vagão {wagon.num}
+            {isMystery ? "Qual é o Número?" : `Vagão ${wagon.num}`}
           </span>
           <span className="text-lg -mt-0.5">👇</span>
         </div>
@@ -259,7 +246,7 @@ function FreightWagon({
 
       <svg
         viewBox="0 0 130 120"
-        className="w-32 h-32 sm:w-48 sm:h-44 drop-shadow-xl overflow-visible select-none"
+        className="w-30 h-28 sm:w-44 sm:h-40 drop-shadow-xl overflow-visible select-none"
       >
         <defs>
           <linearGradient id={`wagonGrad-${wagon.num}`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -268,7 +255,7 @@ function FreightWagon({
           </linearGradient>
         </defs>
 
-        {/* Engates nas duas pontas */}
+        {/* Engates */}
         <path d="M 0 84 L 10 84" stroke="#334155" strokeWidth="5" strokeLinecap="round" />
         <path d="M 120 84 L 130 84" stroke="#334155" strokeWidth="5" strokeLinecap="round" />
 
@@ -278,7 +265,6 @@ function FreightWagon({
         {/* Corpo do Vagão */}
         {isPlaced ? (
           <g>
-            {/* Caixa de carga do vagão */}
             <rect
               x="12"
               y="32"
@@ -289,11 +275,7 @@ function FreightWagon({
               stroke={wagon.strokeColor}
               strokeWidth="3"
             />
-            {/* Frisos decorativos */}
-            <line x1="12" y1="48" x2="118" y2="48" stroke="rgba(255,255,255,0.3)" strokeWidth="1.5" />
-            <line x1="12" y1="64" x2="118" y2="64" stroke="rgba(0,0,0,0.15)" strokeWidth="1.5" />
-
-            {/* Cantoneiras douradas */}
+            <line x1="12" y1="48" x2="118" y2="48" stroke="rgba(255,255,255,0.35)" strokeWidth="1.5" />
             <rect x="12" y="32" width="6" height="48" rx="2" fill="#fbbf24" opacity="0.8" />
             <rect x="112" y="32" width="6" height="48" rx="2" fill="#fbbf24" opacity="0.8" />
 
@@ -312,25 +294,24 @@ function FreightWagon({
           </g>
         ) : (
           <g>
-            {/* Vagão fantasma / silhueta para encaixar */}
+            {/* Silhueta misteriosa ou guia */}
             <rect
               x="12"
               y="32"
               width="106"
               height="48"
               rx="8"
-              fill={isNext ? "rgba(254, 240, 138, 0.45)" : "rgba(255, 255, 255, 0.45)"}
-              stroke={isNext ? "#eab308" : "#94a3b8"}
-              strokeWidth={isNext ? 3.5 : 2.5}
+              fill={isMystery ? "rgba(254, 240, 138, 0.6)" : isNext ? "rgba(254, 240, 138, 0.45)" : "rgba(255, 255, 255, 0.4)"}
+              stroke={isMystery ? "#d97706" : isNext ? "#eab308" : "#94a3b8"}
+              strokeWidth={isMystery || isNext ? 3.5 : 2.5}
               strokeDasharray={isNext ? "6,4" : "4,4"}
             />
-            {/* Círculo do número guia */}
             <circle
               cx="65"
               cy="56"
               r="16"
-              fill={isNext ? "#fef08a" : "#f1f5f9"}
-              stroke={isNext ? "#ca8a04" : "#cbd5e1"}
+              fill={isMystery ? "#fef08a" : isNext ? "#fef08a" : "#f1f5f9"}
+              stroke={isMystery ? "#b45309" : isNext ? "#ca8a04" : "#cbd5e1"}
               strokeWidth="2.5"
             />
             <text
@@ -338,10 +319,10 @@ function FreightWagon({
               y="63"
               fontSize="18"
               fontWeight="900"
-              fill={isNext ? "#854d0e" : "#64748b"}
+              fill={isMystery ? "#b45309" : isNext ? "#854d0e" : "#64748b"}
               textAnchor="middle"
             >
-              {wagon.num}
+              {isMystery ? "?" : wagon.num}
             </text>
           </g>
         )}
@@ -357,12 +338,12 @@ function FreightWagon({
         </g>
       </svg>
 
-      {/* Carga dos Bichinhos/Itens colocados no vagão */}
-      <div className="absolute top-2.5 w-28 sm:w-40 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-1">
+      {/* Carga dos Bichinhos Bíblicos no Vagão */}
+      <div className="absolute top-2 w-26 sm:w-36 flex items-center justify-center gap-0.5 sm:gap-1 flex-wrap pointer-events-none px-1">
         {wagon.items.map((item, i) => (
           <span
             key={i}
-            className={`text-sm sm:text-xl transition-all duration-300 ${
+            className={`text-sm sm:text-lg transition-all duration-300 ${
               isPlaced ? "scale-100 opacity-100" : "scale-75 opacity-0"
             }`}
           >
@@ -375,20 +356,82 @@ function FreightWagon({
 }
 
 export function NumberTrainGame() {
+  const [mode, setMode] = useState<TrainMode>("sequence");
   const [level, setLevel] = useState<"1-5" | "6-10">("1-5");
-  const wagons = level === "1-5" ? WAGONS_1_5 : WAGONS_6_10;
-
   const [placedNumbers, setPlacedNumbers] = useState<number[]>([]);
+  const [missingIndex, setMissingIndex] = useState<number>(2); // Índice do vagão faltando no modo Detetive
+  const [missingOptions, setMissingOptions] = useState<number[]>([2, 3, 4]);
   const [isTrainMoving, setIsTrainMoving] = useState(false);
   const [wrongShakeNum, setWrongShakeNum] = useState<number | null>(null);
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const activeWagonRef = useRef<HTMLDivElement | null>(null);
 
-  const currentExpectedWagon = wagons[placedNumbers.length] ?? null;
-  const expectedNumber = currentExpectedWagon ? currentExpectedWagon.num : null;
+  const rawWagons = level === "1-5" ? WAGONS_1_5 : WAGONS_6_10;
+  // No modo countdown (5 a 1), inverte a ordem dos vagões
+  const wagons = mode === "countdown" ? [...rawWagons].reverse() : rawWagons;
 
-  // Auto-scroll suave que mantém o vagão da vez centralizado sem cortar à esquerda
+  // Inicia desafio inteligente do modo Missing (Qual Falta?)
+  const setupMissingChallenge = useCallback(() => {
+    const targetWagons = level === "1-5" ? WAGONS_1_5 : WAGONS_6_10;
+    // Escolhe aleatoriamente o vagão que falta (do meio para ser divertido)
+    const randomIdx = Math.floor(Math.random() * (targetWagons.length - 2)) + 1; // 1 a 3
+    setMissingIndex(randomIdx);
+
+    const missingNum = targetWagons[randomIdx].num;
+    // Pré-coloca todos os vagões, exceto o que falta
+    const autoPlaced = targetWagons.filter((_, idx) => idx !== randomIdx).map((w) => w.num);
+    setPlacedNumbers(autoPlaced);
+
+    // Gera 3 opções inteligentes: a resposta certa + 2 números próximos
+    const optSet = new Set<number>([missingNum]);
+    const candidates = [missingNum - 1, missingNum + 1, missingNum - 2, missingNum + 2].filter(
+      (n) => n >= 1 && n <= 10 && n !== missingNum
+    );
+    while (optSet.size < 3 && candidates.length > 0) {
+      const pick = candidates.pop()!;
+      optSet.add(pick);
+    }
+    while (optSet.size < 3) {
+      optSet.add(Math.floor(Math.random() * 10) + 1);
+    }
+    setMissingOptions(Array.from(optSet).sort(() => Math.random() - 0.5));
+  }, [level]);
+
+  // Reinicia estado de acordo com o modo
+  const initGameForMode = useCallback(
+    (newMode: TrainMode) => {
+      setIsTrainMoving(false);
+      setWrongShakeNum(null);
+      if (newMode === "missing") {
+        setupMissingChallenge();
+      } else {
+        setPlacedNumbers([]);
+      }
+    },
+    [setupMissingChallenge]
+  );
+
+  useEffect(() => {
+    initGameForMode(mode);
+  }, [mode, level, initGameForMode]);
+
+  // Número esperado para o próximo encaixe
+  const getExpectedNumber = (): number | null => {
+    if (mode === "missing") {
+      const targetWagons = level === "1-5" ? WAGONS_1_5 : WAGONS_6_10;
+      return targetWagons[missingIndex]?.num ?? null;
+    }
+    if (mode === "countdown" || mode === "sequence" || mode === "passengers") {
+      const currentWagon = wagons[placedNumbers.length];
+      return currentWagon ? currentWagon.num : null;
+    }
+    return null;
+  };
+
+  const expectedNumber = getExpectedNumber();
+
+  // Auto-scroll suave
   useEffect(() => {
     if (activeWagonRef.current) {
       activeWagonRef.current.scrollIntoView({
@@ -397,7 +440,7 @@ export function NumberTrainGame() {
         block: "nearest",
       });
     }
-  }, [placedNumbers.length, level]);
+  }, [placedNumbers.length, mode, level]);
 
   const handlePickNumber = (num: number) => {
     if (isTrainMoving) return;
@@ -408,7 +451,7 @@ export function NumberTrainGame() {
       const updated = [...placedNumbers, num];
       setPlacedNumbers(updated);
 
-      if (updated.length === wagons.length) {
+      if (updated.length >= wagons.length) {
         sounds.playWhistle();
         sounds.playSuccess();
         setIsTrainMoving(true);
@@ -425,38 +468,92 @@ export function NumberTrainGame() {
     }
   };
 
-  const handleReset = () => {
-    sounds.playBoing();
-    setPlacedNumbers([]);
-    setIsTrainMoving(false);
-    setWrongShakeNum(null);
-  };
-
-  const handleNextLevel = () => {
+  const handleNextChallenge = () => {
     sounds.playStar();
-    setLevel((l) => (l === "1-5" ? "6-10" : "1-5"));
-    setPlacedNumbers([]);
-    setIsTrainMoving(false);
-    setWrongShakeNum(null);
+    if (mode === "missing") {
+      setupMissingChallenge();
+      setIsTrainMoving(false);
+    } else {
+      setLevel((l) => (l === "1-5" ? "6-10" : "1-5"));
+      setPlacedNumbers([]);
+      setIsTrainMoving(false);
+    }
   };
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-sky-400 via-sky-200 to-emerald-400">
       {/* PALCO FERROVIÁRIO FULL-SCREEN */}
-      <div className="relative flex-1 min-h-0 w-full flex flex-col justify-center items-center overflow-hidden">
-        {/* HUD Flutuante no Topo */}
-        <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-2 z-30">
-          <div className="flex items-center gap-2 bg-white/95 backdrop-blur-md border-3 sm:border-4 border-kids-teal px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-2xl shadow-lg">
-            <span className="text-2xl sm:text-3xl">🚂</span>
-            <span className="text-sm sm:text-2xl font-black text-teal-950">
-              Trem: {placedNumbers.length} / {wagons.length}
-            </span>
+      <div className="relative flex-1 min-h-0 w-full flex flex-col justify-between items-center overflow-hidden">
+        {/* HUD SUPERIOR: SELETOR DE MODOS INTELIGENTES + APITO */}
+        <div className="w-full px-2 sm:px-4 pt-2 z-30 flex items-center justify-between gap-1.5 sm:gap-3 flex-shrink-0">
+          {/* Seletor dos 4 Modos Inteligentes */}
+          <div className="flex items-center gap-1 sm:gap-2 bg-white/95 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 sm:border-3 border-kids-teal shadow-md overflow-x-auto scrollbar-none">
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setMode("sequence");
+              }}
+              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
+                mode === "sequence"
+                  ? "bg-kids-teal text-white border-2 border-teal-700 shadow-sm"
+                  : "text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <span>🚂</span>
+              <span>Na Ordem</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setMode("missing");
+              }}
+              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
+                mode === "missing"
+                  ? "bg-amber-500 text-white border-2 border-amber-700 shadow-sm ring-2 ring-yellow-300"
+                  : "text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <span>❓</span>
+              <span>Qual Falta?</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setMode("countdown");
+              }}
+              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
+                mode === "countdown"
+                  ? "bg-purple-600 text-white border-2 border-purple-800 shadow-sm"
+                  : "text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <span>⏱️</span>
+              <span>Regressiva</span>
+            </button>
+
+            <button
+              onClick={() => {
+                sounds.playPop();
+                setMode("passengers");
+              }}
+              className={`kid-btn px-2 sm:px-3 py-1 rounded-xl text-xs sm:text-sm font-black flex items-center gap-1 transition-all ${
+                mode === "passengers"
+                  ? "bg-kids-coral text-white border-2 border-rose-800 shadow-sm"
+                  : "text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              <span>🐑</span>
+              <span>Passageiros</span>
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* Botão de Apito PIUÍ! e Recomeçar */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
               onClick={() => sounds.playWhistle()}
-              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-2xl border-3 sm:border-4 border-amber-600 shadow-lg font-black text-xs sm:text-base flex items-center gap-1.5"
+              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-amber-600 shadow-md font-black text-xs sm:text-sm flex items-center gap-1"
               title="Tocar Apito"
             >
               <span>📢</span>
@@ -464,118 +561,160 @@ export function NumberTrainGame() {
             </button>
 
             <button
-              onClick={handleReset}
-              className="kid-btn bg-white/95 hover:bg-slate-100 text-slate-700 p-2 sm:p-2.5 rounded-2xl border-3 sm:border-4 border-slate-300 shadow-lg flex-shrink-0"
+              onClick={() => initGameForMode(mode)}
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-slate-300 shadow-sm"
               title="Recomeçar"
             >
-              <RotateCcw size={20} className="stroke-[2.5]" />
+              <RotateCcw size={18} className="stroke-[2.5]" />
             </button>
           </div>
         </div>
 
-        {/* Nuvens decorativas e Sol */}
-        <div className="absolute top-16 left-8 text-5xl opacity-40 pointer-events-none">☁️</div>
-        <div className="absolute top-20 right-10 text-5xl opacity-40 pointer-events-none">☁️</div>
-        <div className="absolute top-14 left-1/2 -translate-x-1/2 text-5xl opacity-80 pointer-events-none">☀️</div>
+        {/* CENÁRIO CENTRAL COM NUVENS, SOL E OS TRILHOS */}
+        <div className="relative w-full flex-1 flex flex-col justify-center items-center">
+          {/* Nuvens decorativas */}
+          <div className="absolute top-3 left-8 text-4xl opacity-50 pointer-events-none">☁️</div>
+          <div className="absolute top-6 right-10 text-4xl opacity-50 pointer-events-none">☁️</div>
+          <div className="absolute top-2 left-1/2 -translate-x-1/2 text-5xl opacity-85 pointer-events-none">☀️</div>
 
-        {/* Cenário com os Trilhos e o Comboio Gigante */}
-        <div className="relative w-full flex flex-col items-center justify-center mt-8">
-          <div
-            ref={scrollContainerRef}
-            className="relative w-full overflow-x-auto pb-2 pt-10 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
-          >
-            <div
-              className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${
-                isTrainMoving ? "translate-x-full scale-105" : ""
-              }`}
-            >
-              {/* 1. LOCOMOTIVA A VAPOR GIGANTE NA FRENTE */}
-              <SteamLocomotive isMoving={isTrainMoving} />
-
-              {/* 2. OS VAGÕES GIGANTES EM SEQUÊNCIA */}
-              {wagons.map((w) => {
-                const isPlaced = placedNumbers.includes(w.num);
-                const isNext = w.num === expectedNumber;
-
-                return (
-                  <div
-                    key={w.num}
-                    ref={isNext ? activeWagonRef : undefined}
-                    className="relative flex-shrink-0"
-                  >
-                    <FreightWagon
-                      wagon={w}
-                      isPlaced={isPlaced}
-                      isNext={isNext}
-                      isMoving={isTrainMoving}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+          {/* Banner de Instrução Inteligente */}
+          <div className="bg-white/90 backdrop-blur-sm px-4 py-1 rounded-full border-2 border-white shadow-sm mb-2 z-10">
+            <span className="font-black text-xs sm:text-base text-slate-800">
+              {mode === "missing"
+                ? "Detetive do Trem: Descubra qual vagão está faltando!"
+                : mode === "countdown"
+                ? "Trem voltando para a estação de Belém! Conte de trás para frente:"
+                : mode === "passengers"
+                ? `Quantos bichinhos da Bíblia sobem no vagão? (${expectedNumber || 1})`
+                : "Engate os vagões na ordem numérica certa!"}
+            </span>
           </div>
 
-          {/* Trilhos de Madeira com Trilhos de Aço Full-Width */}
-          <div className="w-full h-8 sm:h-10 bg-slate-800 border-t-4 border-slate-950 flex justify-around items-center shadow-2xl -mt-1.5">
-            {[...Array(28)].map((_, i) => (
-              <div key={i} className="w-2.5 sm:w-3 h-full bg-amber-900 border-x border-amber-950" />
-            ))}
+          {/* O Comboio Ferroviário Gigante */}
+          <div className="relative w-full flex flex-col items-center justify-center">
+            <div
+              ref={scrollContainerRef}
+              className="relative w-full overflow-x-auto pb-1 pt-6 scrollbar-none flex items-end justify-start xl:justify-center px-6 sm:px-12"
+            >
+              <div
+                className={`relative flex items-end gap-2 sm:gap-3 transition-transform duration-1000 mx-auto ${
+                  isTrainMoving ? "translate-x-full scale-105" : ""
+                }`}
+              >
+                {/* 1. Locomotiva a Vapor */}
+                <SteamLocomotive isMoving={isTrainMoving} onWhistle={() => sounds.playWhistle()} />
+
+                {/* 2. Vagões */}
+                {wagons.map((w, idx) => {
+                  const isPlaced = placedNumbers.includes(w.num);
+                  const isMissingSlot = mode === "missing" && idx === missingIndex;
+                  const isNext = mode === "missing" ? isMissingSlot : w.num === expectedNumber;
+
+                  return (
+                    <div
+                      key={w.num}
+                      ref={isNext ? activeWagonRef : undefined}
+                      className="relative flex-shrink-0"
+                    >
+                      <FreightWagon
+                        wagon={w}
+                        isPlaced={isPlaced}
+                        isNext={isNext}
+                        isMystery={isMissingSlot && !isPlaced}
+                        isMoving={isTrainMoving}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Trilhos de Aço e Dormentes de Madeira */}
+            <div className="w-full h-8 sm:h-10 bg-slate-800 border-t-4 border-slate-950 flex justify-around items-center shadow-2xl -mt-1.5">
+              {[...Array(26)].map((_, i) => (
+                <div key={i} className="w-2.5 sm:w-3.5 h-full bg-amber-900 border-x border-amber-950" />
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Vitória: Trem Completo Parte */}
+        {/* VITÓRIA: O TREM PARTE COM APITO E FANFARRA */}
         {isTrainMoving && (
           <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-40 flex flex-col items-center justify-center p-4 text-center">
-            <span className="text-7xl sm:text-9xl mb-2">🚂💨✨</span>
+            <span className="text-7xl sm:text-9xl mb-2 animate-bounce">🚂💨✨</span>
             <div className="text-3xl sm:text-5xl font-black text-kids-teal mb-2">
               TREM COMPLETO!
             </div>
             <div className="text-base sm:text-2xl font-bold text-slate-700 mb-6">
-              Muito bem, Israel! Você engatou todos os números na ordem certa! ⭐
+              Muito bem, Israel! Você é o melhor maquinista do Mundinho Mágico! ⭐
             </div>
             <button
-              onClick={handleNextLevel}
-              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-4 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3"
+              onClick={handleNextChallenge}
+              className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-xl sm:text-3xl px-8 sm:px-12 py-3.5 sm:py-5 rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 active:scale-95"
             >
-              <span>{level === "1-5" ? "VAMOS DO 6 AO 10!" : "JOGAR DE NOVO!"}</span>
-              <ArrowRight size={30} className="stroke-[3]" />
+              <span>{mode === "missing" ? "PRÓXIMO DESAFIO!" : "VAMOS DO 6 AO 10!"}</span>
+              <ArrowRight size={28} className="stroke-[3]" />
             </button>
           </div>
         )}
-      </div>
 
-      {/* DOCK INFERIOR FULL-WIDTH: BANDEJA DE NÚMEROS GIGANTES */}
-      {!isTrainMoving && (
-        <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2.5 sm:py-4 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
-          <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-4">
-            {wagons.map((w) => {
-              const isPlaced = placedNumbers.includes(w.num);
-              const isExpected = w.num === expectedNumber;
-              const isShaking = wrongShakeNum === w.num;
+        {/* DOCK INFERIOR COM AS OPÇÕES DE NÚMEROS (COM SAFE AREA BOTTOM) */}
+        {!isTrainMoving && (
+          <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-2 pb-[max(12px,env(safe-area-inset-bottom))] border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+            {/* Opções Modo Missing (3 opções grandonas de múltipla escolha) */}
+            {mode === "missing" ? (
+              <div className="max-w-md mx-auto w-full flex items-center justify-center gap-3 sm:gap-6 py-1">
+                {missingOptions.map((opt) => {
+                  const isShaking = wrongShakeNum === opt;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => handlePickNumber(opt)}
+                      className={`kid-btn flex-1 py-3 sm:py-5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                        isShaking
+                          ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
+                          : "bg-amber-100 hover:bg-amber-200 border-amber-500 text-amber-950 shadow-kid active:scale-95"
+                      }`}
+                    >
+                      <span className="text-3xl sm:text-5xl leading-tight font-black">{opt}</span>
+                      <span className="text-xs sm:text-sm font-bold opacity-80">Número {opt}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Opções Normais: Bandeja Completa dos 5 Vagões */
+              <div className="max-w-5xl mx-auto w-full flex items-center justify-around gap-2 sm:gap-4 py-1">
+                {wagons.map((w) => {
+                  const isPlaced = placedNumbers.includes(w.num);
+                  const isExpected = w.num === expectedNumber;
+                  const isShaking = wrongShakeNum === w.num;
 
-              return (
-                <button
-                  key={w.num}
-                  onClick={() => handlePickNumber(w.num)}
-                  disabled={isPlaced}
-                  className={`kid-btn flex-1 py-2.5 sm:py-4 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
-                    isPlaced
-                      ? "bg-slate-200 border-slate-300 text-slate-400 opacity-20 cursor-not-allowed scale-90"
-                      : isShaking
-                      ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
-                      : isExpected
-                      ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-3 sm:ring-4 ring-yellow-400"
-                      : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
-                  }`}
-                >
-                  <span className="text-2xl sm:text-4xl leading-tight">{w.num}</span>
-                  <span className="text-base sm:text-2xl">{w.emoji}</span>
-                </button>
-              );
-            })}
+                  return (
+                    <button
+                      key={w.num}
+                      onClick={() => handlePickNumber(w.num)}
+                      disabled={isPlaced}
+                      className={`kid-btn flex-1 py-2 sm:py-3.5 rounded-2xl sm:rounded-3xl border-3 sm:border-4 font-black flex flex-col items-center justify-center transition-all ${
+                        isPlaced
+                          ? "bg-slate-200 border-slate-300 text-slate-400 opacity-25 cursor-not-allowed scale-90"
+                          : isShaking
+                          ? "bg-rose-200 border-rose-500 text-rose-900 animate-wiggle scale-105"
+                          : isExpected
+                          ? "bg-amber-100 border-amber-500 text-amber-950 shadow-kid-lg scale-105 ring-3 sm:ring-4 ring-yellow-400"
+                          : "bg-white border-amber-300 text-amber-950 hover:bg-amber-100 shadow-kid-sm active:scale-95"
+                      }`}
+                    >
+                      <span className="text-2xl sm:text-4xl leading-tight font-black">{w.num}</span>
+                      <span className="text-base sm:text-2xl">{w.emoji}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

@@ -25,25 +25,25 @@ export default function Home() {
   const getScreenDetails = () => {
     switch (currentScreen) {
       case "car":
-        return { title: "Pista dos Carrinhos", icon: "🚗" };
+        return { title: "Pista do Noé", icon: "🚙" };
       case "paint":
-        return { title: "Atelier de Pintura", icon: "🎨" };
+        return { title: "Atelier Bíblico", icon: "🎨" };
       case "puzzle":
         return { title: "Quebra-Cabeça Mágico", icon: "🧩" };
       case "blocks":
-        return { title: "Torre de Equilíbrio", icon: "🧱" };
+        return { title: "Torre da Fé", icon: "🧱" };
       case "balloons":
-        return { title: "Estoura-Balões", icon: "🎈" };
+        return { title: "Balões de Luz", icon: "🎈" };
       case "ark":
-        return { title: "Bichinhos da Arca", icon: "🛳️" };
+        return { title: "Arca de Noé", icon: "🛳️" };
       case "counting":
-        return { title: "Contar Quantos Tem", icon: "🔢" };
+        return { title: "Contar Criação", icon: "🔢" };
       case "train":
         return { title: "Trem dos Números", icon: "🚂" };
       case "tracing":
         return { title: "Traçar o Alfabeto", icon: "✍️" };
       case "missingLetter":
-        return { title: "Letra Mágica", icon: "🔤" };
+        return { title: "Letrinha Mágica", icon: "🔤" };
       default:
         return { title: "", icon: "" };
     }
