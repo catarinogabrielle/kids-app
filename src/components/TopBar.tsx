@@ -11,6 +11,22 @@ export function SoundButton() {
 
   useEffect(() => {
     setIsMuted(sounds.getMuted());
+
+    const handleMuteChange = (e: Event) => {
+      const customEvent = e as CustomEvent<boolean>;
+      if (typeof customEvent.detail === "boolean") {
+        setIsMuted(customEvent.detail);
+      } else {
+        setIsMuted(sounds.getMuted());
+      }
+    };
+
+    window.addEventListener("israel_sound_mute_change", handleMuteChange);
+    window.addEventListener("storage", handleMuteChange);
+    return () => {
+      window.removeEventListener("israel_sound_mute_change", handleMuteChange);
+      window.removeEventListener("storage", handleMuteChange);
+    };
   }, []);
 
   const handleToggle = (e: React.MouseEvent) => {

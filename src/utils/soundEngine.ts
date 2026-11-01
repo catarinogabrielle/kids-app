@@ -11,18 +11,62 @@ class SoundEngine {
       if (savedMute !== null) {
         this.isMuted = savedMute === "true";
       }
+
+      // Desbloqueio antecipado automático no primeiro toque/clique (garante funcionamento instantâneo no iOS/Safari/Android/PWA)
+      const handleFirstInteraction = () => {
+        this.unlockAudio();
+        window.removeEventListener("pointerdown", handleFirstInteraction);
+        window.removeEventListener("touchstart", handleFirstInteraction);
+        window.removeEventListener("click", handleFirstInteraction);
+        window.removeEventListener("keydown", handleFirstInteraction);
+      };
+
+      window.addEventListener("pointerdown", handleFirstInteraction, { passive: true });
+      window.addEventListener("touchstart", handleFirstInteraction, { passive: true });
+      window.addEventListener("click", handleFirstInteraction, { passive: true });
+      window.addEventListener("keydown", handleFirstInteraction, { passive: true });
+    }
+  }
+
+  // Destrava o pipeline de áudio Web Audio em navegadores móveis rígidos
+  public unlockAudio() {
+    this.initCtx();
+    if (this.ctx) {
+      if (this.ctx.state === "suspended") {
+        this.ctx.resume().catch(() => {});
+      }
+      try {
+        // Toca 1 frame silencioso para liberar o hardware de som
+        const buffer = this.ctx.createBuffer(1, 1, 22050);
+        const source = this.ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(this.ctx.destination);
+        source.start(0);
+      } catch {
+        // Silencioso se não suportado
+      }
     }
   }
 
   private initCtx() {
-    if (!this.ctx && typeof window !== "undefined") {
-      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (AudioContextClass) {
+    if (typeof window === "undefined") return;
+    const AudioContextClass =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+
+    if (!AudioContextClass) return;
+
+    // Recria contexto se não existir ou se foi fechado pelo sistema operacional (ex: suspensão do app, chamada recebida)
+    if (!this.ctx || this.ctx.state === "closed") {
+      try {
         this.ctx = new AudioContextClass();
+      } catch (err) {
+        console.warn("Falha ao inicializar AudioContext:", err);
       }
     }
+
     if (this.ctx && this.ctx.state === "suspended") {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
   }
 
@@ -33,7 +77,14 @@ class SoundEngine {
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
     if (typeof window !== "undefined") {
-      localStorage.setItem("israel_game_muted", String(this.isMuted));
+      try {
+        localStorage.setItem("israel_game_muted", String(this.isMuted));
+        window.dispatchEvent(
+          new CustomEvent("israel_sound_mute_change", { detail: this.isMuted })
+        );
+      } catch {
+        // Silencioso
+      }
     }
     if (!this.isMuted) {
       this.playPop();

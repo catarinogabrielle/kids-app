@@ -531,6 +531,7 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
 
   // Síntese de voz em português
   const speakLetterWord = useCallback((letter: string, word: string) => {
+    if (sounds.getMuted()) return;
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       try {
         window.speechSynthesis.cancel();
