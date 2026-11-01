@@ -120,15 +120,15 @@ export function GameHeader({
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full pt-[max(4px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-0.5 px-2.5 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/90 backdrop-blur-md border-b sm:border-b-2 border-white/70 shadow-sm h-11 sm:h-14 landscape:h-10">
+    <header className="w-full pt-[max(8px,env(safe-area-inset-top))] pb-2 sm:py-3.5 landscape:py-1 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/95 backdrop-blur-md border-b sm:border-b-2 border-slate-200/80 shadow-sm min-h-[52px] sm:min-h-[60px] landscape:min-h-[44px]">
       {/* Lado Esquerdo: Botão Início + Título + Controles Primários do Jogo */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
+      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-shrink-0">
         <HomeButton onHome={onHome} />
 
         {title && (
-          <div className="hidden sm:flex md:flex items-center gap-1 sm:gap-2 bg-white/95 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-slate-200 shadow-sm flex-shrink-0">
-            {icon && <span className="text-sm sm:text-base">{icon}</span>}
-            <span className="font-extrabold text-[11px] sm:text-sm text-slate-800 tracking-wide whitespace-nowrap">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-white/95 px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-slate-200 shadow-sm flex-shrink-0 max-w-[140px] sm:max-w-none">
+            {icon && <span className="text-sm sm:text-base flex-shrink-0">{icon}</span>}
+            <span className="font-extrabold text-[11px] sm:text-sm text-slate-800 tracking-wide truncate whitespace-nowrap">
               {title}
             </span>
           </div>
@@ -138,7 +138,7 @@ export function GameHeader({
       </div>
 
       {/* Lado Direito: Ações do Jogo + Som */}
-      <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
         {rightControls}
         <SoundButton />
       </div>
@@ -156,7 +156,7 @@ export function HubHeader({ onOpenParents }: HubHeaderProps) {
 
   return (
     <>
-      <header className="w-full pt-[max(6px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-0.5 px-3 sm:px-6 flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0">
+      <header className="w-full pt-[max(8px,env(safe-area-inset-top))] pb-2 sm:py-3.5 landscape:py-1 px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0 min-h-[52px] sm:min-h-[60px]">
         {/* Lado Esquerdo: Marca & Subtítulo (NUNCA TRUNCA COM RETICÊNCIAS) */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0">
           <span className="text-xl sm:text-3xl drop-shadow select-none">☀️</span>

@@ -37,7 +37,6 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
   const [isTurboActive, setIsTurboActive] = useState<boolean>(false);
   const [isJumping, setIsJumping] = useState<boolean>(false);
   const [isSplashing, setIsSplashing] = useState<boolean>(false);
-  const [roadCurve, setRoadCurve] = useState<number>(0); // Curvatura da estrada (-20 a 20)
   const [dashOffset, setDashOffset] = useState<number>(0); // Para animação contínua das faixas
 
   const [items, setItems] = useState<TrackItem[]>([]);
@@ -64,15 +63,13 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     { id: "dino" as const, name: "Dino Veloz", icon: "🦖", label: "T-Rex Piloto" },
   ];
 
-  // Coordenada X ideal de cada faixa (0, 1, 2) perfeitamente alinhada com as faixas do asfalto
-  const getLaneXAtProgress = useCallback((lane: 0 | 1 | 2, p: number, curve: number) => {
-    // Curvatura linear idêntica à do SVG da pista (nunca deixa itens saírem da estrada!)
-    const center = 50 + (curve * 0.75) * (1 - p);
-    // Largura da pista: vai de 17% no horizonte até 88% no rodapé (perspectiva 3D real!)
-    const roadWidth = 17 + p * 71;
-    // Espaçamento de 30% garante alinhamento exato no centro de cada uma das 3 faixas
-    const laneSpacing = roadWidth * 0.30;
-    return center + (lane - 1) * laneSpacing;
+  // Coordenada X ideal de cada faixa (0, 1, 2) em pista 100% RETA (sem curvas!)
+  const getLaneXAtProgress = useCallback((lane: 0 | 1 | 2, p: number) => {
+    // Largura da pista: vai de 32% no horizonte até 90% no rodapé (perspectiva 3D limpa e ampla)
+    const roadWidth = 32 + p * 58;
+    // Divisão exata por 3: alinhamento 100% geométrico no centro de cada faixa da pista
+    const laneSpacing = roadWidth / 3;
+    return 50 + (lane - 1) * laneSpacing;
   }, []);
 
   // Altera faixa pelo teclado ou botões
@@ -80,12 +77,12 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
     (newLane: 0 | 1 | 2) => {
       setCarLane(newLane);
       sounds.playPop();
-      const target = getLaneXAtProgress(newLane, 0.74, roadCurve);
+      const target = getLaneXAtProgress(newLane, 0.74);
       targetXRef.current = target;
-      setCarTilt(newLane < carLane ? -12 : newLane > carLane ? 12 : 0);
-      setTimeout(() => setCarTilt(0), 220);
+      setCarTilt(newLane < carLane ? -8 : newLane > carLane ? 8 : 0);
+      setTimeout(() => setCarTilt(0), 180);
     },
-    [carLane, getLaneXAtProgress, roadCurve]
+    [carLane, getLaneXAtProgress]
   );
 
   const steerLeft = useCallback(() => {
@@ -144,21 +141,17 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
       const delta = Math.min((time - prevTime) / 1000, 0.08);
       prevTime = time;
 
-      // 1. Curvatura dinâmica da estrada estilo OutRun
-      const curvePhase = Math.sin(time / 2000) * 0.75 + Math.sin(time / 1100) * 0.25;
-      const currentCurve = curvePhase * 16;
-      setRoadCurve(currentCurve);
-
+      // 1. Pista 100% Reta (sem curvas, foco em estabilidade e jogabilidade para crianças)
       // 2. Velocidade da pista
       const speedMultiplier = isTurboActive ? 2.4 : 1.0;
       const moveSpeed = 0.58 * speedMultiplier;
 
-      // Animação contínua das linhas do asfalto
+      // Animação contínua das faixas da pista
       setDashOffset((prev) => (prev + delta * 120 * speedMultiplier) % 100);
 
       // Suavização do movimento horizontal do carro (Lerp suave)
       if (!isDraggingRef.current) {
-        const target = getLaneXAtProgress(carLane, 0.74, currentCurve);
+        const target = getLaneXAtProgress(carLane, 0.74);
         targetXRef.current = target;
       }
       const dx = targetXRef.current - carXRef.current;
@@ -216,9 +209,9 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
           // Área de colisão do carro: progress entre 0.65 e 0.85 (com carro centrado em 0.74)
           if (newProgress >= 0.65 && newProgress <= 0.85) {
-            const itemX = getLaneXAtProgress(item.lane, newProgress, currentCurve);
+            const itemX = getLaneXAtProgress(item.lane, newProgress);
             // Tolerância de coleta generosa e gostosa para crianças
-            const hitDistance = isTurboActive ? 20 : 16;
+            const hitDistance = isTurboActive ? 22 : 18;
 
             if (Math.abs(itemX - currentCarX) < hitDistance) {
               // Efeitos de coleta
@@ -392,34 +385,28 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           className="relative w-full max-w-lg md:max-w-xl lg:max-w-2xl h-full overflow-hidden touch-none select-none cursor-pointer shadow-2xl bg-emerald-600"
         >
           {/* 1. CÉU BÍBLICO ENSOLARADO COM NUVENS E COLINAS */}
-          <div className="absolute top-0 left-0 right-0 h-[22%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-100 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-0 left-0 right-0 h-[24%] bg-gradient-to-b from-sky-400 via-sky-300 to-amber-100 overflow-hidden pointer-events-none z-0">
             <div className="absolute top-2 left-6 text-4xl animate-pulse">☀️</div>
             <div className="absolute top-3 left-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
             <div className="absolute top-4 right-1/4 text-3xl opacity-80 animate-wiggle">☁️</div>
             <div className="absolute top-3 right-8 text-2xl animate-bounce">🕊️</div>
 
-            {/* Colinas ao horizonte que balançam com a curva */}
-            <div
-              className="absolute -bottom-2 left-[-15%] right-[-15%] h-12 bg-emerald-600 rounded-t-[100%] transition-transform duration-100"
-              style={{ transform: `translateX(${roadCurve * 1.8}px)` }}
-            />
-            <div
-              className="absolute -bottom-1 left-[-10%] right-[-10%] h-8 bg-emerald-500 rounded-t-[100%] transition-transform duration-100"
-              style={{ transform: `translateX(${roadCurve * 1.1}px)` }}
-            />
+            {/* Colinas ao horizonte serenas e estáveis */}
+            <div className="absolute -bottom-2 left-[-10%] right-[-10%] h-12 bg-emerald-600 rounded-t-[100%]" />
+            <div className="absolute -bottom-1 left-[-5%] right-[-5%] h-8 bg-emerald-500 rounded-t-[100%]" />
           </div>
 
           {/* 2. GRAMADO VERDE LATERAL */}
-          <div className="absolute top-[22%] bottom-0 left-0 right-0 bg-emerald-600 overflow-hidden pointer-events-none z-0">
+          <div className="absolute top-[24%] bottom-0 left-0 right-0 bg-emerald-600 overflow-hidden pointer-events-none z-0">
             {/* Textura de grama */}
             <div className="absolute inset-0 bg-gradient-to-b from-emerald-600 to-emerald-700 opacity-90" />
           </div>
 
-          {/* 3. PISTA DE ASFALTO COM PERSPECTIVA REAL (POLÍGONO PERFEITAMENTE SINCRONIZADO) */}
+          {/* 3. PISTA DE ASFALTO 100% RETA COM PERSPECTIVA 3D LIMPA */}
           <svg
             viewBox="0 0 1000 1000"
             preserveAspectRatio="none"
-            className="absolute top-[22%] bottom-0 left-0 w-full h-[78%] pointer-events-none z-1"
+            className="absolute top-[24%] bottom-0 left-0 w-full h-[76%] pointer-events-none z-1"
           >
             <defs>
               <linearGradient id="asphaltGrad" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -434,14 +421,9 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
               </linearGradient>
             </defs>
 
-            {/* Asfalto da Pista com Perspectiva 3D Real (de 17% a 88%) */}
+            {/* Asfalto da Pista 100% Reta (34% no horizonte a 95% na base) */}
             <polygon
-              points={`
-                ${(50 + roadCurve * 0.75 - 8.5) * 10},0
-                ${(50 + roadCurve * 0.75 + 8.5) * 10},0
-                ${(50 + 44) * 10},1000
-                ${(50 - 44) * 10},1000
-              `}
+              points="340,0 660,0 950,1000 50,1000"
               fill="url(#asphaltGrad)"
               stroke="#020617"
               strokeWidth="4"
@@ -449,50 +431,40 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
             {/* Zebra Vermelha e Branca Esquerda */}
             <polygon
-              points={`
-                ${(50 + roadCurve * 0.75 - 11) * 10},0
-                ${(50 + roadCurve * 0.75 - 8.5) * 10},0
-                ${(50 - 44) * 10},1000
-                ${(50 - 48) * 10},1000
-              `}
+              points="305,0 340,0 50,1000 10,1000"
               fill="url(#curbRedWhite)"
             />
 
             {/* Zebra Vermelha e Branca Direita */}
             <polygon
-              points={`
-                ${(50 + roadCurve * 0.75 + 8.5) * 10},0
-                ${(50 + roadCurve * 0.75 + 11) * 10},0
-                ${(50 + 48) * 10},1000
-                ${(50 + 44) * 10},1000
-              `}
+              points="660,0 695,0 990,1000 950,1000"
               fill="url(#curbRedWhite)"
             />
 
-            {/* Divisória de Faixa 1 (Entre Faixa 0 e 1: Exatamente no centro geométrico) */}
+            {/* Divisória de Faixa 1 (Entre Faixa 0 e 1) */}
             <line
-              x1={(50 + roadCurve * 0.75 - 2.55) * 10}
-              y1={0}
-              x2={(50 - 13.2) * 10}
-              y2={1000}
+              x1="447"
+              y1="0"
+              x2="350"
+              y2="1000"
               stroke="#ffffff"
-              strokeWidth="5"
-              strokeDasharray="25,25"
-              strokeDashoffset={-dashOffset * 2}
-              opacity="0.85"
+              strokeWidth="6"
+              strokeDasharray="28,28"
+              strokeDashoffset={-dashOffset * 2.2}
+              opacity="0.9"
             />
 
-            {/* Divisória de Faixa 2 (Entre Faixa 1 e 2: Exatamente no centro geométrico) */}
+            {/* Divisória de Faixa 2 (Entre Faixa 1 e 2) */}
             <line
-              x1={(50 + roadCurve * 0.75 + 2.55) * 10}
-              y1={0}
-              x2={(50 + 13.2) * 10}
-              y2={1000}
+              x1="553"
+              y1="0"
+              x2="650"
+              y2="1000"
               stroke="#ffffff"
-              strokeWidth="5"
-              strokeDasharray="25,25"
-              strokeDashoffset={-dashOffset * 2}
-              opacity="0.85"
+              strokeWidth="6"
+              strokeDasharray="28,28"
+              strokeDashoffset={-dashOffset * 2.2}
+              opacity="0.9"
             />
           </svg>
 
@@ -508,7 +480,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
               s.isBouncing ? "scale-140 -translate-y-4" : "hover:scale-115"
             }`}
             style={{
-              left: s.side === "left" ? "3%" : "89%",
+              left: s.side === "left" ? "2.5%" : "91.5%",
               top: `${s.y}%`,
             }}
             title="Clique para cumprimentar!"
@@ -541,14 +513,14 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           </div>
         )}
 
-        {/* 6. ITENS COLETÁVEIS NA PISTA (Escala e Posição 100% Dentro das Faixas) */}
+        {/* 6. ITENS COLETÁVEIS NA PISTA (Escala e Posição 100% Dentro das Faixas Retas) */}
         {items.map((item) => {
-          // Calcula a posição física X e Y exata da faixa com perspectiva
-          const itemX = getLaneXAtProgress(item.lane, item.progress, roadCurve);
-          // Y mapeado de 22% (horizonte) até 94% (rodapé)
-          const itemY = 22 + item.progress * 68;
-          // Escala cresce suavemente de 0.35 (longe) para 1.05 (perto do carro)
-          const itemScale = 0.35 + item.progress * 0.7;
+          // Calcula a posição física X e Y exata da faixa (sem curvas, foco absoluto em estabilidade)
+          const itemX = getLaneXAtProgress(item.lane, item.progress);
+          // Y mapeado de 24% (horizonte) até 92% (rodapé)
+          const itemY = 24 + item.progress * 66;
+          // Escala cresce suavemente de 0.4 (longe) para 1.05 (perto do carro)
+          const itemScale = 0.4 + item.progress * 0.65;
 
           return (
             <div
@@ -570,7 +542,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
               {/* Bichinho Bíblico Perdido precisando de carona */}
               {item.type === "animal" && (
                 <div className="flex flex-col items-center animate-bounce">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/90 border-2 border-emerald-500 shadow-lg flex items-center justify-center text-3xl sm:text-4xl">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/95 border-2 border-emerald-500 shadow-lg flex items-center justify-center text-3xl sm:text-4xl">
                     {item.emoji}
                   </div>
                   <span className="text-[10px] font-black text-emerald-950 bg-emerald-300 px-1.5 py-0.5 rounded-full border border-emerald-600 shadow-sm mt-0.5 whitespace-nowrap">
@@ -634,128 +606,144 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
           </div>
         )}
 
-        {/* 9. VEÍCULO DO JOGADOR: PROPORCIONAL, TÁTIL E ELEGANTE (NÃO É UM BLOCO GIGANTE!) */}
+        {/* 9. VEÍCULO DO JOGADOR: PROPORCIONAL, TÁTIL E ELEGANTE (VISTA TRASEIRA 3D CHIBI) */}
         <div
           className="absolute z-25 pointer-events-none transition-transform duration-75"
           style={{
             left: `${carX}%`,
-            top: "75%", // Posição confortável no terço inferior da pista, acima dos botões
+            top: "74%", // Posição ideal na vertical: bem visível, no terço inferior, acima dos botões
             transform: `translate(-50%, -50%) rotate(${carTilt}deg) ${
-              isJumping ? "scale(1.35) translateY(-45px)" : "scale(1)"
+              isJumping ? "scale(1.25) translateY(-35px)" : "scale(1)"
             }`,
           }}
         >
           {/* Sombra Dinâmica no Asfalto */}
           <div
-            className={`w-14 sm:w-18 h-4 bg-black/40 rounded-full blur-[2px] mx-auto transition-transform ${
-              isJumping ? "scale-75 translate-y-10 opacity-30" : "scale-100"
+            className={`w-16 sm:w-22 h-4 bg-black/40 rounded-full blur-[2px] mx-auto transition-transform ${
+              isJumping ? "scale-75 translate-y-8 opacity-30" : "scale-100"
             }`}
           />
 
           {/* Chamas de Fogo no Escape quando Turbo Ativo */}
           {isTurboActive && (
-            <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 pointer-events-none">
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 pointer-events-none z-30">
               <span className="text-xl sm:text-2xl animate-bounce">🔥</span>
               <span className="text-2xl sm:text-3xl animate-pulse">🔥</span>
               <span className="text-xl sm:text-2xl animate-bounce">🔥</span>
             </div>
           )}
 
-          {/* 1. JIPE DA ARCA DE NOÉ (PROPORÇÃO BONITINHA E CHUNKY) */}
+          {/* 1. JIPE DA ARCA DE NOÉ (VISTA TRASEIRA 3D CHIBI) */}
           {vehicle === "safari" && (
-            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
-              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
-                {/* 4 Rodas Off-road com calotas prateadas */}
-                <rect x="2" y="14" width="12" height="26" rx="4" fill="#0F172A" />
-                <rect x="86" y="14" width="12" height="26" rx="4" fill="#0F172A" />
-                <rect x="2" y="94" width="12" height="28" rx="4" fill="#0F172A" />
-                <rect x="86" y="94" width="12" height="28" rx="4" fill="#0F172A" />
+            <div className="w-20 h-16 sm:w-26 sm:h-20 md:w-32 md:h-24 drop-shadow-2xl relative -mt-2">
+              <svg viewBox="0 0 120 90" className="w-full h-full select-none overflow-visible">
+                {/* Pneus Off-road Traseiros */}
+                <rect x="6" y="38" width="18" height="42" rx="6" fill="#0F172A" stroke="#334155" strokeWidth="2" />
+                <rect x="96" y="38" width="18" height="42" rx="6" fill="#0F172A" stroke="#334155" strokeWidth="2" />
+                <line x1="6" y1="52" x2="24" y2="52" stroke="#475569" strokeWidth="2" />
+                <line x1="6" y1="66" x2="24" y2="66" stroke="#475569" strokeWidth="2" />
+                <line x1="96" y1="52" x2="114" y2="52" stroke="#475569" strokeWidth="2" />
+                <line x1="96" y1="66" x2="114" y2="66" stroke="#475569" strokeWidth="2" />
 
-                {/* Chassi Jipe Laranja/Madeira da Arca */}
-                <rect x="12" y="8" width="76" height="122" rx="16" fill="#D97706" stroke="#78350F" strokeWidth="3.5" />
-                <rect x="20" y="14" width="60" height="30" rx="8" fill="#B45309" />
+                {/* Chassi do Jipe Laranja/Madeira da Arca */}
+                <rect x="18" y="22" width="84" height="58" rx="14" fill="#D97706" stroke="#78350F" strokeWidth="3.5" />
+                {/* Teto e Bagageiro */}
+                <path d="M 28 22 L 36 8 L 84 8 L 92 22 Z" fill="#B45309" stroke="#78350F" strokeWidth="3" />
+                <rect x="38" y="4" width="44" height="5" rx="2" fill="#78350F" />
+                <circle cx="46" cy="6" r="3.5" fill="#FEF08A" stroke="#78350F" strokeWidth="1" />
+                <circle cx="60" cy="6" r="3.5" fill="#FEF08A" stroke="#78350F" strokeWidth="1" />
+                <circle cx="74" cy="6" r="3.5" fill="#FEF08A" stroke="#78350F" strokeWidth="1" />
 
-                {/* Para-brisa com Noé e Leãozinho */}
-                <rect x="18" y="48" width="64" height="26" rx="6" fill="#BAE6FD" stroke="#0284C7" strokeWidth="2" />
-                <text x="23" y="68" fontSize="16">🧔</text>
-                <text x="55" y="68" fontSize="16">🦁</text>
+                {/* Vidro Traseiro com Noé e Leãozinho */}
+                <rect x="26" y="14" width="68" height="30" rx="8" fill="#BAE6FD" stroke="#0284C7" strokeWidth="2" />
+                <text x="34" y="36" fontSize="18">🧔</text>
+                <text x="66" y="36" fontSize="18">🦁</text>
 
-                {/* Bichinhos Salvos na Traseira */}
-                {rescuedAnimals.length > 0 && (
-                  <g>
-                    <rect x="18" y="78" width="64" height="26" rx="5" fill="#FDE68A" stroke="#B45309" strokeWidth="1.5" />
-                    <text x="21" y="96" fontSize="13">
-                      {rescuedAnimals.slice(-3).join("")}
-                    </text>
-                  </g>
-                )}
+                {/* Estepe Traseiro da Arca */}
+                <circle cx="60" cy="56" r="13" fill="#0F172A" stroke="#475569" strokeWidth="2.5" />
+                <circle cx="60" cy="56" r="6" fill="#F59E0B" stroke="#B45309" strokeWidth="1.5" />
+                <text x="60" y="60" fontSize="8" textAnchor="middle" fill="#78350F" fontWeight="900">✝</text>
 
-                {/* Estepe com Cruz Dourada */}
-                <circle cx="50" cy="116" r="14" fill="#0F172A" stroke="#334155" strokeWidth="2" />
-                <circle cx="50" cy="116" r="5" fill="#F59E0B" />
+                {/* Lanternas Traseiras Redondas Vermelhas */}
+                <circle cx="27" cy="60" r="5.5" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <circle cx="27" cy="60" r="2" fill="#FCA5A5" />
+                <circle cx="93" cy="60" r="5.5" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <circle cx="93" cy="60" r="2" fill="#FCA5A5" />
 
-                {/* Faróis Dianteiros Brilhantes */}
-                <circle cx="26" cy="12" r="5.5" fill="#FEF08A" stroke="#D97706" strokeWidth="1.5" />
-                <circle cx="74" cy="12" r="5.5" fill="#FEF08A" stroke="#D97706" strokeWidth="1.5" />
+                {/* Para-choque e Placa */}
+                <rect x="22" y="70" width="76" height="9" rx="3" fill="#E2E8F0" stroke="#475569" strokeWidth="1.5" />
+                <rect x="48" y="72" width="24" height="5.5" rx="1.5" fill="#FEF08A" stroke="#CA8A04" strokeWidth="1" />
+                <text x="60" y="76.5" fontSize="4.5" textAnchor="middle" fill="#78350F" fontWeight="900">NOÉ</text>
               </svg>
             </div>
           )}
 
-          {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS */}
+          {/* 2. CARRUAGEM DE FOGO DO PROFETA ELIAS (VISTA TRASEIRA 3D CHIBI) */}
           {vehicle === "chariot" && (
-            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
-              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
-                <rect x="2" y="14" width="12" height="26" rx="4" fill="#EA580C" />
-                <rect x="86" y="14" width="12" height="26" rx="4" fill="#EA580C" />
-                <rect x="2" y="94" width="12" height="28" rx="4" fill="#EA580C" />
-                <rect x="86" y="94" width="12" height="28" rx="4" fill="#EA580C" />
-                <rect x="12" y="8" width="76" height="122" rx="16" fill="#FBBF24" stroke="#B45309" strokeWidth="3.5" />
-                <rect x="18" y="48" width="64" height="26" rx="6" fill="#FEF08A" stroke="#B45309" strokeWidth="2" />
-                <text x="32" y="68" fontSize="18">👑</text>
-                <text x="56" y="68" fontSize="16">🔥</text>
-                <polygon points="18,82 8,98 18,114" fill="#EF4444" />
-                <polygon points="82,82 92,98 82,114" fill="#EF4444" />
-                <circle cx="26" cy="12" r="6" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="1.5" />
-                <circle cx="74" cy="12" r="6" fill="#FFFFFF" stroke="#F59E0B" strokeWidth="1.5" />
+            <div className="w-20 h-16 sm:w-26 sm:h-20 md:w-32 md:h-24 drop-shadow-2xl relative -mt-2">
+              <svg viewBox="0 0 120 90" className="w-full h-full select-none overflow-visible">
+                <rect x="6" y="38" width="18" height="42" rx="6" fill="#EA580C" stroke="#7C2D12" strokeWidth="2" />
+                <rect x="96" y="38" width="18" height="42" rx="6" fill="#EA580C" stroke="#7C2D12" strokeWidth="2" />
+                <rect x="18" y="24" width="84" height="56" rx="14" fill="#FBBF24" stroke="#B45309" strokeWidth="3.5" />
+                <path d="M 28 24 L 38 10 L 82 10 L 92 24 Z" fill="#F59E0B" stroke="#B45309" strokeWidth="3" />
+                <text x="60" y="16" fontSize="16" textAnchor="middle">👑</text>
+                <rect x="28" y="26" width="64" height="26" rx="8" fill="#FEF08A" stroke="#B45309" strokeWidth="2" />
+                <text x="44" y="44" fontSize="16">🔥</text>
+                <text x="64" y="44" fontSize="16">✨</text>
+                <circle cx="28" cy="62" r="6" fill="#DC2626" stroke="#7F1D1D" strokeWidth="1.5" />
+                <circle cx="92" cy="62" r="6" fill="#DC2626" stroke="#7F1D1D" strokeWidth="1.5" />
+                <rect x="22" y="70" width="76" height="9" rx="3" fill="#D97706" stroke="#78350F" strokeWidth="1.5" />
+                <text x="60" y="77" fontSize="5" textAnchor="middle" fill="#FFFFFF" fontWeight="900">ELIAS</text>
               </svg>
             </div>
           )}
 
-          {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR */}
+          {/* 3. CAMINHÃO DE BOMBEIROS SALVADOR (VISTA TRASEIRA 3D CHIBI) */}
           {vehicle === "fire" && (
-            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
-              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
-                <rect x="3" y="16" width="11" height="26" rx="4" fill="#0F172A" />
-                <rect x="86" y="16" width="11" height="26" rx="4" fill="#0F172A" />
-                <rect x="3" y="94" width="11" height="28" rx="4" fill="#0F172A" />
-                <rect x="86" y="94" width="11" height="28" rx="4" fill="#0F172A" />
-                <rect x="12" y="8" width="76" height="124" rx="14" fill="#DC2626" stroke="#7F1D1D" strokeWidth="3.5" />
-                <rect x="18" y="24" width="64" height="26" rx="6" fill="#BAE6FD" stroke="#38BDF8" strokeWidth="2" />
-                <rect x="30" y="10" width="16" height="6" rx="2" fill="#38BDF8" className="animate-ping" />
-                <rect x="54" y="10" width="16" height="6" rx="2" fill="#EF4444" className="animate-ping" />
-                <rect x="28" y="82" width="44" height="42" rx="4" fill="#E2E8F0" stroke="#64748B" strokeWidth="2" />
-                <line x1="28" y1="94" x2="72" y2="94" stroke="#64748B" strokeWidth="2" />
-                <line x1="28" y1="106" x2="72" y2="106" stroke="#64748B" strokeWidth="2" />
+            <div className="w-20 h-16 sm:w-26 sm:h-20 md:w-32 md:h-24 drop-shadow-2xl relative -mt-2">
+              <svg viewBox="0 0 120 90" className="w-full h-full select-none overflow-visible">
+                <rect x="6" y="38" width="18" height="42" rx="6" fill="#0F172A" stroke="#334155" strokeWidth="2" />
+                <rect x="96" y="38" width="18" height="42" rx="6" fill="#0F172A" stroke="#334155" strokeWidth="2" />
+                <rect x="18" y="20" width="84" height="60" rx="12" fill="#DC2626" stroke="#7F1D1D" strokeWidth="3.5" />
+                {/* Giroflex */}
+                <rect x="36" y="10" width="18" height="8" rx="2" fill="#38BDF8" className="animate-pulse" />
+                <rect x="66" y="10" width="18" height="8" rx="2" fill="#EF4444" className="animate-pulse" />
+                {/* Porta de Persiana Traseira */}
+                <rect x="28" y="24" width="64" height="42" rx="4" fill="#CBD5E1" stroke="#475569" strokeWidth="2" />
+                <line x1="28" y1="34" x2="92" y2="34" stroke="#64748B" strokeWidth="2" />
+                <line x1="28" y1="44" x2="92" y2="44" stroke="#64748B" strokeWidth="2" />
+                <line x1="28" y1="54" x2="92" y2="54" stroke="#64748B" strokeWidth="2" />
+                {/* Faróis e Placa */}
+                <circle cx="26" cy="72" r="5" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <circle cx="94" cy="72" r="5" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <rect x="22" y="73" width="76" height="8" rx="2" fill="#E2E8F0" stroke="#475569" strokeWidth="1.5" />
+                <text x="60" y="79" fontSize="5" textAnchor="middle" fill="#DC2626" fontWeight="900">RESGATE 193</text>
               </svg>
             </div>
           )}
 
-          {/* 4. DINO DA CRIAÇÃO */}
+          {/* 4. DINO DA CRIAÇÃO (VISTA TRASEIRA 3D CHIBI) */}
           {vehicle === "dino" && (
-            <div className="w-14 h-20 sm:w-18 sm:h-26 md:w-22 md:h-32 drop-shadow-xl relative -mt-2">
-              <svg viewBox="0 0 100 140" className="w-full h-full select-none">
-                <rect x="1" y="14" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
-                <rect x="85" y="14" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
-                <rect x="1" y="94" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
-                <rect x="85" y="94" width="14" height="28" rx="5" fill="#14532D" stroke="#052E16" strokeWidth="2" />
-                <path d="M 14 30 Q 50 6 86 30 L 86 122 Q 50 134 14 122 Z" fill="#15803D" stroke="#14532D" strokeWidth="3.5" />
-                <circle cx="34" cy="38" r="7" fill="#FACC15" stroke="#713F12" strokeWidth="2" />
-                <circle cx="34" cy="38" r="3" fill="#000000" />
-                <circle cx="66" cy="38" r="7" fill="#FACC15" stroke="#713F12" strokeWidth="2" />
-                <circle cx="66" cy="38" r="3" fill="#000000" />
-                <polygon points="45,62 50,50 55,62" fill="#EAB308" />
-                <polygon points="45,84 50,72 55,84" fill="#EAB308" />
-                <polygon points="45,106 50,94 55,106" fill="#EAB308" />
+            <div className="w-20 h-16 sm:w-26 sm:h-20 md:w-32 md:h-24 drop-shadow-2xl relative -mt-2">
+              <svg viewBox="0 0 120 90" className="w-full h-full select-none overflow-visible">
+                <rect x="6" y="38" width="18" height="42" rx="6" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <rect x="96" y="38" width="18" height="42" rx="6" fill="#14532D" stroke="#052E16" strokeWidth="2" />
+                <rect x="18" y="24" width="84" height="56" rx="16" fill="#16A34A" stroke="#14532D" strokeWidth="3.5" />
+                {/* Espinhos Dorsais de T-Rex */}
+                <polygon points="46,24 50,10 54,24" fill="#FACC15" stroke="#713F12" strokeWidth="1.5" />
+                <polygon points="58,24 62,8 66,24" fill="#FACC15" stroke="#713F12" strokeWidth="1.5" />
+                <polygon points="70,24 74,10 78,24" fill="#FACC15" stroke="#713F12" strokeWidth="1.5" />
+                {/* Vidro com Olhos Amigáveis */}
+                <rect x="28" y="28" width="64" height="26" rx="8" fill="#FEF08A" stroke="#14532D" strokeWidth="2" />
+                <circle cx="44" cy="40" r="6" fill="#14532D" />
+                <circle cx="42" cy="38" r="2" fill="#FFFFFF" />
+                <circle cx="76" cy="40" r="6" fill="#14532D" />
+                <circle cx="74" cy="38" r="2" fill="#FFFFFF" />
+                {/* Lanternas e Placa */}
+                <circle cx="28" cy="62" r="6" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <circle cx="92" cy="62" r="6" fill="#EF4444" stroke="#991B1B" strokeWidth="1.5" />
+                <rect x="22" y="71" width="76" height="9" rx="3" fill="#15803D" stroke="#14532D" strokeWidth="1.5" />
+                <text x="60" y="78" fontSize="5.5" textAnchor="middle" fill="#FEF08A" fontWeight="900">DINO T-REX</text>
               </svg>
             </div>
           )}

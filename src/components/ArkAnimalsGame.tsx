@@ -215,7 +215,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
         </div>
 
         {/* ESTRUTURA VISUAL GIGANTE DA ARCA DE NOÉ */}
-        <div className="relative w-full max-w-2xl md:max-w-3xl lg:max-w-4xl h-full max-h-[45vh] sm:max-h-[52vh] flex items-center justify-center">
+        <div className="relative w-full max-w-2xl md:max-w-4xl lg:max-w-5xl h-full max-h-[52vh] sm:max-h-[62vh] flex items-center justify-center">
           {/* Ilustração SVG de alta fidelidade da Arca */}
           <svg
             viewBox="0 0 500 360"
@@ -357,8 +357,8 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
       </div>
 
       {/* DOCK INFERIOR: JOGO DA MEMÓRIA COM CARTAS EM PROPORÇÃO DE BARALHO (ASPECT RATIO 4:5) */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3 landscape:py-1.5 border-t-3 sm:border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
-        <div className="max-w-md sm:max-w-xl md:max-w-2xl mx-auto w-full flex flex-col gap-1 sm:gap-2">
+      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 py-2 sm:py-3.5 landscape:py-1.5 border-t-3 sm:border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.12)] z-20 flex-shrink-0">
+        <div className="max-w-md sm:max-w-xl md:max-w-3xl mx-auto w-full flex flex-col gap-1 sm:gap-2">
           <div className="flex items-center justify-center gap-1.5">
             <span className="text-sm sm:text-base">🧠</span>
             <span className="font-black text-xs sm:text-sm text-amber-950">
@@ -367,7 +367,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
           </div>
 
           {/* Grade 4x2 com cartas verticais perfeitas (aspect-[4/5]), nunca esticadas nem achatadas */}
-          <div className="grid grid-cols-4 gap-1.5 sm:gap-3 md:gap-4 justify-items-center">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3.5 md:gap-5 justify-items-center">
             {cards.map((card) => {
               const isMatched = matchedSpecies.includes(card.speciesId);
               const isFlipped = flippedIds.includes(card.id) || isPeekingAll || isMatched;
@@ -377,7 +377,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
                   key={card.id}
                   onClick={() => handleCardClick(card)}
                   disabled={isMatched || isLocked}
-                  className={`kid-btn relative w-full max-w-[125px] aspect-[4/5] max-h-[140px] landscape:max-h-[82px] rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center transition-all duration-200 ${
+                  className={`kid-btn relative w-full max-w-[125px] sm:max-w-[150px] aspect-[4/5] max-h-[140px] sm:max-h-[175px] landscape:max-h-[85px] rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center transition-all duration-200 ${
                     isMatched
                       ? "bg-emerald-100 border-emerald-500 shadow-inner scale-95 opacity-80"
                       : isFlipped
