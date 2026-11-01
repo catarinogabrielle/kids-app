@@ -85,7 +85,7 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
   },
   {
     letter: "G",
-    word: "Golias e as Pedrinhas",
+    word: "Golias e a Pedrinha",
     subtitle: "Com Deus, o pequeno Davi venceu o gigante",
     emoji: "🪨",
     themeColor: "#D97706",
@@ -118,6 +118,15 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#EF4444",
     soundType: "heart",
     bgGradient: "from-rose-400 to-red-600",
+  },
+  {
+    letter: "K",
+    word: "Kadosh (Santo)",
+    subtitle: "Deus é Santo, puro e cheio de glória",
+    emoji: "✨",
+    themeColor: "#6366F1",
+    soundType: "star",
+    bgGradient: "from-indigo-400 to-blue-600",
   },
   {
     letter: "L",
@@ -160,9 +169,18 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     word: "Peixinho de Jonas",
     subtitle: "O grande peixe amigo no fundo do mar",
     emoji: "🐟",
-    themeColor: "#38BDF8",
+    themeColor: "#0284C7",
     soundType: "fish",
     bgGradient: "from-cyan-400 to-blue-500",
+  },
+  {
+    letter: "Q",
+    word: "Querubins da Glória",
+    subtitle: "Anjos celestiais que cantam aleluia",
+    emoji: "👼",
+    themeColor: "#9333EA",
+    soundType: "star",
+    bgGradient: "from-purple-400 to-violet-600",
   },
   {
     letter: "R",
@@ -210,8 +228,35 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     bgGradient: "from-green-500 to-emerald-600",
   },
   {
+    letter: "W",
+    word: "Worship (Louvor)",
+    subtitle: "Louvores alegres que sobem ao Pai",
+    emoji: "🙌",
+    themeColor: "#2563EB",
+    soundType: "star",
+    bgGradient: "from-blue-500 to-indigo-600",
+  },
+  {
+    letter: "X",
+    word: "Xodó de Deus",
+    subtitle: "Você é a preciosidade amada do Senhor",
+    emoji: "👶",
+    themeColor: "#E11D48",
+    soundType: "heart",
+    bgGradient: "from-rose-400 to-pink-600",
+  },
+  {
+    letter: "Y",
+    word: "Yeshua (Jesus)",
+    subtitle: "O Caminho, a Verdade e a Vida eterna",
+    emoji: "✝️",
+    themeColor: "#DC2626",
+    soundType: "heart",
+    bgGradient: "from-red-500 to-rose-700",
+  },
+  {
     letter: "Z",
-    word: "Zaqueu na Árvore",
+    word: "Zaqueu no Sicômoro",
     subtitle: "O homenzinho que subiu para ver Jesus passar",
     emoji: "🌳",
     themeColor: "#0D9488",
@@ -594,7 +639,17 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1 sm:gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* BOTÃO ANIMAR NO HEADER (FORA DO CENTRO DA LETRA, NUNCA ATRAPALHA O JOGO!) */}
+            <button
+              onClick={triggerAnimate}
+              className="kid-btn bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-black text-xs sm:text-sm px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border-2 border-amber-600 shadow-sm flex items-center gap-1 active:scale-95 animate-pulse-gentle"
+              title="Animar a Letra e Ver a História!"
+            >
+              <Sparkles size={16} className="text-amber-700 animate-spin" />
+              <span>ANIMAR! ✨</span>
+            </button>
+
             {/* Botão de Limpar Desenho */}
             <button
               onClick={handleReset}
@@ -628,7 +683,7 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
         })}
       </div>
 
-      {/* 3. PALCO CENTRAL: A LETRA TRAÇADA EM DESTAQUE COM TELA DE PINTURA E ADESIVOS */}
+      {/* 3. PALCO CENTRAL: 100% LIMPO E LIVRE PARA O DEDO DA CRIANÇA PINTAR E CARIMBAR */}
       <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
         <div
           ref={stageRef}
@@ -638,59 +693,83 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
           onPointerCancel={handlePointerUp}
           className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] landscape:max-h-[74vh] max-w-[94vw] rounded-3xl sm:rounded-4xl bg-white border-4 sm:border-8 border-amber-400 shadow-[0_16px_45px_rgba(0,0,0,0.14)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
-          {/* Fundo de papel de desenho com grade sutil */}
+          {/* Fundo de papel de desenho com textura suave */}
           <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-70 pointer-events-none" />
 
-          {/* A LETRA TRAÇADA (CONTORNO VETORIAL OCO PERFEITO PARA PINTAR DENTRO E FORA) */}
+          {/* 1. CAMADA DE FUNDO (SOB O CANVAS): LETRA VAZADA ESCOLAR PERFEITA COM GUIA PONTILHADO */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
             <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible">
-              {/* Contorno exterior espesso da letra */}
+              {/* Corpo interno branco/creme da letra em tipografia infantil perfeita */}
               <text
                 x="200"
-                y="290"
+                y="275"
                 textAnchor="middle"
-                fontSize="270"
+                fontSize="245"
                 fontWeight="900"
-                fontFamily="system-ui, -apple-system, sans-serif"
-                fill="#FAFAFA"
-                stroke={current.themeColor}
-                strokeWidth="22"
+                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
+                fill="#F8FAFC"
+                stroke="#E2E8F0"
+                strokeWidth="10"
+                style={{ paintOrder: "stroke fill" }}
                 strokeLinejoin="round"
-                className="drop-shadow-md"
+                strokeLinecap="round"
               >
                 {current.letter}
               </text>
 
-              {/* Linha guia pontilhada no centro para a criança acompanhar */}
+              {/* Linha guia pontilhada central clara para guiar o traço escolar da criança */}
               <text
                 x="200"
-                y="290"
+                y="275"
                 textAnchor="middle"
-                fontSize="270"
+                fontSize="245"
                 fontWeight="900"
-                fontFamily="system-ui, -apple-system, sans-serif"
-                fill="transparent"
+                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
+                fill="none"
                 stroke="#CBD5E1"
-                strokeWidth="7"
-                strokeDasharray="14 12"
+                strokeWidth="4"
+                strokeDasharray="10 8"
                 strokeLinejoin="round"
+                strokeLinecap="round"
               >
                 {current.letter}
               </text>
             </svg>
           </div>
 
-          {/* CANVAS INTERATIVO DE PINTURA (SOBRE A LETRA) */}
+          {/* 2. CANVAS INTERATIVO DE PINTURA (ONDE O ISRAEL PINTA COM PINCEL OU BORRACHA) */}
           <canvas
             ref={canvasRef}
             className="absolute inset-0 w-full h-full z-10 touch-none pointer-events-none"
           />
 
-          {/* ADESIVOS COLADOS PELA CRIANÇA */}
+          {/* 3. CAMADA FRONTAL DE CONTORNO (SOBRE O CANVAS): MANTÉM O TRAÇO DA LETRA SEMPRE NÍTIDO E NUNCA BORRADO */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-20">
+            <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible">
+              <text
+                x="200"
+                y="275"
+                textAnchor="middle"
+                fontSize="245"
+                fontWeight="900"
+                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
+                fill="none"
+                stroke={current.themeColor}
+                strokeWidth="10"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+                className="drop-shadow-sm"
+              >
+                {current.letter}
+              </text>
+            </svg>
+          </div>
+
+          {/* 4. ADESIVOS COLADOS PELA CRIANÇA (NO TOPO DE TUDO) */}
           {stickers.map((s) => (
             <div
               key={s.id}
-              className="absolute z-15 pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-transform animate-wiggle"
+              className="absolute z-30 pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-transform animate-wiggle"
               style={{
                 left: `${s.xPercent}%`,
                 top: `${s.yPercent}%`,
@@ -702,34 +781,13 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
               </span>
             </div>
           ))}
-
-          {/* BOTÃO MÁGICO "ANIMAR!" EM DESTAQUE NO CANTO SUPERIOR */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              triggerAnimate();
-            }}
-            className="kid-btn absolute top-2 right-2 sm:top-3 sm:right-3 z-20 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 hover:from-amber-300 hover:to-yellow-200 border-2 sm:border-3 border-amber-600 text-amber-950 font-black text-xs sm:text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-kid animate-pulse active:scale-95 flex items-center gap-1.5"
-            title="Animar a Letra e Ver a História!"
-          >
-            <Sparkles size={18} className="text-amber-700 animate-spin" />
-            <span>ANIMAR! ✨</span>
-          </button>
-
-          {/* SELO INFORMATIVO NO CANTO INFERIOR ESQUERDO */}
-          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-15 bg-white/95 border-2 border-amber-300 rounded-xl sm:rounded-2xl px-2 py-0.5 sm:px-3 sm:py-1 flex items-center gap-1.5 pointer-events-none shadow-sm">
-            <span className="text-xl sm:text-3xl">{current.emoji}</span>
-            <span className="text-[10px] sm:text-xs font-black text-amber-950">
-              {current.letter} de {current.word}
-            </span>
-          </div>
         </div>
       </div>
 
-      {/* 4. BANDEJA INFERIOR DE FERRAMENTAS: PINCEL, CORES, BORRACHA E ADESIVOS */}
+      {/* 4. BANDEJA INFERIOR DE FERRAMENTAS: PINCEL, CORES, BORRACHA, ADESIVOS E ANIMAR */}
       <div className="w-full bg-white/95 backdrop-blur-md px-2 sm:px-4 py-1.5 sm:py-2.5 landscape:py-1 border-t-2 sm:border-t-3 border-amber-400 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] z-20 flex-shrink-0">
         <div className="max-w-4xl mx-auto w-full flex flex-col gap-1.5">
-          {/* Seletor de Modo: PINTAR vs ADESIVOS */}
+          {/* Seletor de Modo: PINTAR vs ADESIVOS vs ANIMAR */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1 sm:gap-2">
               <button
@@ -762,6 +820,16 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
               >
                 <Smile size={16} />
                 <span>ADESIVOS</span>
+              </button>
+
+              {/* Botão de Animação também na bandeja */}
+              <button
+                onClick={triggerAnimate}
+                className="kid-btn px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5 transition-all bg-gradient-to-r from-amber-400 to-yellow-300 text-amber-950 border-amber-600 shadow-sm hover:scale-105 active:scale-95 animate-pulse-gentle"
+                title="Ver a história animada da letra"
+              >
+                <Sparkles size={16} className="text-amber-700" />
+                <span>ANIMAR</span>
               </button>
 
               {/* Borracha */}
