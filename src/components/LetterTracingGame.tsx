@@ -4,327 +4,349 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { GameHeader } from "@/components/TopBar";
-import { RotateCcw, ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  RotateCcw,
+  ArrowRight,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  Volume2,
+  Paintbrush,
+  Smile,
+  Eraser,
+  Check,
+  X,
+} from "lucide-react";
 
-interface Checkpoint {
-  id: number;
-  label: string;
-  x: number; // 0-400
-  y: number; // 0-400
-}
-
-interface LetterData {
+export interface AlphabetLetter {
   letter: string;
   word: string;
+  subtitle: string;
   emoji: string;
   themeColor: string;
-  borderColor: string;
-  paths: string[];
-  checkpoints: Checkpoint[];
+  bgGradient: string;
+  soundType: "ark" | "bible" | "creation" | "harp" | "star" | "lion" | "sheep" | "dove" | "crown" | "fish" | "sun" | "tree" | "heart";
 }
 
-const BIBLICAL_ALPHABET: LetterData[] = [
+export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
   {
     letter: "A",
     word: "Arca de Noé",
+    subtitle: "Noé e os bichinhos salvos do dilúvio",
     emoji: "🛳️",
-    themeColor: "#3B82F6",
-    borderColor: "border-blue-500",
-    paths: [
-      "M 100 330 L 200 70 L 300 330",
-      "M 145 230 L 255 230",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 100, y: 330 },
-      { id: 2, label: "2", x: 200, y: 70 },
-      { id: 3, label: "3", x: 300, y: 330 },
-      { id: 4, label: "4", x: 145, y: 230 },
-      { id: 5, label: "5", x: 255, y: 230 },
-    ],
+    themeColor: "#0284C7",
+    soundType: "ark",
+    bgGradient: "from-sky-400 to-blue-600",
   },
   {
     letter: "B",
     word: "Bíblia Sagrada",
+    subtitle: "A Palavra de Deus que ilumina nosso caminho",
     emoji: "📖",
     themeColor: "#9333EA",
-    borderColor: "border-purple-500",
-    paths: [
-      "M 130 70 L 130 330",
-      "M 130 70 L 200 70 A 65 65 0 0 1 200 200 L 130 200",
-      "M 130 200 L 210 200 A 65 65 0 0 1 210 330 L 130 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 330 },
-      { id: 3, label: "3", x: 200, y: 70 },
-      { id: 4, label: "4", x: 265, y: 135 },
-      { id: 5, label: "5", x: 130, y: 200 },
-      { id: 6, label: "6", x: 275, y: 265 },
-      { id: 7, label: "7", x: 130, y: 330 },
-    ],
+    soundType: "bible",
+    bgGradient: "from-purple-500 to-indigo-600",
   },
   {
     letter: "C",
     word: "Criação de Deus",
+    subtitle: "O lindo mundo que o Papai do Céu criou",
     emoji: "🌍",
     themeColor: "#10B981",
-    borderColor: "border-emerald-500",
-    paths: ["M 300 120 A 130 130 0 0 0 80 200 A 130 130 0 0 0 300 280"],
-    checkpoints: [
-      { id: 1, label: "1", x: 300, y: 120 },
-      { id: 2, label: "2", x: 200, y: 70 },
-      { id: 3, label: "3", x: 75, y: 200 },
-      { id: 4, label: "4", x: 200, y: 330 },
-      { id: 5, label: "5", x: 300, y: 280 },
-    ],
+    soundType: "creation",
+    bgGradient: "from-emerald-400 to-teal-600",
   },
   {
     letter: "D",
-    word: "Davi & Harpa",
+    word: "Davi e a Harpa",
+    subtitle: "O pequeno pastorzinho que louvava a Deus",
     emoji: "👑",
     themeColor: "#F59E0B",
-    borderColor: "border-amber-500",
-    paths: [
-      "M 125 70 L 125 330",
-      "M 125 70 L 195 70 A 130 130 0 0 1 195 330 L 125 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 125, y: 70 },
-      { id: 2, label: "2", x: 125, y: 330 },
-      { id: 3, label: "3", x: 195, y: 70 },
-      { id: 4, label: "4", x: 325, y: 200 },
-      { id: 5, label: "5", x: 195, y: 330 },
-    ],
+    soundType: "harp",
+    bgGradient: "from-amber-400 to-yellow-600",
   },
   {
     letter: "E",
     word: "Estrela de Belém",
+    subtitle: "A estrela brilhante que guiou até Jesus",
     emoji: "⭐",
     themeColor: "#EAB308",
-    borderColor: "border-yellow-500",
-    paths: [
-      "M 130 70 L 130 330",
-      "M 130 70 L 275 70",
-      "M 130 200 L 245 200",
-      "M 130 330 L 275 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 330 },
-      { id: 3, label: "3", x: 275, y: 70 },
-      { id: 4, label: "4", x: 245, y: 200 },
-      { id: 5, label: "5", x: 275, y: 330 },
-    ],
+    soundType: "star",
+    bgGradient: "from-yellow-400 to-amber-500",
   },
   {
     letter: "F",
     word: "Fé em Deus",
-    emoji: "🕊️",
-    themeColor: "#06B6D4",
-    borderColor: "border-cyan-500",
-    paths: [
-      "M 130 70 L 130 330",
-      "M 130 70 L 275 70",
-      "M 130 200 L 245 200",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 330 },
-      { id: 3, label: "3", x: 275, y: 70 },
-      { id: 4, label: "4", x: 245, y: 200 },
-    ],
+    subtitle: "A sementinha de mostarda que move montanhas",
+    emoji: "🌱",
+    themeColor: "#16A34A",
+    soundType: "tree",
+    bgGradient: "from-green-400 to-emerald-600",
   },
   {
     letter: "G",
-    word: "Golias & Pedrinha",
-    emoji: "🛡️",
-    themeColor: "#DC2626",
-    borderColor: "border-rose-500",
-    paths: [
-      "M 300 120 A 130 130 0 0 0 80 200 A 130 130 0 0 0 300 280 L 300 210 L 220 210",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 300, y: 120 },
-      { id: 2, label: "2", x: 75, y: 200 },
-      { id: 3, label: "3", x: 300, y: 280 },
-      { id: 4, label: "4", x: 300, y: 210 },
-      { id: 5, label: "5", x: 220, y: 210 },
-    ],
+    word: "Golias e as Pedrinhas",
+    subtitle: "Com Deus, o pequeno Davi venceu o gigante",
+    emoji: "🪨",
+    themeColor: "#D97706",
+    soundType: "crown",
+    bgGradient: "from-amber-500 to-orange-600",
   },
   {
     letter: "H",
-    word: "Harpa Sagrada",
+    word: "Harpa de Louvor",
+    subtitle: "Músicas alegres para o Criador",
     emoji: "🎵",
     themeColor: "#8B5CF6",
-    borderColor: "border-violet-500",
-    paths: [
-      "M 120 70 L 120 330",
-      "M 280 70 L 280 330",
-      "M 120 200 L 280 200",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 120, y: 70 },
-      { id: 2, label: "2", x: 120, y: 330 },
-      { id: 3, label: "3", x: 280, y: 70 },
-      { id: 4, label: "4", x: 280, y: 330 },
-      { id: 5, label: "5", x: 200, y: 200 },
-    ],
+    soundType: "harp",
+    bgGradient: "from-violet-400 to-purple-600",
   },
   {
     letter: "I",
     word: "Israel Campeão",
-    emoji: "👑",
+    subtitle: "O povo escolhido e muito abençoado",
+    emoji: "🦁",
     themeColor: "#F59E0B",
-    borderColor: "border-amber-500",
-    paths: [
-      "M 130 70 L 270 70",
-      "M 200 70 L 200 330",
-      "M 130 330 L 270 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 270, y: 70 },
-      { id: 3, label: "3", x: 200, y: 70 },
-      { id: 4, label: "4", x: 200, y: 200 },
-      { id: 5, label: "5", x: 200, y: 330 },
-      { id: 6, label: "6", x: 130, y: 330 },
-      { id: 7, label: "7", x: 270, y: 330 },
-    ],
+    soundType: "lion",
+    bgGradient: "from-yellow-400 to-amber-600",
   },
   {
     letter: "J",
     word: "Jesus Bom Pastor",
+    subtitle: "O Salvador que ama todas as crianças",
     emoji: "❤️",
     themeColor: "#EF4444",
-    borderColor: "border-red-500",
-    paths: [
-      "M 140 70 L 280 70",
-      "M 230 70 L 230 260 A 70 70 0 0 1 110 260",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 140, y: 70 },
-      { id: 2, label: "2", x: 280, y: 70 },
-      { id: 3, label: "3", x: 230, y: 70 },
-      { id: 4, label: "4", x: 230, y: 260 },
-      { id: 5, label: "5", x: 170, y: 330 },
-      { id: 6, label: "6", x: 110, y: 260 },
-    ],
+    soundType: "heart",
+    bgGradient: "from-rose-400 to-red-600",
   },
   {
     letter: "L",
     word: "Leão de Judá",
+    subtitle: "Forte, valente e cheio de bondade",
     emoji: "🦁",
     themeColor: "#D97706",
-    borderColor: "border-amber-600",
-    paths: ["M 130 70 L 130 330 L 280 330"],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 200 },
-      { id: 3, label: "3", x: 130, y: 330 },
-      { id: 4, label: "4", x: 280, y: 330 },
-    ],
+    soundType: "lion",
+    bgGradient: "from-amber-500 to-orange-600",
   },
   {
     letter: "M",
-    word: "Moisés & o Mar",
-    emoji: "📜",
+    word: "Moisés e o Mar",
+    subtitle: "O Mar Vermelho se abriu em dois caminhos",
+    emoji: "🌊",
     themeColor: "#0284C7",
-    borderColor: "border-sky-600",
-    paths: [
-      "M 90 330 L 90 70 L 200 240 L 310 70 L 310 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 90, y: 330 },
-      { id: 2, label: "2", x: 90, y: 70 },
-      { id: 3, label: "3", x: 200, y: 240 },
-      { id: 4, label: "4", x: 310, y: 70 },
-      { id: 5, label: "5", x: 310, y: 330 },
-    ],
+    soundType: "ark",
+    bgGradient: "from-sky-400 to-cyan-600",
   },
   {
     letter: "N",
-    word: "Noé & Arco-Íris",
-    emoji: "🌈",
+    word: "Noé e a Pombinha",
+    subtitle: "A pombinha branca com o raminho de oliveira",
+    emoji: "🕊️",
     themeColor: "#14B8A6",
-    borderColor: "border-teal-500",
-    paths: [
-      "M 110 330 L 110 70 L 290 330 L 290 70",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 110, y: 330 },
-      { id: 2, label: "2", x: 110, y: 70 },
-      { id: 3, label: "3", x: 290, y: 330 },
-      { id: 4, label: "4", x: 290, y: 70 },
-    ],
+    soundType: "dove",
+    bgGradient: "from-teal-400 to-emerald-600",
   },
   {
     letter: "O",
-    word: "Ovelhinha Perdida",
+    word: "Ovelhinha do Pastor",
+    subtitle: "Jesus cuida de cada uma com muito carinho",
     emoji: "🐑",
     themeColor: "#10B981",
-    borderColor: "border-emerald-500",
-    paths: ["M 200 70 A 130 130 0 1 0 200 330 A 130 130 0 1 0 200 70"],
-    checkpoints: [
-      { id: 1, label: "1", x: 200, y: 70 },
-      { id: 2, label: "2", x: 70, y: 200 },
-      { id: 3, label: "3", x: 200, y: 330 },
-      { id: 4, label: "4", x: 330, y: 200 },
-    ],
+    soundType: "sheep",
+    bgGradient: "from-emerald-400 to-green-600",
   },
   {
     letter: "P",
     word: "Peixinho de Jonas",
+    subtitle: "O grande peixe amigo no fundo do mar",
     emoji: "🐟",
     themeColor: "#38BDF8",
-    borderColor: "border-sky-400",
-    paths: [
-      "M 130 70 L 130 330",
-      "M 130 70 L 205 70 A 65 65 0 0 1 205 200 L 130 200",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 330 },
-      { id: 3, label: "3", x: 205, y: 70 },
-      { id: 4, label: "4", x: 270, y: 135 },
-      { id: 5, label: "5", x: 130, y: 200 },
-    ],
+    soundType: "fish",
+    bgGradient: "from-cyan-400 to-blue-500",
   },
   {
     letter: "R",
     word: "Rei dos Reis",
+    subtitle: "Jesus Reina para sempre em glória e amor",
     emoji: "👑",
     themeColor: "#A855F7",
-    borderColor: "border-purple-500",
-    paths: [
-      "M 130 70 L 130 330",
-      "M 130 70 L 205 70 A 65 65 0 0 1 205 200 L 130 200",
-      "M 195 200 L 285 330",
-    ],
-    checkpoints: [
-      { id: 1, label: "1", x: 130, y: 70 },
-      { id: 2, label: "2", x: 130, y: 330 },
-      { id: 3, label: "3", x: 205, y: 70 },
-      { id: 4, label: "4", x: 270, y: 135 },
-      { id: 5, label: "5", x: 130, y: 200 },
-      { id: 6, label: "6", x: 285, y: 330 },
-    ],
+    soundType: "crown",
+    bgGradient: "from-purple-400 to-fuchsia-600",
+  },
+  {
+    letter: "S",
+    word: "Sol da Justiça",
+    subtitle: "A luz de Deus que brilha em nossos corações",
+    emoji: "☀️",
+    themeColor: "#F59E0B",
+    soundType: "sun",
+    bgGradient: "from-amber-400 to-yellow-500",
+  },
+  {
+    letter: "T",
+    word: "Torre da Fé",
+    subtitle: "Construída sobre a rocha que nunca cai",
+    emoji: "🧱",
+    themeColor: "#059669",
+    soundType: "tree",
+    bgGradient: "from-emerald-500 to-teal-700",
+  },
+  {
+    letter: "U",
+    word: "Uvas da Promessa",
+    subtitle: "Cachos doces e gigantes da Terra Prometida",
+    emoji: "🍇",
+    themeColor: "#7C3AED",
+    soundType: "crown",
+    bgGradient: "from-purple-500 to-violet-700",
+  },
+  {
+    letter: "V",
+    word: "Videira Verdadeira",
+    subtitle: "Nós somos os raminhos que dão bons frutos",
+    emoji: "🌿",
+    themeColor: "#16A34A",
+    soundType: "tree",
+    bgGradient: "from-green-500 to-emerald-600",
+  },
+  {
+    letter: "Z",
+    word: "Zaqueu na Árvore",
+    subtitle: "O homenzinho que subiu para ver Jesus passar",
+    emoji: "🌳",
+    themeColor: "#0D9488",
+    soundType: "tree",
+    bgGradient: "from-teal-500 to-emerald-700",
   },
 ];
 
+const PALETTE_COLORS = [
+  { id: "red", hex: "#EF4444", label: "Vermelho" },
+  { id: "orange", hex: "#F97316", label: "Laranja" },
+  { id: "yellow", hex: "#FBBF24", label: "Amarelo" },
+  { id: "green", hex: "#10B981", label: "Verde" },
+  { id: "cyan", hex: "#06B6D4", label: "Ciano" },
+  { id: "blue", hex: "#3B82F6", label: "Azul" },
+  { id: "purple", hex: "#8B5CF6", label: "Roxo" },
+  { id: "pink", hex: "#EC4899", label: "Rosa" },
+  { id: "rainbow", hex: "rainbow", label: "Arco-Íris Mágico" },
+];
+
+const STICKER_LIST = [
+  "⭐",
+  "🦁",
+  "🕊️",
+  "🛳️",
+  "👑",
+  "🌈",
+  "🐑",
+  "❤️",
+  "🌸",
+  "🍎",
+  "✨",
+  "🐟",
+];
+
+interface PlacedSticker {
+  id: number;
+  emoji: string;
+  xPercent: number;
+  yPercent: number;
+  scale: number;
+  rotation: number;
+}
+
 export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [passedCheckpoints, setPassedCheckpoints] = useState<number[]>([]);
-  const [isCompleted, setIsCompleted] = useState(false);
+  const current = BIBLICAL_ALPHABET[currentIdx];
 
+  // Ferramentas ativas
+  const [activeTab, setActiveTab] = useState<"brush" | "stickers">("brush");
+  const [selectedColor, setSelectedColor] = useState<string>("#EF4444");
+  const [isEraser, setIsEraser] = useState(false);
+  const [brushSize, setBrushSize] = useState<number>(24);
+  const [selectedSticker, setSelectedSticker] = useState<string>("⭐");
+
+  // Adesivos colados na letra
+  const [stickers, setStickers] = useState<PlacedSticker[]>([]);
+
+  // Estado de desenho no canvas
+  const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
   const lastCoordRef = useRef<{ x: number; y: number } | null>(null);
-  const lastSvgCoordRef = useRef<{ x: number; y: number } | null>(null);
+  const rainbowHueRef = useRef<number>(0);
 
-  const current = BIBLICAL_ALPHABET[currentIdx];
+  // Pop-up da Animaçãozinha Mágica da Letra
+  const [showAnimationModal, setShowAnimationModal] = useState(false);
 
-  // Configura a resolução do Canvas 1:1 com dpr correto
+  // Síntese de voz em português
+  const speakLetterWord = useCallback((letter: string, word: string) => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(`${letter}! ${word}!`);
+        utterance.lang = "pt-BR";
+        utterance.rate = 0.95;
+        utterance.pitch = 1.25; // Voz suave, alegre e infantil
+        window.speechSynthesis.speak(utterance);
+      } catch {
+        // Ignora silenciosamente se o browser restringir
+      }
+    }
+  }, []);
+
+  // Toca o som temático da letra
+  const playLetterSound = useCallback(
+    (type: AlphabetLetter["soundType"]) => {
+      switch (type) {
+        case "lion":
+          sounds.playAnimalSound("lion");
+          break;
+        case "sheep":
+          sounds.playAnimalSound("sheep");
+          break;
+        case "ark":
+          sounds.playHonk();
+          break;
+        case "star":
+        case "bible":
+        case "harp":
+        case "crown":
+        case "heart":
+          sounds.playSparkle();
+          break;
+        case "fish":
+          sounds.playSplash();
+          break;
+        case "tree":
+        case "sun":
+        case "dove":
+        case "creation":
+        default:
+          sounds.playChime(660);
+          break;
+      }
+    },
+    []
+  );
+
+  // Dispara a super animaçãozinha da letra
+  const triggerAnimate = useCallback(() => {
+    sounds.playSparkle();
+    playLetterSound(current.soundType);
+    speakLetterWord(current.letter, current.word);
+
+    confetti({
+      particleCount: 110,
+      spread: 90,
+      origin: { y: 0.5 },
+    });
+
+    setShowAnimationModal(true);
+  }, [current, playLetterSound, speakLetterWord]);
+
+  // Sincroniza o tamanho do Canvas 1:1 com alta densidade de pixels
   const syncCanvasSize = useCallback(() => {
     const canvas = canvasRef.current;
     const stage = stageRef.current;
@@ -332,6 +354,15 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
 
     const rect = stage.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
+
+    // Preserva o conteúdo ao redimensionar se já havia pintura
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext("2d");
+    if (tempCtx && canvas.width > 0 && canvas.height > 0) {
+      tempCtx.drawImage(canvas, 0, 0);
+    }
 
     canvas.width = rect.width * dpr;
     canvas.height = rect.height * dpr;
@@ -341,6 +372,10 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
+
+      if (tempCanvas.width > 0 && tempCanvas.height > 0) {
+        ctx.drawImage(tempCanvas, 0, 0, rect.width, rect.height);
+      }
     }
   }, []);
 
@@ -353,13 +388,33 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
     ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
   }, []);
 
+  // Troca de letra: limpa canvas e adesivos e atualiza
+  const goToLetter = useCallback(
+    (index: number) => {
+      sounds.playStar();
+      setCurrentIdx(index);
+      setStickers([]);
+      clearCanvas();
+      setShowAnimationModal(false);
+      lastCoordRef.current = null;
+    },
+    [clearCanvas]
+  );
+
+  const nextLetter = useCallback(() => {
+    goToLetter((currentIdx + 1) % BIBLICAL_ALPHABET.length);
+  }, [currentIdx, goToLetter]);
+
+  const prevLetter = useCallback(() => {
+    goToLetter((currentIdx - 1 + BIBLICAL_ALPHABET.length) % BIBLICAL_ALPHABET.length);
+  }, [currentIdx, goToLetter]);
+
   useEffect(() => {
     syncCanvasSize();
     clearCanvas();
-    setPassedCheckpoints([]);
-    setIsCompleted(false);
+    setStickers([]);
+    setShowAnimationModal(false);
     lastCoordRef.current = null;
-    lastSvgCoordRef.current = null;
 
     const handleResize = () => {
       syncCanvasSize();
@@ -369,34 +424,8 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
     return () => window.removeEventListener("resize", handleResize);
   }, [currentIdx, syncCanvasSize, clearCanvas]);
 
-  // Checa pontos atingidos com interpolação precisa
-  const checkCheckpointsAt = (svgX: number, svgY: number) => {
-    current.checkpoints.forEach((cp) => {
-      const dist = Math.hypot(svgX - cp.x, svgY - cp.y);
-
-      // Tolerância ampla de 52px para dedinhos no mobile
-      if (dist < 52 && !passedCheckpoints.includes(cp.id)) {
-        sounds.playStar();
-        setPassedCheckpoints((prev) => {
-          if (prev.includes(cp.id)) return prev;
-          const next = [...prev, cp.id];
-          if (next.length === current.checkpoints.length && !isCompleted) {
-            setIsCompleted(true);
-            sounds.playSparkle();
-            sounds.playSuccess();
-            confetti({
-              particleCount: 130,
-              spread: 90,
-              origin: { y: 0.5 },
-            });
-          }
-          return next;
-        });
-      }
-    });
-  };
-
-  const drawTrace = (clientX: number, clientY: number) => {
+  // DESENHO NO CANVAS (PINCEL & BORRACHA)
+  const drawStroke = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     const stage = stageRef.current;
     if (!canvas || !stage) return;
@@ -407,299 +436,557 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
     const localX = clientX - rect.left;
     const localY = clientY - rect.top;
 
-    // Coordenadas projetadas 0-400
-    const svgX = (localX / rect.width) * 400;
-    const svgY = (localY / rect.height) * 400;
-
-    // Interpolação para nunca pular estrelas mesmo em movimentos rápidos
-    if (lastSvgCoordRef.current) {
-      const p1 = lastSvgCoordRef.current;
-      const distance = Math.hypot(svgX - p1.x, svgY - p1.y);
-      const steps = Math.max(1, Math.floor(distance / 8));
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        const interX = p1.x + (svgX - p1.x) * t;
-        const interY = p1.y + (svgY - p1.y) * t;
-        checkCheckpointsAt(interX, interY);
-      }
-    } else {
-      checkCheckpointsAt(svgX, svgY);
-    }
-    lastSvgCoordRef.current = { x: svgX, y: svgY };
-
     ctx.save();
 
-    // Traçado brilhante duplo (núcleo branco + brilho dourado da aliança)
-    if (lastCoordRef.current) {
-      // 1. Halo Dourado Luminoso
+    if (isEraser) {
+      ctx.globalCompositeOperation = "destination-out";
       ctx.beginPath();
-      ctx.moveTo(lastCoordRef.current.x, lastCoordRef.current.y);
-      ctx.lineTo(localX, localY);
-      ctx.lineWidth = 36;
-      ctx.strokeStyle = "rgba(251, 191, 36, 0.78)";
-      ctx.stroke();
-
-      // 2. Núcleo Branco Intenso
-      ctx.beginPath();
-      ctx.moveTo(lastCoordRef.current.x, lastCoordRef.current.y);
-      ctx.lineTo(localX, localY);
-      ctx.lineWidth = 18;
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.stroke();
+      if (lastCoordRef.current) {
+        ctx.moveTo(lastCoordRef.current.x, lastCoordRef.current.y);
+        ctx.lineTo(localX, localY);
+        ctx.lineWidth = brushSize * 1.5;
+        ctx.stroke();
+      } else {
+        ctx.arc(localX, localY, brushSize * 0.75, 0, Math.PI * 2);
+        ctx.fill();
+      }
     } else {
-      ctx.beginPath();
-      ctx.arc(localX, localY, 18, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(251, 191, 36, 0.85)";
-      ctx.fill();
+      ctx.globalCompositeOperation = "source-over";
+
+      let strokeColor = selectedColor;
+      if (selectedColor === "rainbow") {
+        rainbowHueRef.current = (rainbowHueRef.current + 8) % 360;
+        strokeColor = `hsl(${rainbowHueRef.current}, 95%, 55%)`;
+      }
 
       ctx.beginPath();
-      ctx.arc(localX, localY, 9, 0, Math.PI * 2);
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fill();
-    }
+      if (lastCoordRef.current) {
+        ctx.moveTo(lastCoordRef.current.x, lastCoordRef.current.y);
+        ctx.lineTo(localX, localY);
+        ctx.lineWidth = brushSize;
+        ctx.strokeStyle = strokeColor;
+        ctx.stroke();
+      } else {
+        ctx.arc(localX, localY, brushSize / 2, 0, Math.PI * 2);
+        ctx.fillStyle = strokeColor;
+        ctx.fill();
+      }
 
-    // Partículas de faíscas brilhantes
-    if (Math.random() > 0.45) {
-      ctx.font = "20px sans-serif";
-      ctx.fillText("✨", localX + (Math.random() * 26 - 13), localY + (Math.random() * 26 - 13));
+      // Efeito de purpurina mágica no pincel arco-íris
+      if (selectedColor === "rainbow" && Math.random() > 0.6) {
+        ctx.font = "18px sans-serif";
+        ctx.fillText("✨", localX + (Math.random() * 20 - 10), localY + (Math.random() * 20 - 10));
+      }
     }
 
     ctx.restore();
     lastCoordRef.current = { x: localX, y: localY };
   };
 
+  // COLOCAR ADESIVOS NO PALCO
+  const placeSticker = (clientX: number, clientY: number) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const rect = stage.getBoundingClientRect();
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    const xPercent = Math.max(5, Math.min(95, (x / rect.width) * 100));
+    const yPercent = Math.max(5, Math.min(95, (y / rect.height) * 100));
+
+    sounds.playPop();
+
+    const newSticker: PlacedSticker = {
+      id: Date.now() + Math.random(),
+      emoji: selectedSticker,
+      xPercent,
+      yPercent,
+      scale: 1,
+      rotation: (Math.random() - 0.5) * 24, // Leve rotação orgânica
+    };
+
+    setStickers((prev) => [...prev, newSticker]);
+
+    // Mini confete fofo no ponto colado
+    confetti({
+      particleCount: 15,
+      spread: 45,
+      origin: {
+        x: clientX / window.innerWidth,
+        y: clientY / window.innerHeight,
+      },
+    });
+  };
+
+  // EVENTOS DE PONTEIRO GLOBAIS NO PALCO
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (activeTab === "stickers") {
+      placeSticker(e.clientX, e.clientY);
+      return;
+    }
+
     setIsDrawing(true);
     lastCoordRef.current = null;
-    lastSvgCoordRef.current = null;
-    drawTrace(e.clientX, e.clientY);
-    sounds.playChime(680);
+    drawStroke(e.clientX, e.clientY);
+    if (!isEraser) {
+      sounds.playScale(Math.floor(Math.random() * 7) + 1);
+    } else {
+      sounds.playEraser();
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDrawing || isCompleted) return;
-    drawTrace(e.clientX, e.clientY);
+    if (!isDrawing || activeTab !== "brush") return;
+    drawStroke(e.clientX, e.clientY);
   };
 
   const handlePointerUp = () => {
     setIsDrawing(false);
     lastCoordRef.current = null;
-    lastSvgCoordRef.current = null;
   };
 
   const handleReset = () => {
     sounds.playBoing();
     clearCanvas();
-    setPassedCheckpoints([]);
-    setIsCompleted(false);
+    setStickers([]);
     lastCoordRef.current = null;
-    lastSvgCoordRef.current = null;
-  };
-
-  const nextLetter = () => {
-    sounds.playStar();
-    setCurrentIdx((i) => (i + 1) % BIBLICAL_ALPHABET.length);
-  };
-
-  const prevLetter = () => {
-    sounds.playPop();
-    setCurrentIdx((i) => (i - 1 + BIBLICAL_ALPHABET.length) % BIBLICAL_ALPHABET.length);
   };
 
   return (
-    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-indigo-100 via-purple-100 to-pink-100">
+    <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-amber-50 via-sky-50 to-pink-50">
+      {/* 1. HEADER DO JOGO */}
       <GameHeader
         onHome={onHome}
-        title="Traçar Letras"
+        title="Traçar & Colorir"
         icon="✍️"
         leftControls={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={prevLetter}
-              className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 rounded-lg border border-slate-300 shadow-sm"
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm flex items-center justify-center active:scale-90"
               title="Letra Anterior"
             >
-              <ChevronLeft size={16} />
+              <ChevronLeft size={18} className="stroke-[3]" />
             </button>
-            <div className="flex items-center gap-1 max-w-[200px] sm:max-w-md overflow-x-auto py-0.5 scrollbar-none">
-              {BIBLICAL_ALPHABET.map((item, idx) => (
-                <button
-                  key={item.letter}
-                  onClick={() => {
-                    sounds.playPop();
-                    setCurrentIdx(idx);
-                  }}
-                  className={`kid-btn px-1.5 py-0.5 rounded-lg border font-black transition-all flex-shrink-0 ${
-                    currentIdx === idx
-                      ? "bg-kids-yellow border-amber-500 scale-105 shadow-sm ring-1 ring-yellow-400"
-                      : "bg-slate-50 border-slate-200"
-                  }`}
-                >
-                  <span className="text-sm sm:text-base font-black" style={{ color: item.themeColor }}>
-                    {item.letter}
-                  </span>
-                </button>
-              ))}
+
+            {/* Letra Atual em Destaque */}
+            <div className="bg-white/95 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-xl border-2 border-amber-400 shadow-sm flex items-center gap-1 sm:gap-2">
+              <span
+                className="text-lg sm:text-2xl font-black"
+                style={{ color: current.themeColor }}
+              >
+                {current.letter}
+              </span>
+              <span className="text-base sm:text-xl">{current.emoji}</span>
+              <span className="hidden sm:inline text-xs sm:text-sm font-extrabold text-slate-800 whitespace-nowrap">
+                {current.word}
+              </span>
             </div>
+
             <button
               onClick={nextLetter}
-              className="kid-btn bg-slate-100 hover:bg-slate-200 text-slate-700 p-1 rounded-lg border border-slate-300 shadow-sm"
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm flex items-center justify-center active:scale-90"
               title="Próxima Letra"
             >
-              <ChevronRight size={16} />
+              <ChevronRight size={18} className="stroke-[3]" />
             </button>
           </div>
         }
         rightControls={
-          <button
-            onClick={handleReset}
-            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
-            title="Recomeçar Desenho"
-          >
-            <RotateCcw size={16} />
-          </button>
+          <div className="flex items-center gap-1 sm:gap-1.5">
+            {/* Botão de Limpar Desenho */}
+            <button
+              onClick={handleReset}
+              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              title="Limpar e Recomeçar"
+            >
+              <RotateCcw size={16} />
+            </button>
+          </div>
         }
       />
 
-      {/* ÁREA CENTRAL: PALCO QUADRADO PROPORCIONAL COM PRECISÃO 1:1 */}
-      <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
+      {/* 2. CARROSSEL HORIZONTAL RÁPIDO DO ALFABETO (SELEÇÃO DIRETA DE A a Z) */}
+      <div className="w-full bg-white/90 backdrop-blur-sm border-b border-slate-200/80 px-2 sm:px-4 py-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none z-10 flex-shrink-0">
+        {BIBLICAL_ALPHABET.map((item, idx) => {
+          const isSelected = currentIdx === idx;
+          return (
+            <button
+              key={item.letter}
+              onClick={() => goToLetter(idx)}
+              className={`kid-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1 transition-all flex-shrink-0 ${
+                isSelected
+                  ? "bg-kids-yellow border-2 border-amber-600 scale-105 shadow-sm text-amber-950 ring-2 ring-yellow-400"
+                  : "bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-700"
+              }`}
+            >
+              <span style={{ color: item.themeColor }}>{item.letter}</span>
+              <span className="text-xs sm:text-sm">{item.emoji}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 3. PALCO CENTRAL: A LETRA TRAÇADA EM DESTAQUE COM TELA DE PINTURA E ADESIVOS */}
+      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
         <div
           ref={stageRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] landscape:max-h-[76vh] max-w-[92vw] rounded-2xl sm:rounded-4xl bg-white border-4 sm:border-8 border-kids-purple shadow-[0_16px_45px_rgba(0,0,0,0.2)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
+          className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] landscape:max-h-[74vh] max-w-[94vw] rounded-3xl sm:rounded-4xl bg-white border-4 sm:border-8 border-amber-400 shadow-[0_16px_45px_rgba(0,0,0,0.14)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
-          {/* Letra em Traçado Vetorial SVG Perfeito */}
-          <div className="absolute inset-0 pointer-events-none">
-            <svg viewBox="0 0 400 400" className="w-full h-full">
-              {/* Pista guia de fundo larga */}
-              {current.paths.map((d, i) => (
-                <path
-                  key={`bg-${i}`}
-                  d={d}
-                  fill="none"
-                  stroke="#E2E8F0"
-                  strokeWidth="56"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              ))}
+          {/* Fundo de papel de desenho com grade sutil */}
+          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-70 pointer-events-none" />
 
-              {/* Linha pontilhada no centro da pista */}
-              {current.paths.map((d, i) => (
-                <path
-                  key={`dash-${i}`}
-                  d={d}
-                  fill="none"
-                  stroke={current.themeColor}
-                  strokeWidth="8"
-                  strokeDasharray="14 12"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              ))}
+          {/* A LETRA TRAÇADA (CONTORNO VETORIAL OCO PERFEITO PARA PINTAR DENTRO E FORA) */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+            <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible">
+              {/* Contorno exterior espesso da letra */}
+              <text
+                x="200"
+                y="290"
+                textAnchor="middle"
+                fontSize="270"
+                fontWeight="900"
+                fontFamily="system-ui, -apple-system, sans-serif"
+                fill="#FAFAFA"
+                stroke={current.themeColor}
+                strokeWidth="22"
+                strokeLinejoin="round"
+                className="drop-shadow-md"
+              >
+                {current.letter}
+              </text>
 
-              {/* Checkpoints numerados */}
-              {current.checkpoints.map((cp) => {
-                const isPassed = passedCheckpoints.includes(cp.id);
-                const isNext = !isPassed && cp.id === passedCheckpoints.length + 1;
-
-                return (
-                  <g key={cp.id} className="transition-all duration-300">
-                    {/* Halo suave sobre o próximo ponto */}
-                    {isNext && (
-                      <circle
-                        cx={cp.x}
-                        cy={cp.y}
-                        r="32"
-                        fill="#FDE047"
-                        opacity="0.55"
-                        className="animate-pulse"
-                      />
-                    )}
-
-                    {/* Círculo do Checkpoint */}
-                    <circle
-                      cx={cp.x}
-                      cy={cp.y}
-                      r={isPassed ? "22" : "20"}
-                      fill={isPassed ? "#FBBF24" : "#FFFFFF"}
-                      stroke={isPassed ? "#D97706" : isNext ? "#9333EA" : "#CBD5E1"}
-                      strokeWidth={isPassed || isNext ? "4" : "3"}
-                    />
-
-                    {/* Número ou Estrela */}
-                    <text
-                      x={cp.x}
-                      y={cp.y + (isPassed ? 7 : 6.5)}
-                      textAnchor="middle"
-                      fontSize={isPassed ? "20" : "18"}
-                      fontWeight="900"
-                      fill={isPassed ? "#78350F" : isNext ? "#6B21A8" : "#94A3B8"}
-                      className="select-none"
-                    >
-                      {isPassed ? "⭐" : cp.label}
-                    </text>
-                  </g>
-                );
-              })}
+              {/* Linha guia pontilhada no centro para a criança acompanhar */}
+              <text
+                x="200"
+                y="290"
+                textAnchor="middle"
+                fontSize="270"
+                fontWeight="900"
+                fontFamily="system-ui, -apple-system, sans-serif"
+                fill="transparent"
+                stroke="#CBD5E1"
+                strokeWidth="7"
+                strokeDasharray="14 12"
+                strokeLinejoin="round"
+              >
+                {current.letter}
+              </text>
             </svg>
           </div>
 
-          {/* Mascote Bíblico no Canto */}
-          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-amber-50/95 border-2 border-amber-300 rounded-xl sm:rounded-2xl px-2 py-0.5 sm:px-3 sm:py-1.5 flex items-center gap-1 sm:gap-2 pointer-events-none shadow-sm">
-            <span className="text-2xl sm:text-5xl landscape:text-2xl">{current.emoji}</span>
-            <span className="text-[10px] sm:text-base landscape:text-xs font-black text-amber-950">
-              {current.word}
-            </span>
-          </div>
-
-          {/* Canvas onde o Israel desenha com precisão 1:1 */}
+          {/* CANVAS INTERATIVO DE PINTURA (SOBRE A LETRA) */}
           <canvas
             ref={canvasRef}
             className="absolute inset-0 w-full h-full z-10 touch-none pointer-events-none"
           />
 
-          {/* Tela de Vitória ao Terminar a Letra */}
-          {isCompleted && (
-            <div className="absolute inset-0 bg-white/95 backdrop-blur-md z-30 flex flex-col items-center justify-center p-4 text-center">
-              <span className="text-6xl sm:text-9xl mb-2 animate-bounce">{current.emoji}</span>
-              <div className="text-2xl sm:text-6xl font-black text-kids-purple mb-1">
-                LETRA {current.letter}!
-              </div>
-              <div className="text-lg sm:text-3xl font-extrabold text-amber-600 mb-4 sm:mb-6">
-                {current.letter} de {current.word}! ⭐
-              </div>
+          {/* ADESIVOS COLADOS PELA CRIANÇA */}
+          {stickers.map((s) => (
+            <div
+              key={s.id}
+              className="absolute z-15 pointer-events-none -translate-x-1/2 -translate-y-1/2 transition-transform animate-wiggle"
+              style={{
+                left: `${s.xPercent}%`,
+                top: `${s.yPercent}%`,
+                transform: `translate(-50%, -50%) rotate(${s.rotation}deg) scale(${s.scale})`,
+              }}
+            >
+              <span className="text-4xl sm:text-6xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.25)] select-none">
+                {s.emoji}
+              </span>
+            </div>
+          ))}
+
+          {/* BOTÃO MÁGICO "ANIMAR!" EM DESTAQUE NO CANTO SUPERIOR */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              triggerAnimate();
+            }}
+            className="kid-btn absolute top-2 right-2 sm:top-3 sm:right-3 z-20 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 hover:from-amber-300 hover:to-yellow-200 border-2 sm:border-3 border-amber-600 text-amber-950 font-black text-xs sm:text-base px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl shadow-kid animate-pulse active:scale-95 flex items-center gap-1.5"
+            title="Animar a Letra e Ver a História!"
+          >
+            <Sparkles size={18} className="text-amber-700 animate-spin" />
+            <span>ANIMAR! ✨</span>
+          </button>
+
+          {/* SELO INFORMATIVO NO CANTO INFERIOR ESQUERDO */}
+          <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-15 bg-white/95 border-2 border-amber-300 rounded-xl sm:rounded-2xl px-2 py-0.5 sm:px-3 sm:py-1 flex items-center gap-1.5 pointer-events-none shadow-sm">
+            <span className="text-xl sm:text-3xl">{current.emoji}</span>
+            <span className="text-[10px] sm:text-xs font-black text-amber-950">
+              {current.letter} de {current.word}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. BANDEJA INFERIOR DE FERRAMENTAS: PINCEL, CORES, BORRACHA E ADESIVOS */}
+      <div className="w-full bg-white/95 backdrop-blur-md px-2 sm:px-4 py-1.5 sm:py-2.5 landscape:py-1 border-t-2 sm:border-t-3 border-amber-400 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] z-20 flex-shrink-0">
+        <div className="max-w-4xl mx-auto w-full flex flex-col gap-1.5">
+          {/* Seletor de Modo: PINTAR vs ADESIVOS */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               <button
-                onClick={nextLetter}
-                className="kid-btn bg-kids-green hover:bg-emerald-500 text-white font-black text-lg sm:text-3xl px-6 sm:px-12 py-2.5 sm:py-5 rounded-2xl sm:rounded-4xl border-3 sm:border-6 border-emerald-700 shadow-kid-lg flex items-center gap-3 active:scale-95"
+                onClick={() => {
+                  sounds.playPop();
+                  setActiveTab("brush");
+                  setIsEraser(false);
+                }}
+                className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5 transition-all ${
+                  activeTab === "brush" && !isEraser
+                    ? "bg-kids-yellow border-amber-600 text-amber-950 shadow-sm scale-105"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:bg-slate-100"
+                }`}
               >
-                <span>PRÓXIMA LETRA!</span>
-                <ArrowRight size={24} className="sm:w-7 sm:h-7 stroke-[3]" />
+                <Paintbrush size={16} />
+                <span>PINTAR</span>
               </button>
+
+              <button
+                onClick={() => {
+                  sounds.playPop();
+                  setActiveTab("stickers");
+                  setIsEraser(false);
+                }}
+                className={`kid-btn px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5 transition-all ${
+                  activeTab === "stickers"
+                    ? "bg-kids-purple text-white border-purple-800 shadow-sm scale-105"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                <Smile size={16} />
+                <span>ADESIVOS</span>
+              </button>
+
+              {/* Borracha */}
+              <button
+                onClick={() => {
+                  sounds.playEraser();
+                  setIsEraser(true);
+                  setActiveTab("brush");
+                }}
+                className={`kid-btn px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 transition-all ${
+                  isEraser
+                    ? "bg-rose-500 text-white border-rose-700 shadow-sm scale-105"
+                    : "bg-slate-50 border-slate-300 text-slate-700 hover:bg-slate-100"
+                }`}
+                title="Borracha para apagar traços"
+              >
+                <Eraser size={16} />
+                <span className="hidden sm:inline">BORRACHA</span>
+              </button>
+            </div>
+
+            {/* Atalho Próxima Letra */}
+            <button
+              onClick={nextLetter}
+              className="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-sm px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border-2 border-emerald-700 shadow-sm flex items-center gap-1 active:scale-95"
+            >
+              <span>PRÓXIMA</span>
+              <ArrowRight size={14} className="stroke-[3]" />
+            </button>
+          </div>
+
+          {/* SELEÇÃO DO MODO PINCEL: CORES & TAMANHO */}
+          {activeTab === "brush" && !isEraser && (
+            <div className="flex items-center justify-between gap-2 overflow-x-auto scrollbar-none py-0.5">
+              {/* Paleta de Cores */}
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                {PALETTE_COLORS.map((c) => {
+                  const isSelected = selectedColor === c.hex;
+                  const isRainbow = c.hex === "rainbow";
+
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => {
+                        sounds.playPop();
+                        setSelectedColor(c.hex);
+                        setIsEraser(false);
+                      }}
+                      className={`kid-btn w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 transition-all flex items-center justify-center flex-shrink-0 ${
+                        isSelected
+                          ? "scale-120 border-slate-900 shadow-md ring-2 ring-yellow-400"
+                          : "border-white hover:scale-110 shadow-sm"
+                      } ${
+                        isRainbow
+                          ? "bg-gradient-to-r from-red-500 via-yellow-400 via-green-400 via-blue-500 to-purple-500 animate-spin"
+                          : ""
+                      }`}
+                      style={{
+                        backgroundColor: isRainbow ? undefined : c.hex,
+                      }}
+                      title={c.label}
+                    >
+                      {isSelected && (
+                        <Check
+                          size={14}
+                          className={c.id === "yellow" ? "text-slate-900 stroke-[3]" : "text-white stroke-[3]"}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Espessura do Traço (Fino, Médio, Grosso) */}
+              <div className="flex items-center gap-1 border-l-2 border-slate-200 pl-2">
+                {[
+                  { size: 12, label: "P", dotSize: "w-2 h-2" },
+                  { size: 24, label: "M", dotSize: "w-3.5 h-3.5" },
+                  { size: 40, label: "G", dotSize: "w-5 h-5" },
+                ].map((s) => (
+                  <button
+                    key={s.label}
+                    onClick={() => {
+                      sounds.playPop();
+                      setBrushSize(s.size);
+                    }}
+                    className={`kid-btn w-7 h-7 sm:w-8 sm:h-8 rounded-xl border flex items-center justify-center ${
+                      brushSize === s.size
+                        ? "bg-amber-200 border-amber-500 scale-105"
+                        : "bg-slate-100 border-slate-300"
+                    }`}
+                    title={`Pincel ${s.label}`}
+                  >
+                    <div className={`rounded-full bg-slate-800 ${s.dotSize}`} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SELEÇÃO DO MODO ADESIVOS: BANDEJA COM OS EMOJIS */}
+          {activeTab === "stickers" && (
+            <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto scrollbar-none py-0.5">
+              <span className="text-[10px] sm:text-xs font-black text-purple-950 whitespace-nowrap hidden sm:inline">
+                Toque no adesivo e carimbe na tela:
+              </span>
+              {STICKER_LIST.map((em) => {
+                const isSelected = selectedSticker === em;
+                return (
+                  <button
+                    key={em}
+                    onClick={() => {
+                      sounds.playPop();
+                      setSelectedSticker(em);
+                    }}
+                    className={`kid-btn text-2xl sm:text-3xl p-1 rounded-xl border-2 transition-all flex-shrink-0 ${
+                      isSelected
+                        ? "bg-purple-100 border-purple-600 scale-120 shadow-md ring-2 ring-purple-400"
+                        : "bg-slate-50 border-slate-200 hover:bg-purple-50"
+                    }`}
+                  >
+                    {em}
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
       </div>
 
-      {/* BARRA INFERIOR COM PROGRESSO DAS ESTRELAS (COM SAFE AREA BOTTOM) */}
-      <div className="w-full bg-white/95 backdrop-blur-md px-3 sm:px-6 pt-1.5 sm:pt-2 pb-[max(6px,env(safe-area-inset-bottom))] landscape:py-1 border-t-4 border-kids-yellow shadow-[0_-8px_25px_rgba(0,0,0,0.1)] flex items-center justify-between gap-2 z-20 flex-shrink-0 landscape-dock-compact">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Sparkles className="text-amber-500" size={16} />
-          <span className="text-[11px] sm:text-base font-black text-slate-800">
-            Siga os números para desenhar {current.letter} ({current.word})!
-          </span>
-        </div>
+      {/* 5. POP-UP DA ANIMAÇÃOZINHA MÁGICA DA LETRA ("MOSTRAR LETRA DE QUE ELA É") */}
+      {showAnimationModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 animate-fade-in select-none">
+          <div className="relative w-full max-w-lg bg-gradient-to-b from-white via-amber-50 to-yellow-100 rounded-3xl sm:rounded-4xl border-4 sm:border-8 border-amber-400 shadow-2xl p-4 sm:p-6 flex flex-col items-center text-center overflow-hidden animate-bounce-gentle">
+            {/* Botão Fechar no Canto */}
+            <button
+              onClick={() => setShowAnimationModal(false)}
+              className="absolute top-3 right-3 bg-white/90 text-slate-700 hover:bg-slate-100 p-1.5 rounded-full border border-slate-300 shadow-sm"
+              title="Fechar"
+            >
+              <X size={20} />
+            </button>
 
-        <div className="bg-amber-100 border-2 border-amber-400 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-xl flex items-center gap-1 font-black text-amber-950 text-xs sm:text-base">
-          <span>⭐</span>
-          <span>
-            {passedCheckpoints.length} / {current.checkpoints.length}
-          </span>
+            {/* Letra Gigante Dançante */}
+            <div className="relative flex items-center justify-center my-2">
+              <span
+                className="text-7xl sm:text-9xl font-black drop-shadow-xl animate-wiggle inline-block"
+                style={{ color: current.themeColor }}
+              >
+                {current.letter}
+              </span>
+              <span className="absolute -top-2 -right-4 text-3xl sm:text-5xl animate-bounce">
+                ✨
+              </span>
+            </div>
+
+            {/* Título da Animação: "A de Arca de Noé!" */}
+            <div className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight mb-1">
+              <span style={{ color: current.themeColor }}>{current.letter}</span> de{" "}
+              <span className="text-amber-600">{current.word}</span>!
+            </div>
+
+            {/* Subtítulo Bíblico Educativo */}
+            <p className="text-xs sm:text-base font-bold text-slate-600 max-w-xs sm:max-w-md mb-4">
+              {current.subtitle}
+            </p>
+
+            {/* CENÁRIO ANIMADO ESPECIAL DA LETRA */}
+            <div className="w-full h-32 sm:h-44 bg-gradient-to-b from-sky-200 via-sky-100 to-amber-100 rounded-2xl border-2 sm:border-4 border-amber-300 shadow-inner relative flex items-center justify-center overflow-hidden mb-4">
+              {/* Nuvens e Sol */}
+              <div className="absolute top-2 left-4 text-2xl opacity-60">☁️</div>
+              <div className="absolute top-3 right-6 text-2xl opacity-60">☁️</div>
+              <div className="absolute top-1 left-1/2 -translate-x-1/2 text-2xl animate-spin" style={{ animationDuration: "12s" }}>
+                ☀️
+              </div>
+
+              {/* Elementos Animados Específicos por Letra */}
+              <div className="flex flex-col items-center justify-center z-10">
+                <span className="text-6xl sm:text-8xl animate-bounce drop-shadow-lg">
+                  {current.emoji}
+                </span>
+                <span className="mt-1 px-3 py-0.5 rounded-full bg-white/90 border border-amber-400 text-xs sm:text-sm font-black text-amber-950 shadow-sm animate-pulse">
+                  {current.word} ⭐
+                </span>
+              </div>
+
+              {/* Ondas / Chão */}
+              <div className="absolute -bottom-2 inset-x-0 h-6 bg-gradient-to-t from-emerald-500/30 to-transparent pointer-events-none" />
+            </div>
+
+            {/* BOTÕES DE AÇÃO: OUVIR DE NOVO E PRÓXIMA LETRA */}
+            <div className="w-full flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+              <button
+                onClick={() => {
+                  sounds.playSparkle();
+                  playLetterSound(current.soundType);
+                  speakLetterWord(current.letter, current.word);
+                  confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+                }}
+                className="kid-btn bg-yellow-400 hover:bg-yellow-500 text-amber-950 font-black text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border-2 border-amber-600 shadow-sm flex items-center gap-1.5 active:scale-95"
+              >
+                <Volume2 size={18} />
+                <span>OUVIR DE NOVO</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setShowAnimationModal(false);
+                }}
+                className="kid-btn bg-white hover:bg-slate-100 text-slate-700 font-black text-xs sm:text-base px-3 py-2 sm:px-5 sm:py-2.5 rounded-2xl border-2 border-slate-300 shadow-sm active:scale-95"
+              >
+                <span>CONTINUAR PINTANDO 🎨</span>
+              </button>
+
+              <button
+                onClick={nextLetter}
+                className="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs sm:text-base px-4 py-2 sm:px-6 sm:py-2.5 rounded-2xl border-2 border-emerald-700 shadow-kid flex items-center gap-1.5 active:scale-95"
+              >
+                <span>PRÓXIMA LETRA</span>
+                <ArrowRight size={18} className="stroke-[3]" />
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
