@@ -26,6 +26,8 @@ export interface AlphabetLetter {
   themeColor: string;
   bgGradient: string;
   soundType: "ark" | "bible" | "creation" | "harp" | "star" | "lion" | "sheep" | "dove" | "crown" | "fish" | "sun" | "tree" | "heart";
+  paths: string[];
+  startPoints: { x: number; y: number }[];
 }
 
 export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
@@ -37,6 +39,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#0284C7",
     soundType: "ark",
     bgGradient: "from-sky-400 to-blue-600",
+    paths: [
+      "M 100 330 L 200 70 L 300 330",
+      "M 145 230 L 255 230",
+    ],
+    startPoints: [
+      { x: 100, y: 330 },
+      { x: 145, y: 230 },
+    ],
   },
   {
     letter: "B",
@@ -46,6 +56,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#9333EA",
     soundType: "bible",
     bgGradient: "from-purple-500 to-indigo-600",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 130 70 L 200 70 A 65 65 0 0 1 200 200 L 130 200",
+      "M 130 200 L 210 200 A 65 65 0 0 1 210 330 L 130 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 170, y: 70 },
+      { x: 170, y: 200 },
+    ],
   },
   {
     letter: "C",
@@ -55,6 +75,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#10B981",
     soundType: "creation",
     bgGradient: "from-emerald-400 to-teal-600",
+    paths: [
+      "M 300 120 A 130 130 0 0 0 80 200 A 130 130 0 0 0 300 280",
+    ],
+    startPoints: [
+      { x: 300, y: 120 },
+    ],
   },
   {
     letter: "D",
@@ -64,6 +90,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#F59E0B",
     soundType: "harp",
     bgGradient: "from-amber-400 to-yellow-600",
+    paths: [
+      "M 125 70 L 125 330",
+      "M 125 70 L 195 70 A 130 130 0 0 1 195 330 L 125 330",
+    ],
+    startPoints: [
+      { x: 125, y: 70 },
+      { x: 170, y: 70 },
+    ],
   },
   {
     letter: "E",
@@ -73,6 +107,18 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#EAB308",
     soundType: "star",
     bgGradient: "from-yellow-400 to-amber-500",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 130 70 L 275 70",
+      "M 130 200 L 245 200",
+      "M 130 330 L 275 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 180, y: 70 },
+      { x: 180, y: 200 },
+      { x: 180, y: 330 },
+    ],
   },
   {
     letter: "F",
@@ -82,6 +128,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#16A34A",
     soundType: "tree",
     bgGradient: "from-green-400 to-emerald-600",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 130 70 L 275 70",
+      "M 130 200 L 245 200",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 180, y: 70 },
+      { x: 180, y: 200 },
+    ],
   },
   {
     letter: "G",
@@ -91,6 +147,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#D97706",
     soundType: "crown",
     bgGradient: "from-amber-500 to-orange-600",
+    paths: [
+      "M 300 120 A 130 130 0 0 0 80 200 A 130 130 0 0 0 300 280 L 300 210 L 220 210",
+    ],
+    startPoints: [
+      { x: 300, y: 120 },
+    ],
   },
   {
     letter: "H",
@@ -100,6 +162,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#8B5CF6",
     soundType: "harp",
     bgGradient: "from-violet-400 to-purple-600",
+    paths: [
+      "M 120 70 L 120 330",
+      "M 280 70 L 280 330",
+      "M 120 200 L 280 200",
+    ],
+    startPoints: [
+      { x: 120, y: 70 },
+      { x: 280, y: 70 },
+      { x: 160, y: 200 },
+    ],
   },
   {
     letter: "I",
@@ -109,6 +181,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#F59E0B",
     soundType: "lion",
     bgGradient: "from-yellow-400 to-amber-600",
+    paths: [
+      "M 130 70 L 270 70",
+      "M 200 70 L 200 330",
+      "M 130 330 L 270 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 200, y: 110 },
+      { x: 130, y: 330 },
+    ],
   },
   {
     letter: "J",
@@ -118,6 +200,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#EF4444",
     soundType: "heart",
     bgGradient: "from-rose-400 to-red-600",
+    paths: [
+      "M 140 70 L 280 70",
+      "M 230 70 L 230 260 A 70 70 0 0 1 110 260",
+    ],
+    startPoints: [
+      { x: 140, y: 70 },
+      { x: 230, y: 110 },
+    ],
   },
   {
     letter: "K",
@@ -127,6 +217,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#6366F1",
     soundType: "star",
     bgGradient: "from-indigo-400 to-blue-600",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 270 70 L 130 205",
+      "M 155 180 L 275 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 270, y: 70 },
+      { x: 180, y: 210 },
+    ],
   },
   {
     letter: "L",
@@ -136,6 +236,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#D97706",
     soundType: "lion",
     bgGradient: "from-amber-500 to-orange-600",
+    paths: [
+      "M 130 70 L 130 330 L 280 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+    ],
   },
   {
     letter: "M",
@@ -145,6 +251,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#0284C7",
     soundType: "ark",
     bgGradient: "from-sky-400 to-cyan-600",
+    paths: [
+      "M 90 330 L 90 70 L 200 240 L 310 70 L 310 330",
+    ],
+    startPoints: [
+      { x: 90, y: 330 },
+    ],
   },
   {
     letter: "N",
@@ -154,6 +266,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#14B8A6",
     soundType: "dove",
     bgGradient: "from-teal-400 to-emerald-600",
+    paths: [
+      "M 110 330 L 110 70 L 290 330 L 290 70",
+    ],
+    startPoints: [
+      { x: 110, y: 330 },
+    ],
   },
   {
     letter: "O",
@@ -163,6 +281,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#10B981",
     soundType: "sheep",
     bgGradient: "from-emerald-400 to-green-600",
+    paths: [
+      "M 200 70 A 130 130 0 1 0 200 330 A 130 130 0 1 0 200 70",
+    ],
+    startPoints: [
+      { x: 200, y: 70 },
+    ],
   },
   {
     letter: "P",
@@ -172,6 +296,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#0284C7",
     soundType: "fish",
     bgGradient: "from-cyan-400 to-blue-500",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 130 70 L 205 70 A 65 65 0 0 1 205 200 L 130 200",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 170, y: 70 },
+    ],
   },
   {
     letter: "Q",
@@ -181,6 +313,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#9333EA",
     soundType: "star",
     bgGradient: "from-purple-400 to-violet-600",
+    paths: [
+      "M 200 70 A 130 130 0 1 0 200 330 A 130 130 0 1 0 200 70",
+      "M 240 270 L 320 340",
+    ],
+    startPoints: [
+      { x: 200, y: 70 },
+      { x: 240, y: 270 },
+    ],
   },
   {
     letter: "R",
@@ -190,6 +330,16 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#A855F7",
     soundType: "crown",
     bgGradient: "from-purple-400 to-fuchsia-600",
+    paths: [
+      "M 130 70 L 130 330",
+      "M 130 70 L 205 70 A 65 65 0 0 1 205 200 L 130 200",
+      "M 195 200 L 285 330",
+    ],
+    startPoints: [
+      { x: 130, y: 70 },
+      { x: 170, y: 70 },
+      { x: 205, y: 210 },
+    ],
   },
   {
     letter: "S",
@@ -199,6 +349,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#F59E0B",
     soundType: "sun",
     bgGradient: "from-amber-400 to-yellow-500",
+    paths: [
+      "M 280 120 A 55 55 0 0 0 150 145 C 150 200 265 190 265 255 A 55 55 0 0 1 120 280",
+    ],
+    startPoints: [
+      { x: 280, y: 120 },
+    ],
   },
   {
     letter: "T",
@@ -208,6 +364,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#059669",
     soundType: "tree",
     bgGradient: "from-emerald-500 to-teal-700",
+    paths: [
+      "M 90 70 L 310 70",
+      "M 200 70 L 200 330",
+    ],
+    startPoints: [
+      { x: 90, y: 70 },
+      { x: 200, y: 110 },
+    ],
   },
   {
     letter: "U",
@@ -217,6 +381,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#7C3AED",
     soundType: "crown",
     bgGradient: "from-purple-500 to-violet-700",
+    paths: [
+      "M 120 70 L 120 240 A 80 80 0 0 0 280 240 L 280 70",
+    ],
+    startPoints: [
+      { x: 120, y: 70 },
+    ],
   },
   {
     letter: "V",
@@ -226,6 +396,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#16A34A",
     soundType: "tree",
     bgGradient: "from-green-500 to-emerald-600",
+    paths: [
+      "M 100 70 L 200 330 L 300 70",
+    ],
+    startPoints: [
+      { x: 100, y: 70 },
+    ],
   },
   {
     letter: "W",
@@ -235,6 +411,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#2563EB",
     soundType: "star",
     bgGradient: "from-blue-500 to-indigo-600",
+    paths: [
+      "M 80 70 L 125 330 L 200 160 L 275 330 L 320 70",
+    ],
+    startPoints: [
+      { x: 80, y: 70 },
+    ],
   },
   {
     letter: "X",
@@ -244,6 +426,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#E11D48",
     soundType: "heart",
     bgGradient: "from-rose-400 to-pink-600",
+    paths: [
+      "M 110 70 L 290 330",
+      "M 290 70 L 110 330",
+    ],
+    startPoints: [
+      { x: 110, y: 70 },
+      { x: 290, y: 70 },
+    ],
   },
   {
     letter: "Y",
@@ -253,6 +443,14 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#DC2626",
     soundType: "heart",
     bgGradient: "from-red-500 to-rose-700",
+    paths: [
+      "M 100 70 L 200 200 L 300 70",
+      "M 200 200 L 200 330",
+    ],
+    startPoints: [
+      { x: 100, y: 70 },
+      { x: 200, y: 215 },
+    ],
   },
   {
     letter: "Z",
@@ -262,6 +460,12 @@ export const BIBLICAL_ALPHABET: AlphabetLetter[] = [
     themeColor: "#0D9488",
     soundType: "tree",
     bgGradient: "from-teal-500 to-emerald-700",
+    paths: [
+      "M 110 70 L 290 70 L 110 330 L 290 330",
+    ],
+    startPoints: [
+      { x: 110, y: 70 },
+    ],
   },
 ];
 
@@ -696,72 +900,150 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
           {/* Fundo de papel de desenho com textura suave */}
           <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-70 pointer-events-none" />
 
-          {/* 1. CAMADA DE FUNDO (SOB O CANVAS): LETRA VAZADA ESCOLAR PERFEITA COM GUIA PONTILHADO */}
+          {/* 1. CAMADA DE FUNDO (SOB O CANVAS): PISTA DA LETRA E TRAÇO EM PONTILHADO */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
             <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible">
-              {/* Corpo interno branco/creme da letra em tipografia infantil perfeita */}
-              <text
-                x="200"
-                y="275"
-                textAnchor="middle"
-                fontSize="245"
-                fontWeight="900"
-                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
-                fill="#F8FAFC"
-                stroke="#E2E8F0"
-                strokeWidth="10"
-                style={{ paintOrder: "stroke fill" }}
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              >
-                {current.letter}
-              </text>
+              {/* Pista externa (borda de contorno suave) */}
+              {current.paths.map((p, idx) => (
+                <path
+                  key={`bg-track-outer-${idx}`}
+                  d={p}
+                  fill="none"
+                  stroke="#CBD5E1"
+                  strokeWidth="56"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ))}
 
-              {/* Linha guia pontilhada central clara para guiar o traço escolar da criança */}
-              <text
-                x="200"
-                y="275"
-                textAnchor="middle"
-                fontSize="245"
-                fontWeight="900"
-                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
-                fill="none"
-                stroke="#CBD5E1"
-                strokeWidth="4"
-                strokeDasharray="10 8"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-              >
-                {current.letter}
-              </text>
+              {/* Pista interna suave (onde a criança pinta) */}
+              {current.paths.map((p, idx) => (
+                <path
+                  key={`bg-track-inner-${idx}`}
+                  d={p}
+                  fill="none"
+                  stroke="#F8FAFC"
+                  strokeWidth="46"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ))}
+
+              {/* O TRAÇO EM PONTILHADO NO FORMATO DA LETRA */}
+              {current.paths.map((p, idx) => (
+                <path
+                  key={`bg-dashed-${idx}`}
+                  d={p}
+                  fill="none"
+                  stroke={current.themeColor}
+                  strokeWidth="11"
+                  strokeDasharray="16 14"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ))}
+
+              {/* PONTOS DE INÍCIO NUMERADOS (1, 2, 3...) COM HALO PULSANTE */}
+              {current.startPoints.map((pt, idx) => (
+                <g key={`bg-start-pt-${idx}`}>
+                  {/* Halo de pulso */}
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="24"
+                    fill={current.themeColor}
+                    opacity="0.3"
+                    className="animate-pulse"
+                  />
+                  {/* Ponto verde de partida */}
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="16"
+                    fill="#10B981"
+                    stroke="#FFFFFF"
+                    strokeWidth="3.5"
+                    className="drop-shadow-sm"
+                  />
+                  {/* Número da ordem do traço */}
+                  <text
+                    x={pt.x}
+                    y={pt.y + 5}
+                    textAnchor="middle"
+                    fontSize="14"
+                    fontWeight="900"
+                    fill="#FFFFFF"
+                    className="select-none font-bold"
+                  >
+                    {idx + 1}
+                  </text>
+                </g>
+              ))}
             </svg>
           </div>
 
-          {/* 2. CANVAS INTERATIVO DE PINTURA (ONDE O ISRAEL PINTA COM PINCEL OU BORRACHA) */}
+          {/* Dica amigável no topo da lousa */}
+          <div className="absolute top-2 left-3 z-30 pointer-events-none flex items-center gap-1.5 bg-white/95 backdrop-blur-sm border border-slate-200/90 px-2.5 py-1 rounded-full shadow-sm text-[11px] sm:text-xs font-black text-slate-700">
+            <span>🟢 Siga os números para traçar!</span>
+          </div>
+
+          {/* Mascote no canto inferior */}
+          <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-white/95 backdrop-blur-sm border border-amber-300 rounded-xl px-2 py-0.5 sm:px-3 sm:py-1 flex items-center gap-1.5 pointer-events-none shadow-sm z-30">
+            <span className="text-xl sm:text-2xl">{current.emoji}</span>
+            <span className="text-[11px] sm:text-xs font-black text-slate-800">
+              {current.word}
+            </span>
+          </div>
+
+          {/* 2. CANVAS INTERATIVO DE PINTURA (ONDE A CRIANÇA PINTA COM PINCEL OU BORRACHA) */}
           <canvas
             ref={canvasRef}
             className="absolute inset-0 w-full h-full z-10 touch-none pointer-events-none"
           />
 
-          {/* 3. CAMADA FRONTAL DE CONTORNO (SOBRE O CANVAS): MANTÉM O TRAÇO DA LETRA SEMPRE NÍTIDO E NUNCA BORRADO */}
+          {/* 3. CAMADA FRONTAL DE CONTORNO (SOBRE O CANVAS): MANTÉM O PONTILHADO E NÚMEROS NÍTIDOS */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-20">
             <svg viewBox="0 0 400 400" className="w-full h-full overflow-visible">
-              <text
-                x="200"
-                y="275"
-                textAnchor="middle"
-                fontSize="245"
-                fontWeight="900"
-                fontFamily="'Fredoka', 'Quicksand', 'Arial Rounded MT Bold', 'Chalkboard SE', 'Comic Sans MS', sans-serif"
-                fill="none"
-                stroke={current.themeColor}
-                strokeWidth="10"
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                className="drop-shadow-sm"
-              >
-                {current.letter}
-              </text>
+              {/* Traço pontilhado nítido sobre a tinta */}
+              {current.paths.map((p, idx) => (
+                <path
+                  key={`fg-dashed-${idx}`}
+                  d={p}
+                  fill="none"
+                  stroke={current.themeColor}
+                  strokeWidth="6"
+                  strokeDasharray="16 14"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity="0.8"
+                />
+              ))}
+
+              {/* Pontos de partida preservados no topo */}
+              {current.startPoints.map((pt, idx) => (
+                <g key={`fg-start-pt-${idx}`}>
+                  <circle
+                    cx={pt.x}
+                    cy={pt.y}
+                    r="15"
+                    fill="#10B981"
+                    stroke="#FFFFFF"
+                    strokeWidth="3"
+                    className="drop-shadow-sm"
+                  />
+                  <text
+                    x={pt.x}
+                    y={pt.y + 4.5}
+                    textAnchor="middle"
+                    fontSize="13"
+                    fontWeight="900"
+                    fill="#FFFFFF"
+                    className="select-none font-bold"
+                  >
+                    {idx + 1}
+                  </text>
+                </g>
+              ))}
             </svg>
           </div>
 

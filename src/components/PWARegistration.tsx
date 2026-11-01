@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-const CURRENT_CACHE_NAME = "mundinho-magico-v19";
+const CURRENT_CACHE_NAME = "mundinho-magico-v20";
 
 export function PWARegistration() {
   useEffect(() => {
