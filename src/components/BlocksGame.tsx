@@ -146,14 +146,15 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
   const blockWidthScale = isCompactHeight ? 0.8 : 1.0;
   const currentBlockWidth = Math.round(selectedType.widthPx * blockWidthScale);
 
-  // Altura total da torre atual
+  // Altura total da torre atual (mesa + blocos colocados)
   const towerTopHeight = tableHeight + stackedBlocks.length * blockHeight;
-  // Espaço ocupado pelo guindaste no topo: craneTop + garra (6px) + altura do bloco + folga (18px)
-  const craneOccupiedHeight = craneTop + 6 + blockHeight + 18;
-  // Altura máxima permitida para a torre antes de a câmera começar a descer
-  const maxAllowedTowerHeight = Math.max(blockHeight, dimensions.height - craneOccupiedHeight);
-  // Câmera desce a diferença suavemente mantendo SEMPRE a torre acessível e sem colidir com o guindaste!
-  const cameraOffsetY = Math.max(0, towerTopHeight - maxAllowedTowerHeight);
+
+  // Câmera dinâmica centralizada no meio da tela:
+  // Conforme solicitado: Quando atinge a altura, mantém o topo da torre NO MEIO DA TELA (~48% no celular/tablet, ~44% em paisagem)
+  // com espaçamento generoso e amplo acima para o guindaste e queda triunfal!
+  const targetCenterFactor = isCompactHeight ? 0.44 : 0.48;
+  const targetCenterHeight = dimensions.height * targetCenterFactor;
+  const cameraOffsetY = Math.max(0, towerTopHeight - targetCenterHeight);
 
   const getContainerRelativeX = useCallback((clientX: number) => {
     if (!containerRef.current) return 200;
@@ -231,12 +232,17 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
       const startY = curCraneTop + 4; // Sai da garra mecânica
       // Altura da torre atual
       const curTowerTop = curTableHeight + stackedBlocks.length * curBlockHeight;
-      const curCraneOccupied = curCraneTop + 6 + curBlockHeight + 18;
-      const curMaxAllowed = Math.max(curBlockHeight, containerHeight - curCraneOccupied);
-      const curCameraOffset = Math.max(0, curTowerTop - curMaxAllowed);
+      // Posição alvo do topo da torre: centro da tela (~48% no celular/tablet, ~44% em paisagem)
+      const curCenterFactor = isCompact ? 0.44 : 0.48;
+      const curTargetCenter = containerHeight * curCenterFactor;
+      const curCameraOffset = Math.max(0, curTowerTop - curTargetCenter);
 
       // Posição final onde o bloco deve aterrissar em coordenadas do container
       const targetY = containerHeight - curTowerTop - curBlockHeight + curCameraOffset;
+
+      const fallDistance = Math.max(40, targetY - startY);
+      // Duração proporcional à distância de queda (aceleração natural com gravidade)
+      const durationMs = Math.min(380, Math.max(220, Math.round(Math.sqrt(fallDistance) * 18)));
 
       sounds.playBoing();
 
@@ -252,7 +258,6 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
       };
 
       const startTime = performance.now();
-      const durationMs = 280; // Queda rápida e crocante
 
       const animateFall = (now: number) => {
         const elapsed = now - startTime;
@@ -357,7 +362,11 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
     setFallingBlock(null);
   };
 
-  const guideLineHeight = Math.max(40, dimensions.height - craneTop - blockHeight - tableHeight);
+  // Posição vertical da superfície do topo da torre em coordenadas de tela
+  const currentTowerTopScreenY = dimensions.height - towerTopHeight + cameraOffsetY;
+  const craneBlockBottomY = craneTop + 4 + blockHeight;
+  // Linha guia conecta com precisão milimétrica a base da garra mecânica até a superfície da torre
+  const guideLineHeight = Math.max(30, currentTowerTopScreenY - craneBlockBottomY);
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden">
@@ -478,7 +487,7 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
 
         {/* 3. A TORRE DE BLOCOS EMPILHADA COM BASE ABSOLUTA FIRME */}
         <div
-          className="absolute inset-x-0 bottom-0 h-full pointer-events-none transition-transform duration-300 ease-out"
+          className="absolute inset-x-0 bottom-0 h-full pointer-events-none transition-transform duration-500 ease-out"
           style={{
             transform: `translateY(${cameraOffsetY}px)`,
           }}
