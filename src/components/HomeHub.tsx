@@ -137,15 +137,10 @@ export function HomeHub({ onSelectGame, onOpenParents }: HomeHubProps) {
                 <div className="absolute top-0 left-0 right-0 h-1/2 bg-white/20 rounded-t-2xl pointer-events-none" />
                 <div className="absolute -top-4 -right-4 w-16 h-16 bg-white/10 rounded-full pointer-events-none" />
 
-                {/* Ícone Central em Medalhão 3D Grande e Proporcional */}
-                <div className="relative flex-1 flex items-center justify-center w-full min-h-0 py-0.5">
-                  <div className="w-16 h-16 landscape:w-13 landscape:h-13 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-28 lg:h-28 rounded-2xl sm:rounded-3xl md:rounded-4xl bg-white/30 backdrop-blur-sm border-2 border-white/60 shadow-md flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                    <span className="text-4xl landscape:text-3xl sm:text-5xl md:text-6xl lg:text-7xl drop-shadow-[0_6px_14px_rgba(0,0,0,0.3)] select-none">
-                      {act.emoji}
-                    </span>
-                  </div>
-                  <span className="absolute bottom-0 right-1/4 translate-x-3 text-sm landscape:text-xs sm:text-xl md:text-2xl lg:text-3xl drop-shadow select-none">
-                    {act.sideEmoji}
+                {/* Ícone Central Puro e Destacado Diretamente no Card (Sem Fundo Branco Nem Borda) */}
+                <div className="relative flex-1 flex items-center justify-center w-full min-h-0 py-0.5 sm:py-1">
+                  <span className="text-5xl landscape:text-4xl sm:text-6xl md:text-7xl lg:text-8xl drop-shadow-[0_8px_16px_rgba(0,0,0,0.3)] select-none group-hover:scale-115 transition-transform duration-200">
+                    {act.emoji}
                   </span>
                 </div>
 
