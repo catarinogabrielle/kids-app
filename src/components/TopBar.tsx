@@ -134,6 +134,7 @@ interface GameHeaderProps {
   onHome?: () => void;
   title?: string;
   icon?: string;
+  hideTitleOnMobile?: boolean;
   leftControls?: React.ReactNode;
   rightControls?: React.ReactNode;
 }
@@ -142,18 +143,23 @@ export function GameHeader({
   onHome,
   title,
   icon,
+  hideTitleOnMobile = false,
   leftControls,
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full pt-[max(8px,env(safe-area-inset-top))] pb-2 sm:py-3.5 landscape:py-1 px-3 sm:px-6 pl-[max(12px,env(safe-area-inset-left))] pr-[max(12px,env(safe-area-inset-right))] flex items-center justify-between gap-2 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/95 backdrop-blur-md border-b-2 sm:border-b-3 border-slate-200/85 shadow-sm min-h-[52px] sm:min-h-[62px] landscape:min-h-[44px]">
+    <header className="w-full pt-[max(6px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-1 px-2.5 sm:px-6 pl-[max(10px,env(safe-area-inset-left))] pr-[max(10px,env(safe-area-inset-right))] flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/95 backdrop-blur-md border-b-2 sm:border-b-3 border-slate-200/85 shadow-sm min-h-[44px] sm:min-h-[62px] landscape:min-h-[40px]">
       {/* Lado Esquerdo: Botão Início + Título + Controles Primários do Jogo */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0 flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2.5 min-w-0 flex-shrink-0">
         <HomeButton onHome={onHome} />
 
         {title && (
-          <div className="flex items-center gap-1 sm:gap-1.5 bg-gradient-to-r from-amber-50 to-white px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-2xl border-2 border-amber-200/80 shadow-sm flex-shrink-0 max-w-[150px] sm:max-w-none">
-            {icon && <span className="text-base sm:text-xl flex-shrink-0 drop-shadow-sm">{icon}</span>}
+          <div
+            className={`${
+              hideTitleOnMobile ? "hidden md:flex" : "flex"
+            } items-center gap-1 sm:gap-1.5 bg-gradient-to-r from-amber-50 to-white px-2 py-0.5 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-2xl border sm:border-2 border-amber-200/80 shadow-sm flex-shrink-0 max-w-[130px] sm:max-w-none`}
+          >
+            {icon && <span className="text-sm sm:text-xl flex-shrink-0 drop-shadow-sm">{icon}</span>}
             <span className="font-black text-xs sm:text-base text-slate-800 tracking-wide truncate whitespace-nowrap">
               {title}
             </span>
@@ -164,7 +170,7 @@ export function GameHeader({
       </div>
 
       {/* Lado Direito: Ações do Jogo + Som */}
-      <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-2.5 flex-shrink-0">
         {rightControls}
         <SoundButton />
       </div>

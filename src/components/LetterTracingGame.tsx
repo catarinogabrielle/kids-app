@@ -805,30 +805,31 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-gradient-to-b from-amber-50 via-sky-50 to-pink-50">
-      {/* 1. HEADER DO JOGO */}
+      {/* 1. HEADER DO JOGO ULTRA COMPACTO NO MOBILE */}
       <GameHeader
         onHome={onHome}
         title="Traçar & Colorir"
         icon="✍️"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={prevLetter}
-              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm flex items-center justify-center active:scale-90"
+              className="kid-btn kid-btn-white p-1 sm:p-1.5 rounded-xl border-2 flex items-center justify-center active:scale-90"
               title="Letra Anterior"
             >
-              <ChevronLeft size={18} className="stroke-[3]" />
+              <ChevronLeft size={16} className="sm:w-5 sm:h-5 stroke-[3]" />
             </button>
 
-            {/* Letra Atual em Destaque */}
-            <div className="bg-white/95 px-2.5 py-0.5 sm:px-3.5 sm:py-1 rounded-xl border-2 border-amber-400 shadow-sm flex items-center gap-1 sm:gap-2">
+            {/* Letra Atual em Destaque Compacta no Mobile */}
+            <div className="bg-white/95 px-2 py-0.5 sm:px-3.5 sm:py-1 rounded-xl border-2 border-amber-400 shadow-toy-sm flex items-center gap-1 sm:gap-2">
               <span
-                className="text-lg sm:text-2xl font-black"
+                className="text-base sm:text-2xl font-black"
                 style={{ color: current.themeColor }}
               >
                 {current.letter}
               </span>
-              <span className="text-base sm:text-xl">{current.emoji}</span>
+              <span className="text-sm sm:text-xl">{current.emoji}</span>
               <span className="hidden sm:inline text-xs sm:text-sm font-extrabold text-slate-800 whitespace-nowrap">
                 {current.word}
               </span>
@@ -836,67 +837,69 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
 
             <button
               onClick={nextLetter}
-              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm flex items-center justify-center active:scale-90"
+              className="kid-btn kid-btn-white p-1 sm:p-1.5 rounded-xl border-2 flex items-center justify-center active:scale-90"
               title="Próxima Letra"
             >
-              <ChevronRight size={18} className="stroke-[3]" />
+              <ChevronRight size={16} className="sm:w-5 sm:h-5 stroke-[3]" />
             </button>
           </div>
         }
         rightControls={
           <div className="flex items-center gap-1 sm:gap-2">
-            {/* BOTÃO ANIMAR NO HEADER (FORA DO CENTRO DA LETRA, NUNCA ATRAPALHA O JOGO!) */}
+            {/* BOTÃO ANIMAR NO HEADER (COMPACTO NO MOBILE COM ÍCONE) */}
             <button
               onClick={triggerAnimate}
-              className="kid-btn bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 hover:from-amber-300 hover:to-yellow-200 text-amber-950 font-black text-xs sm:text-sm px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl border-2 border-amber-600 shadow-sm flex items-center gap-1 active:scale-95 animate-pulse-gentle"
+              className="kid-btn kid-btn-yellow p-1.5 sm:px-3.5 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 active:scale-95 animate-pulse-gentle"
               title="Animar a Letra e Ver a História!"
             >
-              <Sparkles size={16} className="text-amber-700 animate-spin" />
-              <span>ANIMAR! ✨</span>
+              <div className="toy-gloss" />
+              <Sparkles size={16} className="text-amber-800 animate-spin" />
+              <span className="hidden sm:inline">ANIMAR! ✨</span>
             </button>
 
             {/* Botão de Limpar Desenho */}
             <button
               onClick={handleReset}
-              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              className="kid-btn kid-btn-white p-1.5 sm:p-2 rounded-xl border-2"
               title="Limpar e Recomeçar"
             >
+              <div className="toy-gloss" />
               <RotateCcw size={16} />
             </button>
           </div>
         }
       />
 
-      {/* 2. CARROSSEL HORIZONTAL RÁPIDO DO ALFABETO (SELEÇÃO DIRETA DE A a Z) */}
-      <div className="w-full bg-white/90 backdrop-blur-sm border-b border-slate-200/80 px-2 sm:px-4 py-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none z-10 flex-shrink-0">
+      {/* 2. CARROSSEL HORIZONTAL RÁPIDO DO ALFABETO (SUPER FINO NO MOBILE) */}
+      <div className="w-full bg-white/95 backdrop-blur-sm border-b border-slate-200/80 px-1.5 sm:px-4 py-0.5 sm:py-1 flex items-center gap-1 sm:gap-1.5 overflow-x-auto scrollbar-none z-10 flex-shrink-0 min-h-[30px] sm:min-h-[38px]">
         {BIBLICAL_ALPHABET.map((item, idx) => {
           const isSelected = currentIdx === idx;
           return (
             <button
               key={item.letter}
               onClick={() => goToLetter(idx)}
-              className={`kid-btn px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-black text-xs sm:text-sm flex items-center gap-1 transition-all flex-shrink-0 ${
+              className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl font-black text-xs sm:text-sm flex items-center gap-0.5 sm:gap-1 transition-all flex-shrink-0 ${
                 isSelected
-                  ? "bg-kids-yellow border-2 border-amber-600 scale-105 shadow-sm text-amber-950 ring-2 ring-yellow-400"
+                  ? "kid-btn-yellow scale-105 shadow-toy-sm text-amber-950 ring-2 ring-yellow-400"
                   : "bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-700"
               }`}
             >
               <span style={{ color: item.themeColor }}>{item.letter}</span>
-              <span className="text-xs sm:text-sm">{item.emoji}</span>
+              <span className="hidden sm:inline text-xs sm:text-sm">{item.emoji}</span>
             </button>
           );
         })}
       </div>
 
       {/* 3. PALCO CENTRAL: 100% LIMPO E LIVRE PARA O DEDO DA CRIANÇA PINTAR E CARIMBAR */}
-      <div className="relative flex-1 min-h-0 w-full p-2 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
+      <div className="relative flex-1 min-h-0 w-full p-1.5 sm:p-4 landscape:p-1 flex items-center justify-center overflow-hidden">
         <div
           ref={stageRef}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="relative aspect-square h-full max-h-[66vh] sm:max-h-[72vh] landscape:max-h-[74vh] max-w-[94vw] rounded-3xl sm:rounded-4xl bg-white border-4 sm:border-8 border-amber-400 shadow-[0_16px_45px_rgba(0,0,0,0.14)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
+          className="relative aspect-square h-full max-h-[70vh] sm:max-h-[74vh] landscape:max-h-[76vh] max-w-[94vw] rounded-3xl sm:rounded-4xl bg-white border-4 sm:border-8 border-amber-400 shadow-[0_16px_45px_rgba(0,0,0,0.14)] overflow-hidden cursor-crosshair touch-none select-none flex items-center justify-center"
         >
           {/* Fundo de papel de desenho com textura suave */}
           <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-70 pointer-events-none" />
