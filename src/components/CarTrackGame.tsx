@@ -313,13 +313,14 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
 
   return (
     <div className="flex flex-col w-full h-full select-none overflow-hidden bg-slate-900">
-      {/* HEADER INTEGRADO COM TROCA DE VEÍCULO, ANIMAIS RESGATADOS E PONTOS */}
+      {/* HEADER INTEGRADO COMPACTO NO MOBILE COM TROCA DE VEÍCULO, ANIMAIS RESGATADOS E PONTOS */}
       <GameHeader
         onHome={onHome}
         title="Pista do Noé"
         icon="🚙"
+        hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 sm:gap-1.5 bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-kids-yellow shadow-sm">
+          <div className="flex items-center gap-0.5 sm:gap-1.5 bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-kids-yellow shadow-toy-sm flex-shrink-0">
             {vehicles.map((v) => (
               <button
                 key={v.id}
@@ -328,32 +329,32 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
                   sounds.playPop();
                   setVehicle(v.id);
                 }}
-                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg border transition-all ${
+                className={`kid-btn p-1 sm:px-2.5 sm:py-1 rounded-lg border transition-all ${
                   vehicle === v.id
-                    ? "bg-kids-yellow border-amber-600 scale-105 shadow-sm ring-1 ring-yellow-400"
+                    ? "kid-btn-amber scale-105 shadow-toy-sm ring-1 ring-yellow-400"
                     : "bg-slate-50 border-slate-200"
                 }`}
                 title={v.label}
               >
-                <span className="text-base sm:text-2xl landscape:text-base">{v.icon}</span>
+                <span className="text-sm sm:text-2xl landscape:text-base">{v.icon}</span>
               </button>
             ))}
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Bichinhos Salvos na Arca */}
-            <div className="flex items-center gap-1 bg-white/95 border-2 border-emerald-500 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
-              <span className="text-base sm:text-lg">🐾</span>
-              <span className="text-xs sm:text-base font-black text-emerald-900">
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-white/95 border sm:border-2 border-emerald-500 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-toy-sm flex-shrink-0">
+              <span className="text-xs sm:text-lg">🐾</span>
+              <span className="text-[11px] sm:text-base font-black text-emerald-950">
                 {rescuedAnimals.length}
               </span>
             </div>
 
             {/* Estrelas */}
-            <div className="flex items-center gap-1 bg-amber-400 border-2 border-amber-600 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-sm">
-              <span className="text-base sm:text-xl">⭐</span>
-              <span className="text-xs sm:text-base font-black text-amber-950">{score}</span>
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-amber-400 border sm:border-2 border-amber-600 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl shadow-toy-sm flex-shrink-0">
+              <span className="text-xs sm:text-xl">⭐</span>
+              <span className="text-[11px] sm:text-base font-black text-amber-950">{score}</span>
             </div>
           </div>
         }

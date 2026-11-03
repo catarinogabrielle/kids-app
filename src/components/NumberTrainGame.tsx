@@ -489,6 +489,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Trem 123"
         icon="🚂"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 bg-white/95 p-0.5 sm:p-1 rounded-xl border border-kids-teal shadow-sm overflow-x-auto scrollbar-none">
             {[

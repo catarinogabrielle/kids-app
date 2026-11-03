@@ -261,6 +261,7 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Letrinha Mágica"
         icon="🔤"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 rounded-xl border border-kids-coral shadow-sm">
             <span className="text-base sm:text-xl">🔤</span>

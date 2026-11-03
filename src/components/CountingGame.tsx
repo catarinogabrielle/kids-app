@@ -126,6 +126,7 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Contar Criação"
         icon="🔢"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-kids-orange shadow-sm">
             <span className="text-base sm:text-xl">🔢</span>

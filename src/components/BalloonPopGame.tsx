@@ -238,6 +238,7 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Balões de Luz"
         icon="🎈"
+        hideTitleOnMobile={true}
         leftControls={
           <div className={`flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}>
             <span className="text-base sm:text-xl">{currentMission.emoji}</span>

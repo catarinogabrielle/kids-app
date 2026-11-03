@@ -375,6 +375,7 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Torre da Fé"
         icon="🧱"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 bg-white/95 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border border-kids-orange shadow-sm flex-shrink-0">
             <span className="text-base sm:text-lg">🧱</span>

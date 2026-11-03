@@ -212,6 +212,7 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Atelier Bíblico"
         icon="🎨"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
             {[

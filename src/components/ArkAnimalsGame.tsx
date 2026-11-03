@@ -173,6 +173,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Arca de Noé"
         icon="🛳️"
+        hideTitleOnMobile={true}
         leftControls={
           <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-amber-400 shadow-sm">
             <span className="text-base sm:text-xl">🛳️</span>

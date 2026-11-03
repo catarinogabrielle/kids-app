@@ -148,7 +148,7 @@ export function GameHeader({
   rightControls,
 }: GameHeaderProps) {
   return (
-    <header className="w-full pt-[max(6px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-1 px-2.5 sm:px-6 pl-[max(10px,env(safe-area-inset-left))] pr-[max(10px,env(safe-area-inset-right))] flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/95 backdrop-blur-md border-b-2 sm:border-b-3 border-slate-200/85 shadow-sm min-h-[44px] sm:min-h-[62px] landscape:min-h-[40px]">
+    <header className="w-full max-w-full overflow-hidden pt-[max(6px,env(safe-area-inset-top))] pb-1 sm:py-3.5 landscape:py-1 px-2.5 sm:px-6 pl-[max(10px,env(safe-area-inset-left))] pr-[max(10px,env(safe-area-inset-right))] flex items-center justify-between gap-1.5 sm:gap-4 z-30 select-none flex-shrink-0 bg-white/95 backdrop-blur-md border-b-2 sm:border-b-3 border-slate-200/85 shadow-sm min-h-[44px] sm:min-h-[62px] landscape:min-h-[40px]">
       {/* Lado Esquerdo: Botão Início + Título + Controles Primários do Jogo */}
       <div className="flex items-center gap-1 sm:gap-2.5 min-w-0 flex-shrink-0">
         <HomeButton onHome={onHome} />
