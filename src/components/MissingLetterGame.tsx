@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { GameHeader } from "@/components/TopBar";
@@ -356,17 +357,21 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
               const isWrong = wrongShakeLetter === letter;
 
               return (
-                <button
+                <motion.button
                   key={letter}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 18 }}
                   onClick={() => handlePickLetter(letter)}
-                  className={`kid-btn flex-1 h-14 sm:h-20 md:h-24 max-w-[160px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
+                  className={`kid-btn relative overflow-hidden flex-1 h-14 sm:h-20 md:h-24 max-w-[160px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
                     isWrong
                       ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
-                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95 hover:scale-105"
+                      : "kid-btn-yellow shadow-toy-lg"
                   }`}
                 >
-                  {letter}
-                </button>
+                  <div className="toy-gloss" />
+                  <span className="relative z-10">{letter}</span>
+                </motion.button>
               );
             })}
           </div>

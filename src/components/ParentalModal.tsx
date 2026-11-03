@@ -78,32 +78,33 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl border-8 border-kids-blue shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden animate-pulse-gentle">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-fade-in">
+      <div className="bg-white rounded-3xl sm:rounded-4xl border-4 sm:border-6 border-kids-blue shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden">
         {/* Cabeçalho */}
-        <div className="bg-kids-blue p-4 text-white flex justify-between items-center">
+        <div className="bg-gradient-to-r from-sky-400 to-blue-500 p-3 sm:p-4 text-white flex justify-between items-center border-b-2 border-blue-600">
           <div className="flex items-center gap-2">
-            <span className="text-2xl">🔒</span>
-            <h2 className="text-2xl font-bold">Cantinho dos Pais & Galeria</h2>
+            <span className="text-2xl drop-shadow-sm">🔒</span>
+            <h2 className="text-xl sm:text-2xl font-black tracking-wide">Cantinho dos Pais & Galeria</h2>
           </div>
           <button
             onClick={() => {
               sounds.playPop();
               onClose();
             }}
-            className="kid-btn bg-kids-coral hover:bg-red-500 text-white rounded-full p-2 border-2 border-white shadow-kid-sm"
+            className="kid-btn kid-btn-coral rounded-2xl p-2 border-2"
           >
-            <X size={26} />
+            <div className="toy-gloss" />
+            <X size={22} className="stroke-[2.5]" />
           </button>
         </div>
 
         {/* Conteúdo */}
-        <div className="p-6 overflow-y-auto flex-1">
+        <div className="p-4 sm:p-6 overflow-y-auto flex-1">
           {!isUnlocked ? (
-            <div className="text-center py-8">
-              <span className="text-6xl mb-4 block">🛡️</span>
-              <h3 className="text-2xl font-bold text-gray-800 mb-2">Área dos Pais</h3>
-              <p className="text-gray-600 mb-6 max-w-md mx-auto">
+            <div className="text-center py-6 sm:py-8">
+              <span className="text-5xl sm:text-6xl mb-3 block animate-float">🛡️</span>
+              <h3 className="text-xl sm:text-2xl font-black text-slate-800 mb-2">Área dos Pais</h3>
+              <p className="text-sm sm:text-base font-bold text-slate-600 mb-6 max-w-md mx-auto">
                 Para proteger as configurações e a galeria de toques acidentais, segure o botão abaixo por 2 segundos:
               </p>
 
@@ -114,19 +115,20 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
                   onMouseLeave={endHold}
                   onTouchStart={startHold}
                   onTouchEnd={endHold}
-                  className="kid-btn relative bg-kids-yellow text-slate-800 font-extrabold text-xl px-8 py-4 rounded-3xl border-4 border-amber-500 shadow-kid active:scale-95 transition-transform"
+                  className="kid-btn kid-btn-amber relative overflow-hidden text-slate-900 font-black text-lg sm:text-xl px-8 py-4 rounded-3xl border-3 sm:border-4"
                 >
+                  <div className="toy-gloss" />
                   <span className="relative z-10 flex items-center gap-2">
                     ⭐ Segure Aqui ⭐
                   </span>
                   <div
-                    className="absolute inset-0 bg-amber-400 rounded-2xl opacity-70 transition-all duration-75"
+                    className="absolute inset-0 bg-amber-400/80 transition-all duration-75"
                     style={{ width: `${holdProgress}%` }}
                   />
                 </button>
-                <div className="w-48 bg-gray-200 h-3 rounded-full mt-4 overflow-hidden border">
+                <div className="w-56 bg-slate-200 h-3.5 rounded-full mt-4 overflow-hidden border-2 border-slate-300">
                   <div
-                    className="bg-amber-500 h-full transition-all duration-75"
+                    className="bg-amber-500 h-full transition-all duration-75 rounded-full"
                     style={{ width: `${holdProgress}%` }}
                   />
                 </div>
@@ -135,23 +137,25 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
           ) : (
             <div>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-black text-slate-800 flex items-center gap-2">
                   <ImageIcon className="text-kids-blue" /> Galeria do Mundinho Mágico ({savedPaintings.length})
                 </h3>
               </div>
 
               {savedPaintings.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
+                <div className="text-center py-10 text-slate-500">
                   <span className="text-5xl block mb-2">🎨</span>
-                  <p className="text-lg font-medium">Nenhum desenho salvo ainda!</p>
-                  <p className="text-sm">Quando o Israel apertar o botão de foto no Atelier de Pintura, o desenho aparecerá aqui.</p>
+                  <p className="text-base sm:text-lg font-black text-slate-700">Nenhum desenho salvo ainda!</p>
+                  <p className="text-xs sm:text-sm font-bold text-slate-500 mt-1">
+                    Quando seu pequeno apertar a câmera no Atelier de Pintura, o desenho aparecerá aqui.
+                  </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
                   {savedPaintings.map((img, idx) => (
                     <div
                       key={idx}
-                      className="bg-slate-50 border-4 border-kids-sky/40 rounded-2xl p-2 flex flex-col shadow-sm"
+                      className="bg-slate-50 border-3 border-sky-200 rounded-2xl p-2 flex flex-col shadow-toy-sm"
                     >
                       <div className="bg-white rounded-xl overflow-hidden aspect-video border flex items-center justify-center">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -164,17 +168,19 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
                       <div className="flex justify-between mt-2 pt-1 gap-2">
                         <button
                           onClick={() => downloadPainting(img, idx)}
-                          className="kid-btn flex-1 bg-kids-teal text-white py-1.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1 shadow-kid-sm"
+                          className="kid-btn kid-btn-teal flex-1 py-1.5 px-2 rounded-xl text-xs font-black flex items-center justify-center gap-1 border-2"
                           title="Baixar imagem"
                         >
-                          <Download size={16} /> Baixar
+                          <div className="toy-gloss" />
+                          <Download size={15} /> Baixar
                         </button>
                         <button
                           onClick={() => deletePainting(idx)}
-                          className="kid-btn bg-kids-coral text-white p-1.5 rounded-xl text-xs shadow-kid-sm"
+                          className="kid-btn kid-btn-coral p-1.5 rounded-xl text-xs border-2"
                           title="Excluir"
                         >
-                          <Trash2 size={16} />
+                          <div className="toy-gloss" />
+                          <Trash2 size={15} />
                         </button>
                       </div>
                     </div>
@@ -182,7 +188,7 @@ export function ParentalModal({ isOpen, onClose }: ParentalModalProps) {
                 </div>
               )}
 
-              <div className="mt-8 pt-4 border-t text-center text-sm text-gray-500 flex items-center justify-center gap-1">
+              <div className="mt-8 pt-4 border-t text-center text-xs sm:text-sm text-slate-500 font-bold flex items-center justify-center gap-1">
                 Feito com <Heart size={16} className="text-red-500 fill-red-500" /> para o Israel e todas as crianças no Mundinho Mágico!
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { GameHeader } from "@/components/TopBar";
@@ -181,14 +182,15 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <button
               onClick={handlePeek}
               disabled={isPeekingAll || isAllBoarded}
-              className="kid-btn bg-yellow-300 hover:bg-yellow-400 text-amber-950 px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl border border-amber-500 shadow-sm font-black text-xs flex items-center gap-1"
+              className="kid-btn kid-btn-yellow px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5"
               title="Espiar cartas"
             >
-              <Eye size={16} />
+              <div className="toy-gloss" />
+              <Eye size={16} className="stroke-[2.5]" />
               <span className="hidden sm:inline">ESPIAR</span>
             </button>
             <button
@@ -196,10 +198,11 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
                 sounds.playBoing();
                 startNewGame();
               }}
-              className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+              className="kid-btn kid-btn-white p-1.5 sm:p-2 rounded-xl border-2"
               title="Recomeçar"
             >
-              <RotateCcw size={16} />
+              <div className="toy-gloss" />
+              <RotateCcw size={16} className="stroke-[2.5]" />
             </button>
           </div>
         }
@@ -366,48 +369,59 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
             </span>
           </div>
 
-          {/* Grade 4x2 com cartas verticais perfeitas (aspect-[4/5]), nunca esticadas nem achatadas */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-3.5 md:gap-5 justify-items-center">
+          {/* Grade 4x2 com cartas verticais perfeitas (aspect-[4/5]), com efeito Flip 3D */}
+          <div className="grid grid-cols-4 gap-2 sm:gap-3.5 md:gap-5 justify-items-center perspective-1000">
             {cards.map((card) => {
               const isMatched = matchedSpecies.includes(card.speciesId);
               const isFlipped = flippedIds.includes(card.id) || isPeekingAll || isMatched;
 
               return (
-                <button
+                <motion.button
                   key={card.id}
+                  whileHover={{ scale: isMatched ? 0.95 : 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 20 }}
                   onClick={() => handleCardClick(card)}
                   disabled={isMatched || isLocked}
-                  className={`kid-btn relative w-full max-w-[125px] sm:max-w-[150px] aspect-[4/5] max-h-[140px] sm:max-h-[175px] landscape:max-h-[85px] rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center transition-all duration-200 ${
-                    isMatched
-                      ? "bg-emerald-100 border-emerald-500 shadow-inner scale-95 opacity-80"
-                      : isFlipped
-                      ? "bg-gradient-to-b from-amber-100 to-amber-200 border-amber-500 shadow-md ring-2 sm:ring-4 ring-yellow-400"
-                      : "bg-gradient-to-br from-amber-700 via-amber-800 to-amber-950 border-amber-950 shadow-kid-sm active:scale-95 hover:scale-[1.03]"
-                  }`}
+                  className="relative w-full max-w-[125px] sm:max-w-[150px] aspect-[4/5] max-h-[140px] sm:max-h-[175px] landscape:max-h-[85px] cursor-pointer"
                 >
-                  {isFlipped ? (
-                    // FRENTE DA CARTA (REVELADA)
-                    <div className="flex flex-col items-center justify-center animate-wiggle p-1">
-                      <span className="text-2xl sm:text-4xl md:text-5xl drop-shadow">{card.emoji}</span>
-                      <span className="text-[9px] sm:text-[11px] font-black text-amber-950 mt-0.5 tracking-tight uppercase">
+                  <div
+                    className={`w-full h-full relative transition-transform duration-300 preserve-3d ${
+                      isFlipped ? "rotate-y-180" : ""
+                    }`}
+                  >
+                    {/* VERSO DA CARTA (VIRADA PARA BAIXO) */}
+                    <div className="absolute inset-0 backface-hidden rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-700 via-amber-800 to-amber-950 border-2 sm:border-4 border-amber-950 shadow-toy-sm flex flex-col items-center justify-center p-1 text-amber-200/90 overflow-hidden">
+                      <div className="toy-gloss" />
+                      <span className="text-xl sm:text-3xl md:text-4xl drop-shadow">🛳️</span>
+                      <span className="text-xs sm:text-sm font-black text-amber-300 tracking-wider mt-0.5">
+                        ?
+                      </span>
+                    </div>
+
+                    {/* FRENTE DA CARTA (REVELADA) */}
+                    <div
+                      className={`absolute inset-0 backface-hidden rotate-y-180 rounded-xl sm:rounded-2xl border-2 sm:border-4 flex flex-col items-center justify-center p-1 overflow-hidden transition-all duration-200 ${
+                        isMatched
+                          ? "bg-gradient-to-b from-emerald-100 to-emerald-200 border-emerald-600 shadow-inner scale-95 opacity-85"
+                          : "bg-gradient-to-b from-amber-50 to-amber-100 border-amber-500 shadow-toy ring-2 sm:ring-4 ring-yellow-400"
+                      }`}
+                    >
+                      <div className="toy-gloss" />
+                      <span className="text-2xl sm:text-4xl md:text-5xl drop-shadow animate-wiggle select-none">
+                        {card.emoji}
+                      </span>
+                      <span className="text-[10px] sm:text-xs font-black text-amber-950 mt-0.5 tracking-tight uppercase">
                         {card.name}
                       </span>
                       {isMatched && (
-                        <span className="text-[8px] sm:text-[10px] font-black text-emerald-900 bg-emerald-300 px-1.5 py-0.2 rounded-full mt-0.5 border border-emerald-500">
+                        <span className="text-[8px] sm:text-[10px] font-black text-emerald-950 bg-emerald-400 px-1.5 py-0.5 rounded-full mt-0.5 border border-emerald-600 shadow-xs">
                           PAR! ✓
                         </span>
                       )}
                     </div>
-                  ) : (
-                    // VERSO DA CARTA (VIRADA PARA BAIXO)
-                    <div className="flex flex-col items-center justify-center text-amber-200/90 p-1">
-                      <span className="text-xl sm:text-3xl md:text-4xl drop-shadow">🛳️</span>
-                      <span className="text-[10px] sm:text-xs font-black text-amber-300 tracking-wider mt-0.5">
-                        ?
-                      </span>
-                    </div>
-                  )}
-                </button>
+                  </div>
+                </motion.button>
               );
             })}
           </div>

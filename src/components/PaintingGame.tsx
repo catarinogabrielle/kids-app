@@ -1562,7 +1562,7 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
         )}
 
         {/* Linha de Ferramentas + Paleta de Cores Integrada */}
-        <div className="w-full flex flex-col sm:flex-row landscape:flex-row items-center justify-between gap-1.5 sm:gap-4 landscape:gap-2">
+        <div className="w-full flex flex-col sm:flex-row landscape:flex-row items-center justify-between gap-2 sm:gap-4 landscape:gap-2">
           {/* 4 Ferramentas Táteis: Balde, Pincel, Borracha, Carimbos */}
           <div className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button
@@ -1570,12 +1570,13 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                 sounds.playPop();
                 setToolMode("bucket");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn relative overflow-hidden flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "bucket"
-                  ? "bg-kids-teal text-white border-teal-700 shadow-kid scale-105"
-                  : "bg-white text-slate-700 border-slate-300"
+                  ? "kid-btn-teal scale-105 shadow-toy"
+                  : "kid-btn-white"
               }`}
             >
+              <div className="toy-gloss" />
               <PaintBucket size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="font-extrabold text-xs sm:text-sm">Balde</span>
             </button>
@@ -1585,12 +1586,13 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                 sounds.playPop();
                 setToolMode("brush");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn relative overflow-hidden flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "brush"
-                  ? "bg-kids-purple text-white border-purple-700 shadow-kid scale-105"
-                  : "bg-white text-slate-700 border-slate-300"
+                  ? "kid-btn-purple scale-105 shadow-toy"
+                  : "kid-btn-white"
               }`}
             >
+              <div className="toy-gloss" />
               <Paintbrush size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="font-extrabold text-xs sm:text-sm">Pincel</span>
             </button>
@@ -1600,12 +1602,13 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                 sounds.playPop();
                 setToolMode("eraser");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn relative overflow-hidden flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "eraser"
-                  ? "bg-rose-500 text-white border-rose-800 shadow-kid scale-105 ring-2 ring-rose-300"
-                  : "bg-white text-slate-700 border-slate-300 hover:bg-rose-50"
+                  ? "kid-btn-coral scale-105 shadow-toy ring-2 ring-rose-300"
+                  : "kid-btn-white hover:bg-rose-50"
               }`}
             >
+              <div className="toy-gloss" />
               <Eraser size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="font-extrabold text-xs sm:text-sm">Borracha</span>
             </button>
@@ -1615,19 +1618,20 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                 sounds.playPop();
                 setToolMode("stamp");
               }}
-              className={`kid-btn flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all ${
+              className={`kid-btn relative overflow-hidden flex-1 sm:flex-initial flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2 rounded-2xl border-2 sm:border-3 transition-all ${
                 toolMode === "stamp"
-                  ? "bg-kids-pink text-white border-pink-700 shadow-kid scale-105"
-                  : "bg-white text-slate-700 border-slate-300"
+                  ? "kid-btn-amber scale-105 shadow-toy"
+                  : "kid-btn-white"
               }`}
             >
+              <div className="toy-gloss" />
               <Sparkles size={18} className="sm:w-5 sm:h-5 stroke-[2.5]" />
               <span className="font-extrabold text-xs sm:text-sm">Carimbos</span>
             </button>
           </div>
 
-          {/* 10 Cores Vibrantes */}
-          <div className="w-full sm:flex-1 flex items-center justify-around gap-1 sm:gap-2 bg-white px-2 py-1.5 rounded-2xl border-2 border-slate-200 shadow-inner">
+          {/* 12 Cores Vibrantes com Visual de Pastilhas de Tinta */}
+          <div className="w-full sm:flex-1 flex items-center justify-around gap-1 sm:gap-2 bg-white/95 px-2.5 py-2 rounded-2xl border-2 sm:border-3 border-slate-200/90 shadow-toy-sm">
             {colors.map((c) => (
               <button
                 key={c.hex}
@@ -1635,14 +1639,16 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                   sounds.playPop();
                   setSelectedColor(c.hex);
                 }}
-                className={`kid-btn w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 transition-all duration-150 flex-shrink-0 ${
+                className={`kid-btn relative overflow-hidden w-7 h-7 sm:w-10 sm:h-10 rounded-full border-2 sm:border-3 transition-all duration-150 flex-shrink-0 ${
                   selectedColor === c.hex
-                    ? "scale-[1.2] border-slate-900 shadow-kid z-10 ring-2 sm:ring-3 ring-yellow-400"
-                    : "border-white shadow-sm hover:scale-105"
+                    ? "scale-[1.22] border-slate-900 z-10 ring-2 sm:ring-4 ring-yellow-400 shadow-toy"
+                    : "border-white shadow-toy-sm hover:scale-108"
                 }`}
                 style={{ backgroundColor: c.hex }}
                 title={c.name}
-              />
+              >
+                <div className="toy-gloss" />
+              </button>
             ))}
           </div>
         </div>

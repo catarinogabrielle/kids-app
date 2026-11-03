@@ -13,6 +13,7 @@
   -webkit-touch-callout: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 *::-webkit-scrollbar {
@@ -23,7 +24,7 @@
 
 body {
   color: var(--foreground);
-  background: linear-gradient(180deg, #38bdf8 0%, #60a5fa 60%, #4ade80 100%);
+  background: linear-gradient(180deg, #38bdf8 0%, #60a5fa 55%, #34d399 100%);
   min-height: 100vh;
   min-height: 100dvh;
   margin: 0;
@@ -33,22 +34,191 @@ body {
   touch-action: manipulation;
 }
 
-/* Kid 3D pushable button classes */
+/* ==========================================================================
+   SISTEMA DE BOTÕES 3D DE BRINQUEDO (TOY & CLAYMORPHISM)
+   ========================================================================== */
+
 .kid-btn {
-  transition: all 0.1s ease-in-out;
+  transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.12s ease-out,
+              filter 0.12s ease-out;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  touch-action: manipulation;
+}
+
+.kid-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
 }
 
 .kid-btn:active {
-  transform: translateY(4px);
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(4px) scaleX(1.01) scaleY(0.97) !important;
+  box-shadow: 0 2px 0 var(--toy-border, rgba(0, 0, 0, 0.25)) !important;
 }
 
-/* Cartoon cloud floating animation */
+/* Brilho Gloss Superior Estilo Brinquedo de Plástico */
+.toy-gloss {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-top-left-radius: inherit;
+  border-top-right-radius: inherit;
+  pointer-events: none;
+}
+
+/* Variantes Coordenadas de Botões Táteis com Chanfros de Cor Real */
+.kid-btn-amber {
+  --toy-border: #b45309;
+  background-color: #f59e0b;
+  border-color: #b45309;
+  color: #78350f;
+  box-shadow: 0 5px 0 #b45309, inset 0 2px 0 rgba(255, 255, 255, 0.5);
+}
+.kid-btn-amber:hover {
+  background-color: #fbbf24;
+}
+
+.kid-btn-yellow {
+  --toy-border: #d97706;
+  background-color: #fcd34d;
+  border-color: #d97706;
+  color: #78350f;
+  box-shadow: 0 5px 0 #d97706, inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+.kid-btn-yellow:hover {
+  background-color: #fde047;
+}
+
+.kid-btn-teal {
+  --toy-border: #047857;
+  background-color: #06d6a0;
+  border-color: #047857;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #047857, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+.kid-btn-teal:hover {
+  background-color: #10b981;
+}
+
+.kid-btn-blue {
+  --toy-border: #0369a1;
+  background-color: #38bdf8;
+  border-color: #0369a1;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #0369a1, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+.kid-btn-blue:hover {
+  background-color: #60a5fa;
+}
+
+.kid-btn-coral {
+  --toy-border: #b91c1c;
+  background-color: #f87171;
+  border-color: #b91c1c;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #b91c1c, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+.kid-btn-coral:hover {
+  background-color: #ef4444;
+}
+
+.kid-btn-purple {
+  --toy-border: #6b21a8;
+  background-color: #a855f7;
+  border-color: #6b21a8;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #6b21a8, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+.kid-btn-purple:hover {
+  background-color: #c084fc;
+}
+
+.kid-btn-emerald {
+  --toy-border: #065f46;
+  background-color: #10b981;
+  border-color: #065f46;
+  color: #ffffff;
+  box-shadow: 0 5px 0 #065f46, inset 0 2px 0 rgba(255, 255, 255, 0.45);
+}
+.kid-btn-emerald:hover {
+  background-color: #34d399;
+}
+
+.kid-btn-white {
+  --toy-border: #cbd5e1;
+  background-color: #ffffff;
+  border-color: #cbd5e1;
+  color: #334155;
+  box-shadow: 0 5px 0 #cbd5e1, inset 0 2px 0 rgba(255, 255, 255, 0.9);
+}
+.kid-btn-white:hover {
+  background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   TIPOGRAFIA & CONTORNOS DE TEXTO (TEXT STROKE)
+   ========================================================================== */
+
+.text-stroke-dark {
+  -webkit-text-stroke: 3px #0f172a;
+  paint-order: stroke fill;
+}
+
+.text-stroke-dark-sm {
+  -webkit-text-stroke: 1.5px #0f172a;
+  paint-order: stroke fill;
+}
+
+.text-stroke-white {
+  -webkit-text-stroke: 3px #ffffff;
+  paint-order: stroke fill;
+}
+
+.text-stroke-white-sm {
+  -webkit-text-stroke: 1.5px #ffffff;
+  paint-order: stroke fill;
+}
+
+.text-shadow-kid {
+  text-shadow: 0 3px 6px rgba(15, 23, 42, 0.35);
+}
+
+.text-shadow-pop {
+  text-shadow: 0 2px 0 #000000, 0 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* ==========================================================================
+   PERSPECTIVA & CARTAS 3D (FLIP EFFECTS)
+   ========================================================================== */
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* ==========================================================================
+   ANIMAÇÕES LÚDICAS E AMBIENTAIS
+   ========================================================================== */
+
 @keyframes floatSlow {
   0%, 100% {
     transform: translateY(0px) translateX(0px);
@@ -63,16 +233,28 @@ body {
 }
 
 .animate-float-delayed {
-  animation: floatSlow 5s ease-in-out 2s infinite;
+  animation: floatSlow 5.5s ease-in-out 1.5s infinite;
 }
 
-/* Wiggle animation for stars / badges */
-@keyframes wiggleSlow {
+@keyframes floatSlowReverse {
   0%, 100% {
-    transform: rotate(-3deg);
+    transform: translateY(0px) translateX(0px);
   }
   50% {
-    transform: rotate(3deg);
+    transform: translateY(6px) translateX(-4px);
+  }
+}
+
+.animate-float-reverse {
+  animation: floatSlowReverse 4.8s ease-in-out infinite;
+}
+
+@keyframes wiggleSlow {
+  0%, 100% {
+    transform: rotate(-3.5deg);
+  }
+  50% {
+    transform: rotate(3.5deg);
   }
 }
 
@@ -80,7 +262,6 @@ body {
   animation: wiggleSlow 2s ease-in-out infinite;
 }
 
-/* Pulse soft */
 @keyframes pulseGentle {
   0%, 100% {
     transform: scale(1);
@@ -91,13 +272,42 @@ body {
 }
 
 .animate-pulse-gentle {
-  animation: pulseGentle 2.5s ease-in-out infinite;
+  animation: pulseGentle 2.2s ease-in-out infinite;
 }
 
-@keyframes fadeIn {
+@keyframes sunRaysSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-sun-spin {
+  animation: sunRaysSpin 40s linear infinite;
+}
+
+@keyframes cloudDriftSmooth {
+  0% {
+    transform: translateX(-15%);
+  }
+  50% {
+    transform: translateX(15%);
+  }
+  100% {
+    transform: translateX(-15%);
+  }
+}
+
+.animate-cloud-drift {
+  animation: cloudDriftSmooth 32s ease-in-out infinite;
+}
+
+@keyframes fadeInScale {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -106,10 +316,20 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
+  animation: fadeInScale 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Otimizações Específicas para Mobile Horizontal (Landscape com altura <= 520px) */
+/* ==========================================================================
+   OTIMIZAÇÕES DE TELAS & SAFE AREAS (PORTRAIT & LANDSCAPE COM NOTCH)
+   ========================================================================== */
+
+.safe-screen-paddings {
+  padding-top: max(8px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(12px, env(safe-area-inset-left, 0px));
+  padding-right: max(12px, env(safe-area-inset-right, 0px));
+}
+
 @media (orientation: landscape) and (max-height: 520px) {
   .landscape-compact-header {
     margin-bottom: 2px !important;

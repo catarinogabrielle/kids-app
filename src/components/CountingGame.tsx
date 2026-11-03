@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { sounds } from "@/utils/soundEngine";
 import { GameHeader } from "@/components/TopBar";
@@ -233,17 +234,21 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
               const isWrong = wrongShakeNum === num;
 
               return (
-                <button
+                <motion.button
                   key={num}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.92 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 18 }}
                   onClick={() => handleChooseNumber(num)}
-                  className={`kid-btn flex-1 h-14 sm:h-20 max-w-[130px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
+                  className={`kid-btn relative overflow-hidden flex-1 h-14 sm:h-20 max-w-[130px] rounded-2xl sm:rounded-3xl border-3 sm:border-5 font-black text-3xl sm:text-5xl flex items-center justify-center transition-all ${
                     isWrong
                       ? "bg-rose-200 border-rose-500 text-rose-950 animate-wiggle"
-                      : "bg-kids-yellow border-amber-500 hover:bg-amber-300 text-amber-950 shadow-kid active:scale-95 hover:scale-105"
+                      : "kid-btn-yellow shadow-toy-lg"
                   }`}
                 >
-                  {num}
-                </button>
+                  <div className="toy-gloss" />
+                  <span className="relative z-10">{num}</span>
+                </motion.button>
               );
             })}
           </div>
