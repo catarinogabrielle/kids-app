@@ -263,20 +263,20 @@ export function MissingLetterGame({ onHome }: { onHome?: () => void }) {
         icon="🔤"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 rounded-xl border border-kids-coral shadow-sm">
-            <span className="text-base sm:text-xl">🔤</span>
-            <span className="text-xs sm:text-sm font-black text-rose-950">
-              Palavra: {currentIdx + 1} / {wordChallenges.length}
+          <div className="flex items-center gap-1 bg-white/95 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border border-kids-coral shadow-sm flex-shrink-0">
+            <span className="text-sm sm:text-xl">🔤</span>
+            <span className="text-[11px] sm:text-sm font-black text-rose-950">
+              <span className="hidden sm:inline">Palavra: </span>{currentIdx + 1}/{wordChallenges.length}
             </span>
           </div>
         }
         rightControls={
           <button
             onClick={handleReset}
-            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
+            className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm flex-shrink-0"
             title="Recomeçar"
           >
-            <RotateCcw size={16} />
+            <RotateCcw size={15} />
           </button>
         }
       />

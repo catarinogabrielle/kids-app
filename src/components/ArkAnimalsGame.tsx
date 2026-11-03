@@ -175,23 +175,23 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
         icon="🛳️"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-amber-400 shadow-sm">
-            <span className="text-base sm:text-xl">🛳️</span>
-            <span className="text-xs sm:text-sm font-black text-amber-950">
-              Pares: {matchedSpecies.length} / {PAIRS_CONFIG.length}
+          <div className="flex items-center gap-1 bg-white/95 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-amber-400 shadow-sm flex-shrink-0">
+            <span className="text-sm sm:text-xl">🛳️</span>
+            <span className="text-[11px] sm:text-sm font-black text-amber-950">
+              <span className="hidden sm:inline">Pares: </span>{matchedSpecies.length}/{PAIRS_CONFIG.length}
             </span>
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             <button
               onClick={handlePeek}
               disabled={isPeekingAll || isAllBoarded}
-              className="kid-btn kid-btn-yellow px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5"
+              className="kid-btn kid-btn-yellow p-1.5 sm:px-4 sm:py-2 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1.5"
               title="Espiar cartas"
             >
               <div className="toy-gloss" />
-              <Eye size={16} className="stroke-[2.5]" />
+              <Eye size={15} className="stroke-[2.5]" />
               <span className="hidden sm:inline">ESPIAR</span>
             </button>
             <button
@@ -203,7 +203,7 @@ export function ArkAnimalsGame({ onHome }: { onHome?: () => void }) {
               title="Recomeçar"
             >
               <div className="toy-gloss" />
-              <RotateCcw size={16} className="stroke-[2.5]" />
+              <RotateCcw size={15} className="stroke-[2.5]" />
             </button>
           </div>
         }

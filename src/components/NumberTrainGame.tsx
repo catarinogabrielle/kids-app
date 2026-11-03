@@ -491,7 +491,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
         icon="🚂"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 bg-white/95 p-0.5 sm:p-1 rounded-xl border border-kids-teal shadow-sm overflow-x-auto scrollbar-none">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-white/95 p-0.5 sm:p-1 rounded-xl border border-kids-teal shadow-sm overflow-x-auto scrollbar-none flex-shrink-0">
             {[
               { id: "sequence", icon: "🚂", label: "Na Ordem" },
               { id: "missing", icon: "❓", label: "Qual Falta?" },
@@ -504,7 +504,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
                   sounds.playPop();
                   setMode(m.id as TrainMode);
                 }}
-                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg text-xs font-black flex items-center gap-1 transition-all ${
+                className={`kid-btn p-1 sm:px-2.5 sm:py-1 rounded-lg text-xs font-black flex items-center gap-1 transition-all ${
                   mode === m.id
                     ? "bg-kids-teal text-white border border-teal-700 shadow-sm"
                     : "text-slate-700 hover:bg-slate-100"
@@ -517,10 +517,10 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 flex-shrink-0">
             <button
               onClick={() => sounds.playWhistle()}
-              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 px-2 py-1 sm:px-3 sm:py-1 rounded-xl border border-amber-600 shadow-sm font-black text-xs flex items-center gap-1"
+              className="kid-btn bg-amber-400 hover:bg-amber-500 text-amber-950 p-1 sm:px-3 sm:py-1 rounded-xl border border-amber-600 shadow-sm font-black text-xs flex items-center gap-1"
               title="Tocar Apito"
             >
               <span>📢</span>
@@ -532,7 +532,7 @@ export function NumberTrainGame({ onHome }: { onHome?: () => void }) {
               className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Recomeçar"
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
           </div>
         }

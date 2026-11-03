@@ -240,16 +240,16 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
         icon="🎈"
         hideTitleOnMobile={true}
         leftControls={
-          <div className={`flex items-center gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder}`}>
-            <span className="text-base sm:text-xl">{currentMission.emoji}</span>
-            <span className={`text-xs sm:text-sm font-black ${currentMission.textColor} whitespace-nowrap`}>
-              Pegue 10 {currentMission.name}!
+          <div className={`flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border shadow-inner ${currentMission.badgeBg} ${currentMission.badgeBorder} flex-shrink-0`}>
+            <span className="text-sm sm:text-xl">{currentMission.emoji}</span>
+            <span className={`text-[11px] sm:text-sm font-black ${currentMission.textColor} whitespace-nowrap`}>
+              <span className="hidden sm:inline">Pegue 10 </span>{currentMission.name}!
             </span>
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1">
-            <div className="flex items-center gap-1 bg-amber-100 border border-amber-400 px-2 py-0.5 rounded-xl font-black text-xs text-amber-950 shadow-sm">
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-amber-100 border border-amber-400 px-1.5 py-0.5 sm:px-2 rounded-xl font-black text-[11px] sm:text-xs text-amber-950 shadow-sm">
               <span>🎈</span>
               <span>{targetCount}/{GOAL}</span>
             </div>
@@ -259,7 +259,7 @@ export function BalloonPopGame({ onHome }: { onHome?: () => void }) {
               className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Recomeçar"
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
           </div>
         }

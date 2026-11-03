@@ -214,7 +214,7 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
         icon="🎨"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-0.5 scrollbar-none">
+          <div className="flex items-center gap-0.5 sm:gap-1.5 overflow-x-auto py-0.5 scrollbar-none flex-shrink-0">
             {[
               { id: "daniel", emoji: "🦁", label: "Rei Leão" },
               { id: "ark", emoji: "🛳️", label: "Arca" },
@@ -228,23 +228,23 @@ export function PaintingGame({ onHome }: { onHome?: () => void }) {
                   sounds.playPop();
                   setTemplate(t.id as ColorTemplate);
                 }}
-                className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border transition-all ${
+                className={`kid-btn p-1 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl border transition-all ${
                   template === t.id
                     ? "bg-kids-yellow border-amber-600 scale-105 shadow-sm ring-1 ring-yellow-400 text-amber-950"
                     : "bg-white/90 border-white text-slate-700 hover:bg-white"
                 }`}
               >
-                <span className="text-base sm:text-xl">{t.emoji}</span>
+                <span className="text-sm sm:text-xl">{t.emoji}</span>
                 <span className="hidden sm:inline font-black text-xs">{t.label}</span>
               </button>
             ))}
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1 sm:gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             <button
               onClick={handleSaveArtwork}
-              className="kid-btn bg-kids-coral hover:bg-rose-500 text-white px-2 py-1 sm:px-3 sm:py-1 rounded-xl border sm:border-2 border-rose-800 shadow-sm flex items-center gap-1 font-black text-xs"
+              className="kid-btn bg-kids-coral hover:bg-rose-500 text-white p-1 sm:px-3 sm:py-1 rounded-xl border sm:border-2 border-rose-800 shadow-sm flex items-center gap-1 font-black text-xs"
               title="Salvar Foto"
             >
               <Camera size={15} />

@@ -128,16 +128,16 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
         icon="🔢"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 bg-white/95 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-kids-orange shadow-sm">
-            <span className="text-base sm:text-xl">🔢</span>
-            <span className="text-xs sm:text-sm font-black text-amber-950">
-              Contados: {tappedItems.length} de {current.count}
+          <div className="flex items-center gap-1 bg-white/95 px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border border-kids-orange shadow-sm flex-shrink-0">
+            <span className="text-sm sm:text-xl">🔢</span>
+            <span className="text-[11px] sm:text-sm font-black text-amber-950">
+              <span className="hidden sm:inline">Contados: </span>{tappedItems.length}<span className="hidden sm:inline"> de </span><span className="sm:hidden">/</span>{current.count}
             </span>
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1">
-            <div className="bg-white/95 border border-emerald-500 px-2 py-0.5 rounded-xl text-emerald-950 font-black text-xs shadow-sm">
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="bg-white/95 border border-emerald-500 px-1.5 py-0.5 sm:px-2 rounded-xl text-emerald-950 font-black text-[11px] sm:text-xs shadow-sm">
               ⭐ {score}
             </div>
             <button
@@ -145,7 +145,7 @@ export function CountingGame({ onHome }: { onHome?: () => void }) {
               className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Sortear outro"
             >
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
           </div>
         }

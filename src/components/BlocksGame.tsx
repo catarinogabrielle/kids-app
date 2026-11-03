@@ -377,10 +377,10 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
         icon="🧱"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 bg-white/95 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border border-kids-orange shadow-sm flex-shrink-0">
-            <span className="text-base sm:text-lg">🧱</span>
-            <span className="text-xs sm:text-sm font-black text-amber-950 whitespace-nowrap">
-              Torre: {stackedBlocks.length}
+          <div className="flex items-center gap-1 bg-white/95 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border border-kids-orange shadow-sm flex-shrink-0">
+            <span className="text-sm sm:text-lg">🧱</span>
+            <span className="text-[11px] sm:text-sm font-black text-amber-950 whitespace-nowrap">
+              <span className="hidden sm:inline">Torre: </span>{stackedBlocks.length}
             </span>
           </div>
         }
@@ -389,14 +389,14 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
             <button
               onClick={handleDemolish}
               disabled={stackedBlocks.length === 0 || isDemolishing}
-              className={`kid-btn px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl border font-black text-xs sm:text-sm flex items-center gap-1 ${
+              className={`kid-btn px-1.5 py-0.5 sm:px-3 sm:py-1 rounded-xl border font-black text-xs sm:text-sm flex items-center gap-1 ${
                 stackedBlocks.length > 0 && !isDemolishing
                   ? "bg-kids-coral text-white border-rose-700 shadow-sm active:scale-90 animate-pulse-gentle"
                   : "bg-white/80 text-gray-400 border-gray-300 opacity-60 cursor-not-allowed"
               }`}
             >
               <Bomb size={14} className="sm:w-4 sm:h-4" />
-              <span>BUM! 💥</span>
+              <span><span className="hidden sm:inline">BUM! </span>💥</span>
             </button>
 
             <button
@@ -404,7 +404,7 @@ export function BlocksGame({ onHome }: { onHome?: () => void }) {
               className="kid-btn bg-white hover:bg-slate-100 text-slate-700 p-1 sm:p-1.5 rounded-xl border border-slate-300 shadow-sm"
               title="Limpar Torre"
             >
-              <Trash2 size={16} />
+              <Trash2 size={15} />
             </button>
           </div>
         }

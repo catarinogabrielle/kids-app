@@ -812,24 +812,24 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
         icon="✍️"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             <button
               onClick={prevLetter}
               className="kid-btn kid-btn-white p-1 sm:p-1.5 rounded-xl border-2 flex items-center justify-center active:scale-90"
               title="Letra Anterior"
             >
-              <ChevronLeft size={16} className="sm:w-5 sm:h-5 stroke-[3]" />
+              <ChevronLeft size={15} className="sm:w-5 sm:h-5 stroke-[3]" />
             </button>
 
             {/* Letra Atual em Destaque Compacta no Mobile */}
-            <div className="bg-white/95 px-2 py-0.5 sm:px-3.5 sm:py-1 rounded-xl border-2 border-amber-400 shadow-toy-sm flex items-center gap-1 sm:gap-2">
+            <div className="bg-white/95 px-1.5 py-0.5 sm:px-3.5 sm:py-1 rounded-xl border-2 border-amber-400 shadow-toy-sm flex items-center gap-1 sm:gap-2 flex-shrink-0">
               <span
-                className="text-base sm:text-2xl font-black"
+                className="text-sm sm:text-2xl font-black"
                 style={{ color: current.themeColor }}
               >
                 {current.letter}
               </span>
-              <span className="text-sm sm:text-xl">{current.emoji}</span>
+              <span className="text-xs sm:text-xl">{current.emoji}</span>
               <span className="hidden sm:inline text-xs sm:text-sm font-extrabold text-slate-800 whitespace-nowrap">
                 {current.word}
               </span>
@@ -840,31 +840,31 @@ export function LetterTracingGame({ onHome }: { onHome?: () => void }) {
               className="kid-btn kid-btn-white p-1 sm:p-1.5 rounded-xl border-2 flex items-center justify-center active:scale-90"
               title="Próxima Letra"
             >
-              <ChevronRight size={16} className="sm:w-5 sm:h-5 stroke-[3]" />
+              <ChevronRight size={15} className="sm:w-5 sm:h-5 stroke-[3]" />
             </button>
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* BOTÃO ANIMAR NO HEADER (COMPACTO NO MOBILE COM ÍCONE) */}
             <button
               onClick={triggerAnimate}
-              className="kid-btn kid-btn-yellow p-1.5 sm:px-3.5 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 active:scale-95 animate-pulse-gentle"
+              className="kid-btn kid-btn-yellow p-1 sm:px-3.5 sm:py-1.5 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 active:scale-95 animate-pulse-gentle"
               title="Animar a Letra e Ver a História!"
             >
               <div className="toy-gloss" />
-              <Sparkles size={16} className="text-amber-800 animate-spin" />
+              <Sparkles size={15} className="text-amber-800 animate-spin" />
               <span className="hidden sm:inline">ANIMAR! ✨</span>
             </button>
 
             {/* Botão de Limpar Desenho */}
             <button
               onClick={handleReset}
-              className="kid-btn kid-btn-white p-1.5 sm:p-2 rounded-xl border-2"
+              className="kid-btn kid-btn-white p-1 sm:p-2 rounded-xl border-2"
               title="Limpar e Recomeçar"
             >
               <div className="toy-gloss" />
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
           </div>
         }

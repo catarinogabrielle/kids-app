@@ -627,10 +627,11 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
         onHome={onHome}
         title="Quebra-Cabeça"
         icon="🧩"
+        hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
             {/* Seletor dos 6 Puzzles */}
-            <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 p-0.5 sm:p-1 rounded-2xl border border-amber-300 shadow-xs">
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-amber-300 shadow-xs flex-shrink-0">
               {PUZZLES.map((p, idx) => (
                 <button
                   key={p.id}
@@ -640,25 +641,25 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
                     setPlacedPieces([]);
                     setDraggingPieceId(null);
                   }}
-                  className={`kid-btn px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-xl transition-all ${
+                  className={`kid-btn p-1 sm:px-2 sm:py-1 rounded-lg sm:rounded-xl transition-all ${
                     currentIdx === idx
                       ? "kid-btn-amber scale-105 shadow-toy-sm"
                       : "bg-transparent hover:bg-slate-100 text-slate-700"
                   }`}
                   title={p.title}
                 >
-                  <span className="text-sm sm:text-lg">{p.icon}</span>
+                  <span className="text-xs sm:text-lg">{p.icon}</span>
                 </button>
               ))}
             </div>
 
             {/* Seletor de Dificuldade / Quantidade de Peças */}
-            <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 p-0.5 sm:p-1 rounded-2xl border border-sky-300 shadow-xs">
+            <div className="flex items-center gap-0.5 sm:gap-1 bg-white/90 p-0.5 sm:p-1 rounded-xl sm:rounded-2xl border border-sky-300 shadow-xs flex-shrink-0">
               {([4, 6, 9] as PuzzleDifficulty[]).map((diff) => (
                 <button
                   key={diff}
                   onClick={() => changeDifficulty(diff)}
-                  className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl font-black text-[10px] sm:text-xs transition-all ${
+                  className={`kid-btn px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs transition-all ${
                     difficulty === diff
                       ? "kid-btn-teal scale-105 shadow-toy-sm"
                       : "bg-transparent text-slate-600 hover:bg-slate-100"
@@ -672,16 +673,16 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
           </div>
         }
         rightControls={
-          <div className="flex items-center gap-1 sm:gap-2">
-            <span className="text-xs sm:text-sm font-black text-purple-950 bg-purple-100 px-2.5 py-1 rounded-xl border border-purple-300 shadow-xs">
-              {placedPieces.length} / {pieces.length}
+          <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+            <span className="text-[11px] sm:text-sm font-black text-purple-950 bg-purple-100 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-xl border border-purple-300 shadow-xs">
+              {placedPieces.length}/{pieces.length}
             </span>
             <button
               onClick={() => {
                 sounds.playPop();
                 setShowHint((prev) => !prev);
               }}
-              className={`kid-btn px-2.5 py-1 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 transition-all ${
+              className={`kid-btn p-1.5 sm:px-2.5 sm:py-1 rounded-xl border-2 font-black text-xs sm:text-sm flex items-center gap-1 transition-all ${
                 showHint ? "kid-btn-yellow" : "kid-btn-white"
               }`}
               title="Espiar Imagem Completa"
@@ -696,7 +697,7 @@ export function PuzzleGame({ onHome }: { onHome?: () => void }) {
               title="Recomeçar"
             >
               <div className="toy-gloss" />
-              <RotateCcw size={16} />
+              <RotateCcw size={15} />
             </button>
           </div>
         }

@@ -320,7 +320,7 @@ export function CarTrackGame({ onHome }: { onHome?: () => void }) {
         icon="🚙"
         hideTitleOnMobile={true}
         leftControls={
-          <div className="flex items-center gap-0.5 sm:gap-1.5 bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-kids-yellow shadow-toy-sm flex-shrink-0">
+          <div className="flex items-center gap-0.5 sm:gap-1.5 bg-white/95 backdrop-blur-md p-0.5 sm:p-1 rounded-xl border border-kids-yellow shadow-toy-sm flex-shrink-0 overflow-x-auto scrollbar-none">
             {vehicles.map((v) => (
               <button
                 key={v.id}
